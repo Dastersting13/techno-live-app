@@ -199,8 +199,8 @@ body::before{
   50%      { box-shadow:0 8px 48px rgba(0,0,0,0.45),0 0 0 4px rgba(28,28,30,0.12); }
 }
 
-.au{animation:fadeUp .38s ease both}
-.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}
+.au{opacity:1}
+.d1{}.d2{}.d3{}.d4{}.d5{}
 .heading-anim{animation:headingSwap .2s ease both}
 .cart-anim{animation:cartBounce .45s cubic-bezier(.34,1.56,.64,1)}
 .shake-anim{animation:shake .35s ease}
@@ -494,7 +494,7 @@ body::before{
 }
 
 /* PAGES */
-.page{display:none}.page.on{display:block;animation:pageIn .32s cubic-bezier(.32,.72,0,1) both}
+.page{display:none}.page.on{display:block}
 .page.out{animation:pageOut .2s ease both}
 .ph-head{padding:22px 18px 14px;font-family:'Unbounded',sans-serif;font-size:25px;font-weight:900;letter-spacing:-.8px;position:relative;z-index:1}
 
@@ -1490,7 +1490,7 @@ function goBanner(i){bannerIdx=i;document.getElementById('bannerSlider').style.t
 
 function renderTrend(){
   document.getElementById('trendScroll').innerHTML=P.filter(p=>p.trend).map((p,i)=>`
-    <div class="t-card" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .35s ${i*.07}s both ease">
+    <div class="t-card" onclick="openSheet(${P.indexOf(p)})" style="">
       <div class="t-img">${img(p)}${p.badge?`<div class="t-lbl ${p.badge}">${BADGES[p.badge]}</div>`:''}${p.flag!=='🇷🇺'?`<div class="t-flag">${p.flag}</div>`:''}</div>
       <div class="t-body">${p.oldPrice?`<div class="t-old">${fmt(p.oldPrice)}</div>`:''}<div class="t-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div><div class="t-price">${fmt(p.price)}</div></div>
     </div>`).join('');
@@ -1509,7 +1509,7 @@ function renderGrid(list){
   if(!list.length){el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено</div>`;return}
   el.innerHTML=list.map((p,i)=>{
     const ci=cart.find(c=>c.id===p.id);const on=!!ci;const qty=ci?.qty||0;
-    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .35s ${i*.05}s both ease">
+    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="">
       <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
       <div class="p-body">
         <div class="p-name">${p.family}</div>
@@ -1720,3 +1720,254 @@ function changeQtyCart(id, d){
     removeFromCartAnimated(id);return;
   }
   // Update DOM directly for smooth experience
+  const qn=document.getElementById('cqn-'+id);
+  if(qn){qn.textContent=ci.qty;qn.classList.remove('pop');void qn.offsetWidth;qn.classList.add('pop')}
+  const cp=document.getElementById('cprice-'+id);
+  if(cp){cp.textContent=fmt(ci.price*ci.qty)}
+  updateBadge();updateProfile();
+  // Re-render totals
+  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const disc=promoApplied?Math.round(sub*promoApplied.disc/100):0;
+  const total=sub-disc;
+  const totEl=document.querySelector('.totals');
+  if(totEl){totEl.innerHTML=`<div class="tot-r"><span>Товары (${cart.reduce((s,c)=>s+c.qty,0)})</span><span>${fmt(sub)}</span></div>${disc?`<div class="tot-r"><span>Скидка ${promoApplied.disc}%</span><span style="color:var(--green)">−${fmt(disc)}</span></div>`:''}<div class="tot-r"><span>Доставка</span><span style="color:var(--green)">Уточнит менеджер</span></div><div class="tot-r big"><span>Итого</span><span class="v">${fmt(total)}</span></div>`}
+  applyFilters();renderTrend();
+}
+
+function removeFromCartAnimated(id, btnEl){
+  const ciEl=btnEl?btnEl.closest('.ci'):document.querySelector(`.ci`);
+  // find the exact ci by querying
+  const allCi=document.querySelectorAll('.ci');
+  let targetEl=null;
+  allCi.forEach(el=>{
+    if(el.querySelector(`[onclick*="removeFromCartAnimated(${id}"]`)||el.querySelector(`#cqn-${id}`)){targetEl=el}
+  });
+  if(targetEl){
+    targetEl.style.animation='itemRemove .35s ease forwards';
+    setTimeout(()=>{
+      cart=cart.filter(c=>c.id!==id);
+      updateBadge();renderCart();applyFilters();renderTrend();updateProfile();
+    },320);
+  } else {
+    cart=cart.filter(c=>c.id!==id);
+    updateBadge();renderCart();applyFilters();renderTrend();updateProfile();
+  }
+}
+
+function applyPromo(){
+  if(promoApplied)return;
+  const code=(document.getElementById('promoInput')?.value||'').trim().toUpperCase();
+  const promo=PROMOS[code];
+  if(promo){
+    promoApplied=promo;
+    showToast('🎉 Промокод: '+promo.label);
+    renderCart();
+  } else {
+    const inp=document.getElementById('promoInput');
+    if(inp){inp.classList.add('shake-anim');setTimeout(()=>inp.classList.remove('shake-anim'),400)}
+    const e=document.getElementById('promoErr');
+    if(e){e.textContent='❌ Неверный промокод';e.style.display='block';setTimeout(()=>e.style.display='none',2000)}
+  }
+}
+
+function selectDelivery(type){
+  deliveryType=type;
+  document.getElementById('dtab-pickup').classList.toggle('active',type==='pickup');
+  document.getElementById('dtab-delivery').classList.toggle('active',type==='delivery');
+  document.getElementById('form-pickup').classList.toggle('show',type==='pickup');
+  document.getElementById('form-delivery').classList.toggle('show',type==='delivery');
+  document.getElementById('orderSubtitle').textContent=type==='pickup'?'Самовывоз: Москва, пл. Победы, 2к2':'Курьер доставит в течение 3 часов';
+}
+
+function updateMapPreview(){const a=document.getElementById('delivAddress').value.trim();document.getElementById('mapAddrText').textContent=a?'Москва, '+a:'Введите адрес выше'}
+function openAddressInMap(){const a=document.getElementById('delivAddress').value.trim();if(!a){showToast('⚠️ Введите адрес');return}window.open(`https://yandex.ru/maps/?text=${encodeURIComponent('Москва, '+a)}`,'_blank')}
+
+function openOrderModal(){
+  const tg=window.Telegram?.WebApp;
+  if(tg?.initDataUnsafe?.user){const u=tg.initDataUnsafe.user;const n=[u.first_name,u.last_name].filter(Boolean).join(' ');['pickupName','delivName'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n})}
+  document.getElementById('orderOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function maybeCloseOrder(e){if(e.target===document.getElementById('orderOverlay'))closeOrderModal()}
+function closeOrderModal(){document.getElementById('orderOverlay').classList.remove('open');document.body.style.overflow=''}
+
+function submitOrder(){
+  let name,phone,extra='';
+  if(deliveryType==='pickup'){
+    name=document.getElementById('pickupName').value.trim();
+    phone=document.getElementById('pickupPhone').value.trim();
+    const t=document.getElementById('pickupTime').value.trim();
+    extra=t?`\n🕐 Время: ${t}`:''
+  } else {
+    name=document.getElementById('delivName').value.trim();
+    phone=document.getElementById('delivPhone').value.trim();
+    const a=document.getElementById('delivAddress').value.trim();
+    const c=document.getElementById('delivComment').value.trim();
+    if(!a){showToast('⚠️ Введите адрес доставки');return}
+    extra=`\n📍 Адрес: ${a}`+(c?`\n💬 ${c}`:'')
+  }
+  if(!name){
+    const el=document.getElementById(deliveryType==='pickup'?'pickupName':'delivName');
+    if(el){el.classList.add('shake-anim');setTimeout(()=>el.classList.remove('shake-anim'),400)}
+    showToast('⚠️ Введите ваше имя');return;
+  }
+  if(!phone){
+    const el=document.getElementById(deliveryType==='pickup'?'pickupPhone':'delivPhone');
+    if(el){el.classList.add('shake-anim');setTimeout(()=>el.classList.remove('shake-anim'),400)}
+    showToast('⚠️ Введите номер телефона');return;
+  }
+  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const disc=promoApplied?Math.round(sub*promoApplied.disc/100):0;
+  const total=sub-disc;
+  const dl=deliveryType==='pickup'?'Самовывоз':'Доставка курьером';
+  const num='#'+String(++orderCount).padStart(3,'0')+'-'+Date.now().toString().slice(-4);
+  const msg=encodeURIComponent(`📦 Новый заказ ${num}\n👤 ${name}\n📞 ${phone}\n🚚 ${dl}${extra}\n\n`+cart.map(p=>`• ${p.family}${p.memory!=='—'?' '+p.memory:''} × ${p.qty} — ${fmt(p.price*p.qty)}`).join('\n')+(promoApplied?`\n🏷 Скидка: −${fmt(disc)}`:'')+`\n💰 Итого: ${fmt(total)}`);
+  const tg=window.Telegram?.WebApp;if(tg){try{tg.sendData(JSON.stringify({num,name,phone,deliveryType,total}))}catch(e){}}
+  window.open(`https://t.me/TEXHOLIVE?text=${msg}`,'_blank');
+  closeOrderModal();
+  const savedCart=[...cart];cart=[];promoApplied=null;
+  updateBadge();applyFilters();renderTrend();updateProfile();
+  showOrderStatus(num,name,total,savedCart);
+}
+
+function showOrderStatus(num,name,total,savedCart){
+  document.getElementById('statusTitle').textContent='Заказ принят!';
+  document.getElementById('statusSub').textContent=`${name}, менеджер свяжется в течение 15 минут`;
+  document.getElementById('statusNum').textContent=num;
+  const icon=document.getElementById('statusIcon');
+  icon.textContent='🎉';icon.classList.remove('pop');void icon.offsetWidth;icon.classList.add('pop');
+  document.getElementById('statusItems').innerHTML=(savedCart||[]).map(p=>`<div class="status-item"><span>${p.family} × ${p.qty}</span><span>${fmt(p.price*p.qty)}</span></div>`).join('')+`<div class="status-item"><span>Итого</span><span>${fmt(total)}</span></div>`;
+  document.getElementById('statusOverlay').classList.add('open');
+}
+function closeStatus(){document.getElementById('statusOverlay').classList.remove('open')}
+
+// ══ PAGE NAVIGATION — Telegram iOS spring ══
+function showPage(name){
+  // убираем was-active у всех
+  document.querySelectorAll('.ni').forEach(n=>{
+    if(n.classList.contains('active')){
+      n.classList.add('was-active');
+      n.classList.remove('active');
+      setTimeout(()=>n.classList.remove('was-active'), 300);
+    } else {
+      n.classList.remove('was-active','active');
+    }
+  });
+
+  // страница
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const target=document.getElementById('page-'+name);
+  target.classList.add('on');
+
+  // активируем нужный таб — небольшая задержка чтоб was-active успел запуститься
+  const navEl=document.getElementById('nav-'+name);
+  if(navEl){
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        navEl.classList.remove('was-active');
+        navEl.classList.add('active');
+      });
+    });
+  }
+
+  if(name==='cart')renderCart();
+  if(name==='profile')updateProfile();
+  if(name==='search'){searchPage();setTimeout(()=>document.getElementById('searchInput')?.focus(),120);}
+  if(name==='admin'){renderMarkupRows();renderAdminList();}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+let searchSort='none';
+function setSort(type, el){
+  searchSort=type;
+  document.querySelectorAll('.sort-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  searchPage();
+}
+function searchPage(){
+  const q=(document.getElementById('searchInput')?.value||'').trim().toLowerCase();
+  const res=document.getElementById('searchResults');
+  const clr=document.getElementById('searchClear');
+  const sortRow=document.getElementById('searchSortRow');
+  if(clr)clr.style.display=q?'flex':'none';
+  if(sortRow)sortRow.style.display=q?'flex':'none';
+  if(!q){
+    res.innerHTML=`<div class="search-hint"><div class="search-hint-icon"><svg viewBox="0 0 28 28" fill="none" width="48" height="48"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M17.5 17.5L23 23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><p>Введи название модели,<br>бренд или характеристику</p></div>`;
+    return;
+  }
+  let found=P.filter(p=>{
+    const s=[p.family,p.brand,p.memory,p.color,p.sim].join(' ').toLowerCase();
+    return s.includes(q);
+  });
+  if(searchSort==='asc') found=[...found].sort((a,b)=>a.price-b.price);
+  if(searchSort==='desc') found=[...found].sort((a,b)=>b.price-a.price);
+  if(!found.length){
+    res.innerHTML=`<div class="search-empty"><div class="search-empty-icon"><svg viewBox="0 0 28 28" fill="none" width="48" height="48"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M17.5 17.5L23 23" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><p>Ничего не найдено<br>по запросу «${q}»</p></div>`;
+    return;
+  }
+  res.innerHTML=found.map((p,i)=>{
+    return `<div class="sr-item au" style="" onclick="openSheet(${P.indexOf(p)})">
+      <div class="sr-img">${p.photo?`<img src="${p.photo}" onerror="this.style.display='none'">`:''}<span style="${p.photo?'display:none':''}">${p.icon||'📱'}</span></div>
+      <div class="sr-info">
+        <div class="sr-name">${p.family}${p.memory&&p.memory!=='—'?' · '+p.memory:''}</div>
+        <div class="sr-sub">${p.color||p.brand}${p.sim&&p.sim!=='—'?' · '+p.sim:''}</div>
+      </div>
+      <div class="sr-price">${fmt(p.price)}</div>
+    </div>`;
+  }).join('');
+}
+function clearSearch(){
+  const inp=document.getElementById('searchInput');
+  if(inp){inp.value='';inp.focus();}
+  searchPage();
+}
+
+let _tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.remove('hide');
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>{
+    t.classList.remove('show');
+    t.classList.add('hide');
+    setTimeout(()=>t.classList.remove('hide'),250);
+  },2400);
+}
+
+function updateProfile(){
+  const t=cart.reduce((s,c)=>s+c.qty,0);
+  const ordEl=document.getElementById('statOrders');
+  const cartEl=document.getElementById('statCart');
+  if(ordEl){ordEl.textContent=orderCount;ordEl.classList.remove('count-up');void ordEl.offsetWidth;if(orderCount>0)ordEl.classList.add('count-up')}
+  if(cartEl){cartEl.textContent=t;cartEl.classList.remove('count-up');void cartEl.offsetWidth;if(t>0)cartEl.classList.add('count-up')}
+  document.getElementById('profileCartSub').textContent=t?`${t} товар(ов)`:'Пусто';
+}
+
+function loadTelegramUser(){
+  const tg=window.Telegram?.WebApp;
+  if(tg?.initDataUnsafe?.user){
+    const u=tg.initDataUnsafe.user;
+    document.getElementById('profileName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ')||'Пользователь';
+    document.getElementById('profileUsername').textContent=u.username?'@'+u.username:'Telegram';
+    if(u.first_name){const av=document.getElementById('profileAvatar');av.innerHTML=u.first_name[0].toUpperCase()+'<div class="avatar-edit-hint">\u270E</div>';}
+  } else {
+    document.getElementById('profileName').textContent='Гость';
+    document.getElementById('profileUsername').textContent='Открыто в браузере';
+  }
+}
+function openMaps(){window.open('https://yandex.com/maps/-/CPeUI4OR','_blank')}
+
+if(window.Telegram?.WebApp){try{const tg=window.Telegram.WebApp;tg.expand();tg.setHeaderColor('#e8eaed');tg.setBackgroundColor('#e8eaed')}catch(e){}}
+
+function init(){
+  try{initBanner();}catch(e){console.error('initBanner',e);}
+  try{loadTelegramUser();}catch(e){console.error('loadTelegramUser',e);}
+  try{renderTrend();}catch(e){console.error('renderTrend',e);}
+  try{applyFilters();}catch(e){console.error('applyFilters',e);}
+  try{initAdmin();}catch(e){console.error('initAdmin',e);}
+}
+
+// Run immediately — script is at end of body so DOM is ready
+init();
