@@ -420,6 +420,34 @@ body::before{
 @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .au{animation:fadeUp .38s ease both}
 .d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}
+
+/* ADMIN */
+.admin-section-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;padding:0 2px}
+.admin-card{background:linear-gradient(135deg,rgba(26,63,117,0.28),rgba(10,10,74,0.48));border:1px solid var(--border2);border-radius:22px;padding:16px;box-shadow:0 4px 20px rgba(0,0,42,0.38)}
+.admin-note{font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.5}
+.admin-form-row{display:flex;gap:10px;margin-bottom:10px}
+.admin-field{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+.admin-field label{font-size:10px;color:var(--t3);font-weight:600;font-family:'Unbounded',sans-serif;letter-spacing:.2px}
+.admin-input{background:var(--glass2);border:1px solid var(--border2);border-radius:12px;padding:10px 12px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;width:100%;transition:border-color .2s}
+.admin-input:focus{border-color:var(--accent)}
+.admin-input option{background:#050540;color:#fff}
+.admin-save-btn{width:100%;margin-top:12px;background:linear-gradient(135deg,var(--accent2),#1565c0);color:#fff;border:none;border-radius:50px;padding:13px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(41,121,255,.35)}
+.admin-save-btn:active{opacity:.8}
+.admin-add-btn{width:100%;margin-top:12px;background:linear-gradient(135deg,var(--green),#00c853);color:#000;border:none;border-radius:50px;padding:13px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(0,230,118,.28)}
+.admin-add-btn:active{opacity:.8}
+.markup-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.markup-row:last-child{border-bottom:none}
+.markup-label{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700}
+.markup-input{width:90px;background:var(--glass);border:1px solid var(--border2);border-radius:10px;padding:8px 10px;color:var(--text);font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;text-align:right;outline:none}
+.markup-input:focus{border-color:var(--accent)}
+.adm-p{background:linear-gradient(135deg,rgba(26,63,117,0.2),rgba(10,10,74,0.4));border:1px solid var(--border2);border-radius:18px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.adm-p-icon{font-size:26px;flex-shrink:0}
+.adm-p-info{flex:1;min-width:0}
+.adm-p-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-p-sub{font-size:10px;color:var(--t3);margin-top:2px}
+.adm-p-price{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:800;color:var(--green);flex-shrink:0;text-align:right}
+.adm-del{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(255,82,82,.12);border:1px solid rgba(255,82,82,.22);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer}
+.adm-del:active{background:var(--red);color:#fff}
 </style>
 </head>
 <body>
@@ -556,13 +584,76 @@ body::before{
   <div style="height:16px"></div>
 </div>
 
+<!-- ADMIN PAGE -->
+<div class="page" id="page-admin">
+  <div class="ph-head">⚙️ Админка</div>
+  <div style="padding:0 16px 14px;position:relative;z-index:1">
+    <div class="admin-section-title">💰 Наценка по категориям</div>
+    <div class="admin-card">
+      <div class="admin-note">Наценка (₽) добавляется к закупочной цене. Аксессуары — ставь 0.</div>
+      <div id="markupRows"></div>
+      <button class="admin-save-btn" onclick="saveMarkups()">💾 СОХРАНИТЬ НАЦЕНКИ</button>
+    </div>
+  </div>
+  <div style="padding:0 16px 14px;position:relative;z-index:1">
+    <div class="admin-section-title">➕ Добавить товар</div>
+    <div class="admin-card">
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Категория</label><select id="a_brand" class="admin-input"><option>iPhone</option><option>Samsung</option><option>MacBook</option><option>iPad</option><option>Watch</option><option>AirPods</option><option>Аксессуары</option></select></div>
+        <div class="admin-field"><label>Название</label><input id="a_family" class="admin-input" placeholder="iPhone 17 Pro Max"></div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Память</label><input id="a_memory" class="admin-input" placeholder="256GB или —"></div>
+        <div class="admin-field"><label>Цвет</label><input id="a_color" class="admin-input" placeholder="Black Titanium"></div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Закупочная цена ₽</label><input id="a_price" class="admin-input" type="number" placeholder="100000"></div>
+        <div class="admin-field"><label>Старая цена ₽ (опц.)</label><input id="a_oldprice" class="admin-input" type="number" placeholder=""></div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>SIM</label><input id="a_sim" class="admin-input" placeholder="eSim или —"></div>
+        <div class="admin-field"><label>Флаг</label><input id="a_flag" class="admin-input" placeholder="🇷🇺"></div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-field"><label>Фото (images/...)</label><input id="a_photo" class="admin-input" placeholder="images/iphone17.jpg"></div>
+        <div class="admin-field"><label>Бейдж</label><select id="a_badge" class="admin-input"><option value="">нет</option><option value="fire">🔥 Хит</option><option value="new">✦ Новинка</option><option value="hit">💎 Топ</option></select></div>
+      </div>
+      <div class="admin-form-row" style="gap:16px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="a_trend" style="width:18px;height:18px;accent-color:var(--accent)"><span style="font-size:13px;color:var(--t2)">В тренде</span></label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="a_instock" checked style="width:18px;height:18px;accent-color:var(--green)"><span style="font-size:13px;color:var(--t2)">В наличии</span></label>
+      </div>
+      <button class="admin-add-btn" onclick="adminAddProduct()">➕ ДОБАВИТЬ В КАТАЛОГ</button>
+    </div>
+  </div>
+  <div style="padding:0 16px 14px;position:relative;z-index:1">
+    <div class="admin-section-title">📦 Управление каталогом (<span id="adminCount">0</span>)</div>
+    <div id="adminProductList"></div>
+  </div>
+  <div style="padding:0 16px 14px;position:relative;z-index:1">
+    <div class="admin-section-title">📸 Как добавить фото</div>
+    <div class="admin-card" style="font-size:13px;line-height:2;color:var(--t2)">
+      <div>1️⃣ Зайди на <b style="color:#fff">github.com</b> → твой репозиторий</div>
+      <div>2️⃣ Нажми <b style="color:#fff">Add file → Upload files</b></div>
+      <div>3️⃣ В поле имени файла напиши <b style="color:var(--green)">images/название.jpg</b></div>
+      <div>4️⃣ Загрузи фото и нажми <b style="color:#fff">Commit changes</b></div>
+      <div>5️⃣ В поле "Фото" выше укажи <b style="color:var(--green)">images/название.jpg</b></div>
+      <div style="margin-top:10px;padding:10px;background:rgba(74,158,255,.1);border-radius:12px;border:1px solid var(--border2);font-size:12px">
+        <span style="color:var(--accent)">Примеры: </span>images/iphone17-black.jpg · images/macbook-m4.jpg<br>
+        <span style="color:var(--t3)">Рекомендуем: квадратные фото 600×600px</span>
+      </div>
+    </div>
+  </div>
+  <div style="height:16px"></div>
+</div>
+
 <!-- NAV PILL -->
 <div class="nav-wrap">
-  <nav class="nav">
+  <nav class="nav" id="mainNav">
     <div class="ni active" id="nav-home" onclick="showPage('home')"><div class="ni-icon">🏠</div></div>
     <div class="ni" id="nav-cart" onclick="showPage('cart')"><div class="ni-icon">🛒</div></div>
     <div class="ni" id="nav-info" onclick="showPage('info')"><div class="ni-icon">ℹ️</div></div>
     <div class="ni" id="nav-profile" onclick="showPage('profile')"><div class="ni-icon">👤</div></div>
+    <div class="ni" id="nav-admin" onclick="showPage('admin')" style="display:none"><div class="ni-icon">⚙️</div></div>
   </nav>
 </div>
 
@@ -627,22 +718,56 @@ body::before{
 <div class="toast" id="toast"></div>
 
 <script>
-const P=[
-  {id:1,brand:'iPhone',family:'iPhone 17 Pro Max',memory:'256GB',color:'Black Titanium',sim:'eSim',price:115000,oldPrice:124000,icon:'📱',flag:'🇷🇺',photo:null,trend:true,badge:'fire',rating:5.0,reviews:64,inStock:true},
-  {id:2,brand:'iPhone',family:'iPhone 17 Pro Max',memory:'512GB',color:'Desert Titanium',sim:'1Sim+eSim',price:129000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:true,badge:'hit',rating:4.9,reviews:41,inStock:true},
-  {id:3,brand:'iPhone',family:'iPhone 17 Pro',memory:'256GB',color:'White Titanium',sim:'eSim',price:98000,oldPrice:105000,icon:'📱',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.8,reviews:29,inStock:true},
-  {id:4,brand:'iPhone',family:'iPhone 17 Air',memory:'256GB',color:'Starlight',sim:'eSim',price:89000,oldPrice:null,icon:'📱',flag:'🇷🇺',photo:null,trend:true,badge:'new',rating:5.0,reviews:12,inStock:true},
-  {id:5,brand:'iPhone',family:'iPhone 17',memory:'256GB',color:'Black',sim:'eSim',price:73500,oldPrice:78000,icon:'📱',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.7,reviews:55,inStock:true},
-  {id:6,brand:'iPhone',family:'iPhone 16 Pro Max',memory:'256GB',color:'Desert Titanium',sim:'eSim',price:99000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:false,badge:null,rating:4.9,reviews:87,inStock:true},
-  {id:7,brand:'Samsung',family:'Galaxy S25 Ultra',memory:'512GB',color:'Titanium Black',sim:'2Sim',price:96500,oldPrice:108000,icon:'📱',flag:'🇨🇱',photo:null,trend:true,badge:'hit',rating:4.8,reviews:33,inStock:true},
-  {id:8,brand:'Samsung',family:'Galaxy S25+',memory:'256GB',color:'Icy Blue',sim:'2Sim',price:74000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:false,badge:null,rating:4.6,reviews:19,inStock:true},
-  {id:9,brand:'AirPods',family:'AirPods Pro 2',memory:'—',color:'White',sim:'—',price:18100,oldPrice:21000,icon:'🎧',flag:'🇷🇺',photo:null,trend:true,badge:'fire',rating:5.0,reviews:102,inStock:true},
-  {id:10,brand:'AirPods',family:'AirPods Max',memory:'—',color:'Midnight',sim:'—',price:45800,oldPrice:null,icon:'🎧',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.9,reviews:27,inStock:true},
-  {id:11,brand:'MacBook',family:'MacBook Air M3',memory:'256GB',color:'Midnight',sim:'—',price:89000,oldPrice:95000,icon:'💻',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:5.0,reviews:44,inStock:true},
-  {id:12,brand:'MacBook',family:'MacBook Pro M4',memory:'512GB',color:'Silver',sim:'—',price:145000,oldPrice:null,icon:'💻',flag:'🇷🇺',photo:null,trend:true,badge:'new',rating:5.0,reviews:8,inStock:true},
-  {id:13,brand:'Watch',family:'Apple Watch S10',memory:'—',color:'Silver Alu',sim:'—',price:32000,oldPrice:36000,icon:'⌚',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.8,reviews:31,inStock:true},
-  {id:14,brand:'iPad',family:'iPad Air M2',memory:'256GB',color:'Blue',sim:'Wi-Fi',price:68000,oldPrice:null,icon:'📟',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.9,reviews:16,inStock:true},
+// ══ OWNER CONFIG — замени на свой Telegram ID ══
+const OWNER_IDS = [8533261646]; // Владелец ТЕХНО LIVE
+
+// ══ CATEGORIES WITH MARKUP ══
+const MARKUP_CATS = ['iPhone','Samsung','MacBook','iPad','Watch','AirPods'];
+const CAT_ICONS = {iPhone:'📱',Samsung:'📱',MacBook:'💻',iPad:'📟',Watch:'⌚',AirPods:'🎧',Аксессуары:'🔌'};
+
+// ══ DEFAULT MARKUPS (saved to localStorage) ══
+const DEFAULT_MARKUPS = {iPhone:4000,Samsung:4000,MacBook:4000,iPad:4000,Watch:0,AirPods:0};
+
+function loadMarkups(){
+  try{const s=localStorage.getItem('tl_markups');return s?JSON.parse(s):{...DEFAULT_MARKUPS}}catch(e){return{...DEFAULT_MARKUPS}}
+}
+function saveMarkupsToStorage(m){try{localStorage.setItem('tl_markups',JSON.stringify(m))}catch(e){}}
+function loadCustomProducts(){
+  try{const s=localStorage.getItem('tl_products');return s?JSON.parse(s):[]}catch(e){return[]}
+}
+function saveProductsToStorage(arr){try{localStorage.setItem('tl_products',JSON.stringify(arr))}catch(e){}}
+
+let markups = loadMarkups();
+
+// ══ BASE PRODUCTS ══
+const BASE_PRODUCTS = [
+  {id:1,brand:'iPhone',family:'iPhone 17 Pro Max',memory:'256GB',color:'Black Titanium',sim:'eSim',basePrice:115000,oldPrice:124000,icon:'📱',flag:'🇷🇺',photo:null,trend:true,badge:'fire',rating:5.0,reviews:64,inStock:true},
+  {id:2,brand:'iPhone',family:'iPhone 17 Pro Max',memory:'512GB',color:'Desert Titanium',sim:'1Sim+eSim',basePrice:129000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:true,badge:'hit',rating:4.9,reviews:41,inStock:true},
+  {id:3,brand:'iPhone',family:'iPhone 17 Pro',memory:'256GB',color:'White Titanium',sim:'eSim',basePrice:98000,oldPrice:105000,icon:'📱',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.8,reviews:29,inStock:true},
+  {id:4,brand:'iPhone',family:'iPhone 17 Air',memory:'256GB',color:'Starlight',sim:'eSim',basePrice:89000,oldPrice:null,icon:'📱',flag:'🇷🇺',photo:null,trend:true,badge:'new',rating:5.0,reviews:12,inStock:true},
+  {id:5,brand:'iPhone',family:'iPhone 17',memory:'256GB',color:'Black',sim:'eSim',basePrice:73500,oldPrice:78000,icon:'📱',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.7,reviews:55,inStock:true},
+  {id:6,brand:'iPhone',family:'iPhone 16 Pro Max',memory:'256GB',color:'Desert Titanium',sim:'eSim',basePrice:99000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:false,badge:null,rating:4.9,reviews:87,inStock:true},
+  {id:7,brand:'Samsung',family:'Galaxy S25 Ultra',memory:'512GB',color:'Titanium Black',sim:'2Sim',basePrice:96500,oldPrice:108000,icon:'📱',flag:'🇨🇱',photo:null,trend:true,badge:'hit',rating:4.8,reviews:33,inStock:true},
+  {id:8,brand:'Samsung',family:'Galaxy S25+',memory:'256GB',color:'Icy Blue',sim:'2Sim',basePrice:74000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:false,badge:null,rating:4.6,reviews:19,inStock:true},
+  {id:9,brand:'AirPods',family:'AirPods Pro 2',memory:'—',color:'White',sim:'—',basePrice:18100,oldPrice:21000,icon:'🎧',flag:'🇷🇺',photo:null,trend:true,badge:'fire',rating:5.0,reviews:102,inStock:true},
+  {id:10,brand:'AirPods',family:'AirPods Max',memory:'—',color:'Midnight',sim:'—',basePrice:45800,oldPrice:null,icon:'🎧',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.9,reviews:27,inStock:true},
+  {id:11,brand:'MacBook',family:'MacBook Air M3',memory:'256GB',color:'Midnight',sim:'—',basePrice:89000,oldPrice:95000,icon:'💻',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:5.0,reviews:44,inStock:true},
+  {id:12,brand:'MacBook',family:'MacBook Pro M4',memory:'512GB',color:'Silver',sim:'—',basePrice:145000,oldPrice:null,icon:'💻',flag:'🇷🇺',photo:null,trend:true,badge:'new',rating:5.0,reviews:8,inStock:true},
+  {id:13,brand:'Watch',family:'Apple Watch S10',memory:'—',color:'Silver Alu',sim:'—',basePrice:32000,oldPrice:36000,icon:'⌚',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.8,reviews:31,inStock:true},
+  {id:14,brand:'iPad',family:'iPad Air M2',memory:'256GB',color:'Blue',sim:'Wi-Fi',basePrice:68000,oldPrice:null,icon:'📟',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.9,reviews:16,inStock:true},
 ];
+
+// ══ BUILD FINAL PRODUCT LIST WITH MARKUP ══
+function buildProducts(){
+  const custom = loadCustomProducts();
+  const all = [...BASE_PRODUCTS, ...custom];
+  return all.map(p=>({
+    ...p,
+    price: p.basePrice + (markups[p.brand]||0)
+  }));
+}
+let P = buildProducts();
+
 const BADGES={fire:'🔥 Хит',new:'✦ Новинка',hit:'💎 Топ'};
 const PROMOS={'TEXNO10':{disc:10,label:'Скидка 10%'},'LIVE15':{disc:15,label:'Скидка 15%'},'FIRST5':{disc:5,label:'Скидка 5%'}};
 const FILTER_META={
@@ -653,187 +778,62 @@ const FILTER_META={
   'MacBook':{icon:'',title:'MacBook',color:'#e040fb'},
   'Watch':{icon:'',title:'Apple Watch',color:'#ffd740'},
   'iPad':{icon:'',title:'iPad',color:'#ff9f0a'},
+  'Аксессуары':{icon:'🔌',title:'Аксессуары',color:'#ff9f0a'},
 };
 let cart=[],filter='all',sheetId=null,orderCount=0,deliveryType='pickup',promoApplied=null;
 const fmt=n=>n.toLocaleString('ru-RU')+' ₽';
-function img(p,big=false){return p.photo?`<img src="${p.photo}" alt="${p.family}" loading="lazy">`:`<span style="font-size:${big?'90px':'54px'};position:relative;z-index:1;filter:drop-shadow(0 0 16px rgba(74,158,255,0.3))">${p.icon}</span>`}
+function img(p,big=false){return p.photo?`<img src="${p.photo}" alt="${p.family}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='block'">`+`<span style="display:none;font-size:${big?'90px':'54px'}">${p.icon}</span>`:`<span style="font-size:${big?'90px':'54px'};position:relative;z-index:1;filter:drop-shadow(0 0 16px rgba(74,158,255,0.3))">${p.icon}</span>`}
 
-let bannerIdx=0;
-function initBanner(){
-  const slides=document.querySelectorAll('.banner');
-  const dotsEl=document.getElementById('bannerDots');
-  dotsEl.innerHTML=Array.from(slides).map((_,i)=>`<div class="dot${i===0?' active':''}" onclick="goBanner(${i})"></div>`).join('');
-  let sx=0;const sl=document.getElementById('bannerSlider');
-  sl.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
-  sl.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)dx<0?goBanner(Math.min(bannerIdx+1,slides.length-1)):goBanner(Math.max(bannerIdx-1,0))},{passive:true});
-  setInterval(()=>goBanner((bannerIdx+1)%slides.length),4500);
+// ══ ADMIN FUNCTIONS ══
+function isOwner(){
+  const tg=window.Telegram?.WebApp;
+  const uid=tg?.initDataUnsafe?.user?.id;
+  return uid && OWNER_IDS.includes(uid);
 }
-function goBanner(i){bannerIdx=i;document.getElementById('bannerSlider').style.transform=`translateX(-${i*100}%)`;document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i))}
 
-function renderTrend(){
-  document.getElementById('trendScroll').innerHTML=P.filter(p=>p.trend).map(p=>`
-    <div class="t-card" onclick="openSheet(${P.indexOf(p)})">
-      <div class="t-img">${img(p)}${p.badge?`<div class="t-lbl ${p.badge}">${BADGES[p.badge]}</div>`:''}${p.flag!=='🇷🇺'?`<div class="t-flag">${p.flag}</div>`:''}</div>
-      <div class="t-body">${p.oldPrice?`<div class="t-old">${fmt(p.oldPrice)}</div>`:''}<div class="t-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div><div class="t-price">${fmt(p.price)}</div></div>
+function initAdmin(){
+  if(isOwner()){
+    document.getElementById('nav-admin').style.display='flex';
+  }
+}
+
+function renderMarkupRows(){
+  const el=document.getElementById('markupRows');
+  if(!el)return;
+  el.innerHTML=MARKUP_CATS.map(cat=>`
+    <div class="markup-row">
+      <div class="markup-label">${CAT_ICONS[cat]||''} ${cat}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input class="markup-input" type="number" id="mk_${cat}" value="${markups[cat]||0}" placeholder="0">
+        <span style="font-size:12px;color:var(--t3)">₽</span>
+      </div>
     </div>`).join('');
 }
 
-function updateCatalogHeading(list){
-  const m=FILTER_META[filter]||FILTER_META['all'];
-  const ic=document.getElementById('catalogIcon');const ti=document.getElementById('catalogTitle');const co=document.getElementById('catalogCount');
-  ic.style.background=`${m.color}16`;ic.style.borderColor=`${m.color}2a`;ic.style.color=m.color;ic.style.boxShadow=`0 0 16px ${m.color}1a`;ic.textContent=m.icon;
-  ti.classList.remove('heading-anim');void ti.offsetWidth;ti.classList.add('heading-anim');ti.textContent=m.title;
-  co.textContent=list.length===P.length?`${list.length} товаров`:`Найдено: ${list.length}`;
+function saveMarkups(){
+  MARKUP_CATS.forEach(cat=>{
+    const v=parseInt(document.getElementById('mk_'+cat)?.value)||0;
+    markups[cat]=v;
+  });
+  saveMarkupsToStorage(markups);
+  P=buildProducts();
+  applyFilters();renderTrend();
+  showToast('✅ Наценки сохранены!');
 }
 
-function renderGrid(list){
-  const el=document.getElementById('grid');
-  if(!list.length){el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено</div>`;return}
-  el.innerHTML=list.map((p,i)=>{
-    const ci=cart.find(c=>c.id===p.id);const on=!!ci;const qty=ci?.qty||0;
-    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .35s ${i*.05}s both ease">
-      <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
-      <div class="p-body">
-        <div class="p-name">${p.family}</div>
-        <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
-        <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?'● В наличии':'● Нет'}</div>
-        <div class="p-rating"><span class="p-stars">${'★'.repeat(Math.round(p.rating))}</span><span class="p-rn">(${p.reviews})</span></div>
-        <div class="p-foot">
-          <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
-          ${on?`<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${p.id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${p.id},1)">+</div></div>`:`<div class="p-add" onclick="event.stopPropagation();quickAdd(${p.id},this)">+</div>`}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function setFilter(f,el){filter=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');applyFilters()}
-function resetFilter(){filter='all';document.querySelector('.chip').classList.add('active');document.querySelectorAll('.chip').forEach((c,i)=>{if(i>0)c.classList.remove('active')});applyFilters()}
-function applyFilters(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const mn=parseInt(document.getElementById('priceMin').value)||0;
-  const mx=parseInt(document.getElementById('priceMax').value)||Infinity;
-  let list=P;
-  if(filter!=='all')list=list.filter(p=>p.brand===filter||p.family.includes(filter));
-  if(q)list=list.filter(p=>p.family.toLowerCase().includes(q)||p.color.toLowerCase().includes(q)||p.memory.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q));
-  list=list.filter(p=>p.price>=mn&&p.price<=mx);
-  updateCatalogHeading(list);renderGrid(list);
-}
-
-function openSheet(idx){
-  const p=P[idx];sheetId=p.id;
-  document.getElementById('sImg').innerHTML=img(p,true);
-  document.getElementById('sCat').textContent=p.brand;
-  document.getElementById('sName').textContent=p.family;
-  document.getElementById('sRating').textContent=p.rating.toFixed(1);
-  document.getElementById('sReviews').textContent=`· ${p.reviews} отзывов`;
-  const specs=[p.memory!=='—'?['Память',p.memory]:null,['Цвет',p.color],p.sim!=='—'?['SIM',p.sim]:null,['Гарантия','12 мес.'],['Состояние','Новый'],['Доставка','3 часа']].filter(Boolean);
-  document.getElementById('sSpecs').innerHTML=specs.map(([l,v])=>`<div class="spec"><div class="spec-l">${l}</div><div class="spec-v">${v}</div></div>`).join('');
-  document.getElementById('sOld').textContent=p.oldPrice?fmt(p.oldPrice):'';
-  document.getElementById('sPrice').textContent=fmt(p.price);
-  const on=cart.some(c=>c.id===p.id);
-  const btn=document.getElementById('sAdd');
-  btn.innerHTML=on?'✓ В корзине':'🛒 В корзину';
-  btn.style.background=on?'linear-gradient(135deg,var(--green),#00c853)':'';
-  btn.style.boxShadow=on?'0 6px 24px rgba(0,230,118,.36)':'0 6px 24px rgba(41,121,255,.36)';
-  document.getElementById('overlay').classList.add('open');document.body.style.overflow='hidden';
-}
-function maybeClose(e){if(e.target===document.getElementById('overlay'))closeSheet()}
-function closeSheet(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow=''}
-function addFromSheet(){if(!sheetId)return;if(addToCart(sheetId)){const btn=document.getElementById('sAdd');btn.innerHTML='✓ В корзине';btn.style.background='linear-gradient(135deg,var(--green),#00c853)';btn.style.boxShadow='0 6px 24px rgba(0,230,118,.36)'}}
-
-function animateToCart(btnEl){
-  const btn=document.getElementById('cartBtn');const bR=btn.getBoundingClientRect();const sR=btnEl.getBoundingClientRect();
-  const fly=document.createElement('div');fly.textContent='🛒';fly.style.cssText=`position:fixed;left:${sR.left+sR.width/2}px;top:${sR.top+sR.height/2}px;font-size:18px;z-index:1000;pointer-events:none;--tx:${bR.left-sR.left}px;--ty:${bR.top-sR.top}px;animation:flyToBadge .5s ease forwards`;
-  document.body.appendChild(fly);setTimeout(()=>fly.remove(),600);
-  btn.classList.remove('cart-anim');void btn.offsetWidth;btn.classList.add('cart-anim');setTimeout(()=>btn.classList.remove('cart-anim'),400);
-}
-function quickAdd(id,btnEl){if(addToCart(id)&&btnEl)animateToCart(btnEl);applyFilters();renderTrend()}
-function addToCart(id){
-  const ex=cart.find(c=>c.id===id);if(ex){ex.qty++;updateBadge();updateProfile();return false}
-  const p=P.find(x=>x.id===id);if(!p)return false;
-  cart.push({...p,qty:1});updateBadge();updateProfile();showToast('✅ '+p.family+' добавлен');return true;
-}
-function changeQty(id,d){
-  const ci=cart.find(c=>c.id===id);if(!ci)return;ci.qty+=d;
-  if(ci.qty<=0)cart=cart.filter(c=>c.id!==id);
-  updateBadge();applyFilters();renderTrend();updateProfile();
-  if(document.getElementById('page-cart').classList.contains('on'))renderCart();
-}
-function removeFromCart(id){cart=cart.filter(c=>c.id!==id);updateBadge();renderCart();applyFilters();renderTrend();updateProfile()}
-function updateBadge(){const t=cart.reduce((s,c)=>s+c.qty,0);const b=document.getElementById('badge');b.textContent=t;b.classList.toggle('show',t>0)}
-
-function renderCart(){
-  const el=document.getElementById('cartContent');
-  if(!cart.length){el.innerHTML=`<div class="cart-empty"><div class="cart-empty-i">🛒</div><h3>Корзина пуста</h3><p>Добавьте товары из каталога</p><div class="go-btn" onclick="showPage('home')">В КАТАЛОГ →</div></div>`;return}
-  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);const disc=promoApplied?Math.round(sub*promoApplied.disc/100):0;const total=sub-disc;
-  el.innerHTML=`<div class="cart-list">${cart.map(p=>`<div class="ci"><div class="ci-img">${p.photo?`<img src="${p.photo}" alt="">`:p.icon}</div><div class="ci-info"><div class="ci-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div><div class="ci-sub">${p.color}${p.sim!=='—'?' · '+p.sim:''}</div><div class="ci-qty-row"><div class="ci-qty-btn m" onclick="changeQty(${p.id},-1)">−</div><div class="ci-qty-n">${p.qty}</div><div class="ci-qty-btn p" onclick="changeQty(${p.id},1)">+</div></div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px"><div class="ci-price">${fmt(p.price*p.qty)}</div><div class="ci-del" onclick="removeFromCart(${p.id})">✕</div></div></div>`).join('')}</div>
-  <div class="promo-wrap"><div class="promo-row"><input class="promo-input" id="promoInput" placeholder="Промокод" ${promoApplied?'disabled':''}><button class="promo-btn" onclick="applyPromo()" ${promoApplied?'style="background:var(--green);color:#000"':''}>${promoApplied?'✓':'→'}</button></div><div class="promo-ok" id="promoOk" style="${promoApplied?'display:block':''}">✅ ${promoApplied?promoApplied.label:''}</div><div class="promo-err" id="promoErr"></div></div>
-  <div class="totals"><div class="tot-r"><span>Товары (${cart.reduce((s,c)=>s+c.qty,0)})</span><span>${fmt(sub)}</span></div>${disc?`<div class="tot-r"><span>Скидка ${promoApplied.disc}%</span><span style="color:var(--green)">−${fmt(disc)}</span></div>`:''}<div class="tot-r"><span>Доставка</span><span style="color:var(--green)">Уточнит менеджер</span></div><div class="tot-r big"><span>Итого</span><span class="v">${fmt(total)}</span></div></div>
-  <button class="checkout-btn" onclick="openOrderModal()">✅ ОФОРМИТЬ ЗАКАЗ</button><div style="height:12px"></div>`;
-}
-
-function applyPromo(){
-  if(promoApplied)return;const code=(document.getElementById('promoInput')?.value||'').trim().toUpperCase();const promo=PROMOS[code];
-  if(promo){promoApplied=promo;showToast('🎉 Промокод: '+promo.label);renderCart();}
-  else{const e=document.getElementById('promoErr');if(e){e.textContent='❌ Неверный промокод';e.style.display='block';setTimeout(()=>e.style.display='none',2000)}}
-}
-function selectDelivery(type){
-  deliveryType=type;
-  document.getElementById('dtab-pickup').classList.toggle('active',type==='pickup');
-  document.getElementById('dtab-delivery').classList.toggle('active',type==='delivery');
-  document.getElementById('form-pickup').classList.toggle('show',type==='pickup');
-  document.getElementById('form-delivery').classList.toggle('show',type==='delivery');
-  document.getElementById('orderSubtitle').textContent=type==='pickup'?'Самовывоз: Москва, пл. Победы, 2к2':'Курьер доставит в течение 3 часов';
-}
-function updateMapPreview(){const a=document.getElementById('delivAddress').value.trim();document.getElementById('mapAddrText').textContent=a?'Москва, '+a:'Введите адрес выше'}
-function openAddressInMap(){const a=document.getElementById('delivAddress').value.trim();if(!a){showToast('⚠️ Введите адрес');return}window.open(`https://yandex.ru/maps/?text=${encodeURIComponent('Москва, '+a)}`,'_blank')}
-function openOrderModal(){
-  const tg=window.Telegram?.WebApp;
-  if(tg?.initDataUnsafe?.user){const u=tg.initDataUnsafe.user;const n=[u.first_name,u.last_name].filter(Boolean).join(' ');['pickupName','delivName'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n})}
-  document.getElementById('orderOverlay').classList.add('open');document.body.style.overflow='hidden';
-}
-function maybeCloseOrder(e){if(e.target===document.getElementById('orderOverlay'))closeOrderModal()}
-function closeOrderModal(){document.getElementById('orderOverlay').classList.remove('open');document.body.style.overflow=''}
-function submitOrder(){
-  let name,phone,extra='';
-  if(deliveryType==='pickup'){name=document.getElementById('pickupName').value.trim();phone=document.getElementById('pickupPhone').value.trim();const t=document.getElementById('pickupTime').value.trim();extra=t?`\n🕐 Время: ${t}`:''}
-  else{name=document.getElementById('delivName').value.trim();phone=document.getElementById('delivPhone').value.trim();const a=document.getElementById('delivAddress').value.trim();const c=document.getElementById('delivComment').value.trim();if(!a){showToast('⚠️ Введите адрес доставки');return}extra=`\n📍 Адрес: ${a}`+(c?`\n💬 ${c}`:'')}
-  if(!name){showToast('⚠️ Введите ваше имя');return}if(!phone){showToast('⚠️ Введите номер телефона');return}
-  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);const disc=promoApplied?Math.round(sub*promoApplied.disc/100):0;const total=sub-disc;
-  const dl=deliveryType==='pickup'?'Самовывоз':'Доставка курьером';
-  const num='#'+String(++orderCount).padStart(3,'0')+'-'+Date.now().toString().slice(-4);
-  const msg=encodeURIComponent(`📦 Новый заказ ${num}\n👤 ${name}\n📞 ${phone}\n🚚 ${dl}${extra}\n\n`+cart.map(p=>`• ${p.family}${p.memory!=='—'?' '+p.memory:''} × ${p.qty} — ${fmt(p.price*p.qty)}`).join('\n')+(promoApplied?`\n🏷 Скидка: −${fmt(disc)}`:'')+ `\n💰 Итого: ${fmt(total)}`);
-  const tg=window.Telegram?.WebApp;if(tg){try{tg.sendData(JSON.stringify({num,name,phone,deliveryType,total}))}catch(e){}}
-  window.open(`https://t.me/TEXHOLIVE?text=${msg}`,'_blank');
-  closeOrderModal();const savedCart=[...cart];cart=[];promoApplied=null;updateBadge();applyFilters();renderTrend();updateProfile();showOrderStatus(num,name,total,savedCart);
-}
-function showOrderStatus(num,name,total,savedCart){
-  document.getElementById('statusTitle').textContent='Заказ принят!';
-  document.getElementById('statusSub').textContent=`${name}, менеджер свяжется в течение 15 минут`;
-  document.getElementById('statusNum').textContent=num;
-  const icon=document.getElementById('statusIcon');icon.textContent='🎉';icon.classList.remove('pop');void icon.offsetWidth;icon.classList.add('pop');
-  document.getElementById('statusItems').innerHTML=(savedCart||[]).map(p=>`<div class="status-item"><span>${p.family} × ${p.qty}</span><span>${fmt(p.price*p.qty)}</span></div>`).join('')+`<div class="status-item"><span>Итого</span><span>${fmt(total)}</span></div>`;
-  document.getElementById('statusOverlay').classList.add('open');
-}
-function closeStatus(){document.getElementById('statusOverlay').classList.remove('open')}
-function showPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('on');document.getElementById('nav-'+name).classList.add('active');
-  if(name==='cart')renderCart();if(name==='profile')updateProfile();window.scrollTo(0,0);
-}
-let _tt;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),2400)}
-function updateProfile(){const t=cart.reduce((s,c)=>s+c.qty,0);document.getElementById('statOrders').textContent=orderCount;document.getElementById('statCart').textContent=t;document.getElementById('profileCartSub').textContent=t?`${t} товар(ов)`:'Пусто'}
-function loadTelegramUser(){
-  const tg=window.Telegram?.WebApp;
-  if(tg?.initDataUnsafe?.user){const u=tg.initDataUnsafe.user;document.getElementById('profileName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ')||'Пользователь';document.getElementById('profileUsername').textContent=u.username?'@'+u.username:'Telegram';if(u.first_name)document.getElementById('profileAvatar').textContent=u.first_name[0].toUpperCase()}
-  else{document.getElementById('profileName').textContent='Гость';document.getElementById('profileUsername').textContent='Открыто в браузере'}
-}
-function openMaps(){window.open('https://yandex.com/maps/-/CPeUI4OR','_blank')}
-if(window.Telegram?.WebApp){const tg=window.Telegram.WebApp;tg.expand();tg.setHeaderColor('#00002A');tg.setBackgroundColor('#00002A')}
-initBanner();loadTelegramUser();renderTrend();applyFilters();
-</script>
-</body>
-</html>
+function adminAddProduct(){
+  const brand=document.getElementById('a_brand').value;
+  const family=document.getElementById('a_family').value.trim();
+  const basePrice=parseInt(document.getElementById('a_price').value)||0;
+  if(!family||!basePrice){showToast('⚠️ Заполни название и цену');return}
+  const custom=loadCustomProducts();
+  const maxId=Math.max(...P.map(p=>p.id),100);
+  const newP={
+    id:maxId+1,
+    brand,family,
+    memory:document.getElementById('a_memory').value.trim()||'—',
+    color:document.getElementById('a_color').value.trim()||'—',
+    sim:document.getElementById('a_sim').value.trim()||'—',
+    basePrice,
+    oldPrice:parseInt(document.getElementById('a_oldprice').value)||null,
+    icon:CAT_ICONS[brand]||'📦',
