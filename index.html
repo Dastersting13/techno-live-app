@@ -220,6 +220,7 @@ body::before{
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   cursor:default;user-select:none;}
 .hdr-r{display:flex;gap:10px;align-items:center}
+.hdr-l{display:flex;gap:10px;align-items:center}
 .icon-btn{width:36px;height:36px;border-radius:12px;
   background:var(--glass2);border:1px solid var(--border2);
   display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;
@@ -470,21 +471,21 @@ body::before{
 
 /* иконка */
 .ni-icon{
-  font-size:22px;line-height:1;display:block;
-  filter:grayscale(1) opacity(.32);
+  width:26px;height:26px;display:block;
+  opacity:.32;
   transform:scale(1);
-  will-change:transform,filter;
-  /* плавный выход из активного */
-  transition:filter .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
+  will-change:transform,opacity;
+  transition:opacity .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
 }
+.ni-icon svg{width:100%;height:100%;display:block}
 .ni.active .ni-icon{
-  filter:grayscale(0) opacity(1);
+  opacity:1;
   animation:niIconSpring .46s cubic-bezier(.34,1.56,.64,1) both;
 }
 /* когда таб теряет активность — мягко уменьшается */
 .ni.was-active .ni-icon{
   animation:niIconOut .28s cubic-bezier(.34,1.56,.64,1) both;
-  filter:grayscale(1) opacity(.32);
+  opacity:.32;
 }
 /* нажатие пальцем — быстрый тактильный отклик */
 .ni:active .ni-icon{
@@ -738,8 +739,39 @@ body::before{
 .profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,rgba(190,205,255,0.9),rgba(215,195,255,0.9));
   display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;flex-shrink:0;color:var(--text);
   box-shadow:0 4px 24px var(--shadow2),0 0 0 2px rgba(255,255,255,0.8),inset 0 1px 0 white;
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);cursor:pointer;position:relative}
 .profile-avatar:hover{transform:scale(1.06) rotate(-3deg)}
+.avatar-edit-hint{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;
+  background:rgba(28,28,30,0.85);border:2px solid white;
+  display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:none}
+
+/* CAT PICKER */
+.cat-picker-overlay{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,0.3);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:flex;align-items:flex-end;opacity:0;pointer-events:none;
+  transition:opacity .25s}
+.cat-picker-overlay.open{opacity:1;pointer-events:all}
+.cat-picker-sheet{width:100%;background:rgba(238,240,243,0.97);
+  border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);
+  padding:0 20px calc(24px + var(--sb));
+  transform:translateY(100%);
+  transition:transform .36s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 -8px 40px rgba(0,0,0,0.18)}
+.cat-picker-overlay.open .cat-picker-sheet{transform:translateY(0)}
+.cat-picker-handle{width:40px;height:4px;border-radius:2px;background:rgba(28,28,30,0.18);margin:14px auto 18px}
+.cat-picker-title{font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;letter-spacing:-.4px;
+  margin-bottom:4px;text-align:center}
+.cat-picker-sub{font-size:12px;color:var(--t3);text-align:center;margin-bottom:20px}
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.cat-opt{width:100%;aspect-ratio:1;border-radius:20px;
+  background:var(--glass2);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  cursor:pointer;transition:all .22s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 2px 10px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
+.cat-opt:active{transform:scale(.82)}
+.cat-opt:hover{transform:scale(1.10);box-shadow:0 6px 20px var(--shadow2)}
+.cat-opt.selected{border-color:rgba(28,28,30,0.5);background:rgba(28,28,30,0.07);
+  box-shadow:0 4px 18px var(--shadow2),inset 0 1px 0 white}
 .profile-info h2{font-family:'Unbounded',sans-serif;font-size:19px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px}
 .profile-info p{font-size:13px;color:var(--t3)}
 .profile-stats{margin:0 16px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -809,7 +841,122 @@ body::before{
 .toast.show{animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) forwards}
 .toast.hide{animation:toastOut .22s ease forwards}
 
-/* ADMIN */
+/* BURGER ACTIVE STATE */
+.icon-btn.active-burger{
+  background:rgba(28,28,30,0.88);
+  border-color:transparent;
+}
+.icon-btn.active-burger svg path{
+  stroke:#fff;
+}
+
+/* FILTER BAR */
+.filter-bar{display:flex;align-items:center;gap:8px;padding:0 16px 12px;position:relative;z-index:1}
+.active-filter-chip{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(28,28,30,0.88);color:#fff;border-radius:50px;
+  padding:8px 14px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;animation:chipPop .28s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.active-filter-chip:active{opacity:.8;transform:scale(.94)}
+
+/* FILTER SHEET */
+.filter-sheet-overlay{
+  position:fixed;inset:0;z-index:199;
+  background:rgba(0,0,0,0);pointer-events:none;
+  transition:background .3s}
+.filter-sheet-overlay.open{background:rgba(0,0,0,0.18);pointer-events:all}
+.filter-sheet{
+  position:fixed;left:50%;transform:translateX(-50%) translateY(calc(100% + 20px));
+  bottom:calc(80px + var(--sb));z-index:200;
+  width:calc(100% - 32px);max-width:400px;
+  background:rgba(238,240,243,0.97);
+  border:1px solid rgba(255,255,255,0.95);
+  border-radius:28px;
+  padding:0 16px 18px;
+  box-shadow:0 12px 48px rgba(0,0,0,0.18),inset 0 1px 0 white;
+  backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
+  transition:transform .38s cubic-bezier(.32,.72,0,1), opacity .28s ease;
+  opacity:0;pointer-events:none}
+.filter-sheet.open{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;pointer-events:all}
+.filter-sheet-handle{width:36px;height:4px;border-radius:2px;background:rgba(28,28,30,0.15);margin:12px auto 14px}
+.filter-sheet-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;
+  letter-spacing:-.3px;margin-bottom:14px;padding:0 2px}
+.filter-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fcat{display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:var(--glass2);border:1.5px solid var(--border);border-radius:18px;
+  padding:12px 6px 10px;cursor:pointer;
+  transition:all .22s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
+.fcat:active{transform:scale(.88)}
+.fcat.active{background:rgba(28,28,30,0.88);border-color:transparent;
+  box-shadow:0 4px 16px rgba(0,0,0,0.22)}
+.fcat-icon{font-size:22px;line-height:1;color:var(--t2);display:flex;align-items:center;justify-content:center}
+.fcat.active .fcat-icon{color:rgba(255,255,255,0.9)}
+.fcat-label{font-family:'Unbounded',sans-serif;font-size:8px;font-weight:700;
+  color:var(--t2);text-align:center}
+.fcat.active .fcat-label{color:rgba(255,255,255,0.85)}
+
+/* SEARCH SORT */
+.search-sort-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:12px}
+.search-sort-row::-webkit-scrollbar{display:none}
+.sort-chip{flex-shrink:0;padding:7px 14px;border-radius:50px;
+  font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;
+  background:var(--glass2);border:1px solid var(--border);color:var(--t2);
+  cursor:pointer;white-space:nowrap;
+  transition:all .2s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
+.sort-chip.active{background:rgba(28,28,30,0.88);border-color:transparent;color:#fff;
+  box-shadow:0 3px 12px rgba(0,0,0,0.2)}
+.sort-chip:active{transform:scale(.9)}
+
+/* SEARCH PAGE */
+.search-page-wrap{padding:0 16px;position:relative;z-index:1}
+.search-box-page{
+  display:flex;align-items:center;gap:10px;
+  background:var(--glass2);border:1px solid var(--border);border-radius:20px;
+  padding:14px 16px;
+  box-shadow:0 4px 20px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.95);
+  backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+  transition:box-shadow .25s,transform .2s;
+  margin-bottom:16px;
+}
+.search-box-page:focus-within{
+  box-shadow:0 6px 28px var(--shadow2),inset 0 1px 0 white;
+  transform:scale(1.01);
+}
+.search-box-page input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:16px;
+}
+.search-box-page input::placeholder{color:var(--t3)}
+.search-clear{cursor:pointer;display:flex;align-items:center;transition:transform .15s}
+.search-clear:active{transform:scale(.8)}
+.search-results{display:flex;flex-direction:column;gap:8px}
+.sr-item{
+  display:flex;align-items:center;gap:12px;
+  background:var(--glass2);border:1px solid var(--border);border-radius:20px;padding:12px 14px;
+  cursor:pointer;
+  box-shadow:0 2px 12px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9);
+  animation:fadeUp .28s ease both;
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s;
+}
+.sr-item:active{transform:scale(.97)}
+.sr-item:hover{transform:scale(1.01);box-shadow:0 4px 20px var(--shadow2)}
+.sr-img{width:52px;height:52px;border-radius:14px;background:var(--glass3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden}
+.sr-img img{width:100%;height:100%;object-fit:cover}
+.sr-info{flex:1;min-width:0}
+.sr-name{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.sr-sub{font-size:11px;color:var(--t3)}
+.sr-price{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;color:#1a7d38;flex-shrink:0}
+.search-empty{text-align:center;padding:48px 24px;color:var(--t3)}
+.search-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4}
+.search-empty p{font-size:14px;line-height:1.6}
+.search-hint{text-align:center;padding:40px 24px}
+.search-hint-icon{margin-bottom:14px;opacity:.25}
+.search-hint p{font-size:13px;color:var(--t3);line-height:1.7}
+
 .admin-section-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;padding:0 2px}
 .admin-card{background:var(--glass2);border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:0 4px 20px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
 .admin-note{font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.5}
@@ -844,36 +991,30 @@ body::before{
 <body>
 
 <header class="header">
+  <div class="hdr-l">
+    <div class="icon-btn ripple-container" id="burgerBtn" onclick="toggleFilterSheet();addRipple(event,this)">
+      <svg id="burgerIcon" viewBox="0 0 22 22" fill="none" width="18" height="18"><path d="M3 5H19M3 11H19M3 17H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </div>
+  </div>
   <div class="logo">ТЕХНО·LIVE</div>
   <div class="hdr-r">
-    <div class="icon-btn ripple-container" id="cartBtn" onclick="showPage('cart');addRipple(event,this)">🛒<div class="badge" id="badge">0</div></div>
+    <div class="icon-btn ripple-container" id="cartBtn" onclick="showPage('cart');addRipple(event,this)">
+      <svg viewBox="0 0 28 28" fill="none" width="18" height="18"><path d="M3 4H5.5L7 12M7 12L9 20H22L24 12H7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="23.5" r="1.5" fill="currentColor"/><circle cx="21" cy="23.5" r="1.5" fill="currentColor"/></svg>
+      <div class="badge" id="badge">0</div>
+    </div>
   </div>
 </header>
 
 <!-- HOME -->
 <div class="page on" id="page-home">
-  <div class="search-wrap au">
-    <div class="search-box">
-      <span style="opacity:.35;font-size:14px">🔍</span>
-      <input type="text" placeholder="Поиск модели..." id="searchInput" oninput="applyFilters()">
+
+  <div class="filter-bar au d1" id="filterBar" style="display:none">
+    <div class="active-filter-chip" id="activeFilterChip" onclick="resetFilter()">
+      <span id="activeFilterLabel"></span>
+      <svg viewBox="0 0 14 14" fill="none" width="10" height="10"><path d="M3 3L11 11M11 3L3 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     </div>
   </div>
-  <div class="chips au d1">
-    <div class="chip active" onclick="setFilter('all',this)">ВСЕ</div>
-    <div class="chip" onclick="setFilter('iPhone',this)">iPHONE</div>
-    <div class="chip" onclick="setFilter('Samsung',this)">SAMSUNG</div>
-    <div class="chip" onclick="setFilter('AirPods',this)">AIRPODS</div>
-    <div class="chip" onclick="setFilter('MacBook',this)">MACBOOK</div>
-    <div class="chip" onclick="setFilter('Watch',this)">WATCH</div>
-    <div class="chip" onclick="setFilter('iPad',this)">iPAD</div>
-  </div>
-  <div class="price-filter au d1">
-    <div class="price-row">
-      <input type="number" id="priceMin" placeholder="Цена от ₽" oninput="applyFilters()">
-      <span class="price-sep">—</span>
-      <input type="number" id="priceMax" placeholder="до ₽" oninput="applyFilters()">
-    </div>
-  </div>
+
   <div class="banner-wrap au d2">
     <div class="banner-slider" id="bannerSlider">
       <div class="banner">
@@ -903,7 +1044,7 @@ body::before{
     <div class="banner-dots" id="bannerDots"></div>
   </div>
   <div class="sec au d3">
-    <h2>🔥 В ТРЕНДЕ</h2>
+    <h2 style="display:flex;align-items:center;gap:7px"><svg viewBox="0 0 22 22" fill="none" width="18" height="18"><path d="M12 2C12 2 14 5 13 8C15 6 16 3 16 3C16 3 20 7 19 12C18 16 14.5 18 11 18C7.5 18 4 16 4 12C4 8 7 5 7 5C7 5 8 8 10 9C9 6 12 2 12 2Z" fill="currentColor" opacity="0.85"/></svg> В ТРЕНДЕ</h2>
     <div class="all" onclick="resetFilter()">Все →</div>
   </div>
   <div class="t-scroll au d3" id="trendScroll"></div>
@@ -927,27 +1068,27 @@ body::before{
 <div class="page" id="page-info">
   <div class="ph-head">О нас</div>
   <div class="info-hero au">
-    <div class="info-em">📱</div>
+    <div class="info-em"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36"><rect x="7" y="2" width="14" height="24" rx="3" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="22" r="1.2" fill="currentColor"/></svg></div>
     <h2>ТЕХНО LIVE</h2>
     <p>4 года на рынке · 4 500+ клиентов<br>Оригинальная техника с репутацией</p>
   </div>
   <div class="perks">
-    <div class="perk au d1"><div class="perk-i">💰</div><div><h4>Лучшие цены</h4><p>Самые низкие цены на оригинальную технику в России</p></div></div>
-    <div class="perk au d2"><div class="perk-i">🛡</div><div><h4>Гарантия 12 месяцев</h4><p>Проверка при получении — платите только когда убедились</p></div></div>
-    <div class="perk au d3"><div class="perk-i">🚀</div><div><h4>Доставка за 3 часа</h4><p>Курьер по Москве и МО · По России через СДЭК</p></div></div>
-    <div class="perk au d4"><div class="perk-i">🛠</div><div><h4>Бесплатный сервис</h4><p>Обклейка, перенос данных, установка приложений</p></div></div>
+    <div class="perk au d1"><div class="perk-i"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26"><circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="2"/><path d="M14 8V10M14 18V20M10.5 12C10.5 10.9 11.6 10 14 10C16.4 10 17.5 11.1 17.5 12.5C17.5 14.5 14 15 14 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div><h4>Лучшие цены</h4><p>Самые низкие цены на оригинальную технику в России</p></div></div>
+    <div class="perk au d2"><div class="perk-i"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26"><path d="M14 3L5 7V14C5 18.97 9.02 23.57 14 25C18.98 23.57 23 18.97 23 14V7L14 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 14L13 17L18 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h4>Гарантия 12 месяцев</h4><p>Проверка при получении — платите только когда убедились</p></div></div>
+    <div class="perk au d3"><div class="perk-i"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26"><path d="M5 14C5 9.03 9.03 5 14 5C17.2 5 20 6.6 21.7 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 9H22V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 14C23 18.97 18.97 23 14 23C10.8 23 8 21.4 6.3 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 19H6V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><h4>Доставка за 3 часа</h4><p>Курьер по Москве и МО · По России через СДЭК</p></div></div>
+    <div class="perk au d4"><div class="perk-i"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="26" height="26"><path d="M17 4L22 9L10 21L4 22L5 16L17 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 7L21 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><h4>Бесплатный сервис</h4><p>Обклейка, перенос данных, установка приложений</p></div></div>
   </div>
   <div class="contact-btns">
-    <div class="cbtn" onclick="window.open('https://t.me/TEXHOLIVE','_blank')"><div class="cbtn-icon" style="background:rgba(74,158,255,.14)">✈️</div><div class="cbtn-info"><div class="cbtn-title">Telegram</div><div class="cbtn-sub">@TEXHOLIVE</div></div><div class="cbtn-arr">›</div></div>
-    <div class="cbtn" onclick="window.open('tel:+79779920005','_blank')"><div class="cbtn-icon" style="background:rgba(0,230,118,.13)">📞</div><div class="cbtn-info"><div class="cbtn-title">Позвонить</div><div class="cbtn-sub">+7 (977) 992-00-05</div></div><div class="cbtn-arr">›</div></div>
-    <div class="cbtn" onclick="window.open('https://texnolive.com/','_blank')"><div class="cbtn-icon" style="background:rgba(224,64,251,.11)">🌐</div><div class="cbtn-info"><div class="cbtn-title">Сайт</div><div class="cbtn-sub">texnolive.com</div></div><div class="cbtn-arr">›</div></div>
+    <div class="cbtn" onclick="window.open('https://t.me/TEXHOLIVE','_blank')"><div class="cbtn-icon" style="background:rgba(74,158,255,.14)"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M4 14L22 5L17 23L12 16L4 14Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 16L15 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="cbtn-info"><div class="cbtn-title">Telegram</div><div class="cbtn-sub">@TEXHOLIVE</div></div><div class="cbtn-arr">›</div></div>
+    <div class="cbtn" onclick="window.open('tel:+79779920005','_blank')"><div class="cbtn-icon" style="background:rgba(0,230,118,.13)"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M8 4C8 4 6 4 5 6C4 8 4 10 7 13C10 16 12 16 14 15C15 14.5 16 14 17 15L20 18C21 19 21 21 19.5 22.5C18 24 15 24 11 20C7 16 4 12 4 8C4 5 6 4 8 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="cbtn-info"><div class="cbtn-title">Позвонить</div><div class="cbtn-sub">+7 (977) 992-00-05</div></div><div class="cbtn-arr">›</div></div>
+    <div class="cbtn" onclick="window.open('https://texnolive.com/','_blank')"><div class="cbtn-icon" style="background:rgba(224,64,251,.11)"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="2"/><path d="M4 14H24" stroke="currentColor" stroke-width="2"/><path d="M14 4C14 4 10 9 10 14C10 19 14 24 14 24" stroke="currentColor" stroke-width="2"/><path d="M14 4C14 4 18 9 18 14C18 19 14 24 14 24" stroke="currentColor" stroke-width="2"/></svg></div><div class="cbtn-info"><div class="cbtn-title">Сайт</div><div class="cbtn-sub">texnolive.com</div></div><div class="cbtn-arr">›</div></div>
   </div>
   <div class="map-block" style="margin:14px 16px 0">
-    <div class="map-vis" onclick="openMaps()"><div class="map-pin">📍</div><div class="map-hint">Нажмите чтобы открыть в картах</div></div>
+    <div class="map-vis" onclick="openMaps()"><div class="map-pin"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M14 3C10.13 3 7 6.13 7 10C7 15.25 14 25 14 25C14 25 21 15.25 21 10C21 6.13 17.87 3 14 3Z" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="10" r="3" fill="currentColor"/></svg></div><div class="map-hint">Нажмите чтобы открыть в картах</div></div>
     <div class="map-addr"><strong>Москва, площадь Победы, 2к2</strong><span>Ежедневно 11:00 – 19:00</span></div>
     <div class="map-links">
-      <div class="map-link" onclick="window.open('https://yandex.com/maps/-/CPeUI4OR','_blank')">🗺 Яндекс</div>
-      <div class="map-link" onclick="window.open('https://go.2gis.com/LhIX0','_blank')">📍 2ГИС</div>
+      <div class="map-link" onclick="window.open('https://yandex.com/maps/-/CPeUI4OR','_blank')"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M14 3C10.13 3 7 6.13 7 10C7 15.25 14 25 14 25C14 25 21 15.25 21 10C21 6.13 17.87 3 14 3Z" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="10" r="3" fill="currentColor"/></svg> Яндекс</div>
+      <div class="map-link" onclick="window.open('https://go.2gis.com/LhIX0','_blank')"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M14 3C10.13 3 7 6.13 7 10C7 15.25 14 25 14 25C14 25 21 15.25 21 10C21 6.13 17.87 3 14 3Z" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="10" r="3" fill="currentColor"/></svg> 2ГИС</div>
     </div>
   </div>
   <div style="height:16px"></div>
@@ -956,7 +1097,7 @@ body::before{
 <!-- PROFILE -->
 <div class="page" id="page-profile">
   <div class="profile-hero au">
-    <div class="profile-avatar" id="profileAvatar">T</div>
+    <div class="profile-avatar" id="profileAvatar" onclick="openCatPicker()">T<div class="avatar-edit-hint">✎</div></div>
     <div class="profile-info"><h2 id="profileName">Загрузка...</h2><p id="profileUsername">@username</p></div>
   </div>
   <div class="profile-stats au d1">
@@ -967,9 +1108,9 @@ body::before{
   <div class="profile-section au d2">
     <div class="profile-section-title">Быстрые действия</div>
     <div class="profile-list">
-      <div class="profile-item ripple-container" onclick="window.open('https://t.me/TEXHOLIVE','_blank');addRipple(event,this)"><div class="pi-icon">✈️</div><div class="pi-body"><div class="pi-text">Написать менеджеру</div><div class="pi-sub">@TEXHOLIVE</div></div><div class="pi-arr">›</div></div>
-      <div class="profile-item ripple-container" onclick="showPage('cart');addRipple(event,this)"><div class="pi-icon">🛒</div><div class="pi-body"><div class="pi-text">Моя корзина</div><div class="pi-sub" id="profileCartSub">Пусто</div></div><div class="pi-arr">›</div></div>
-      <div class="profile-item ripple-container" onclick="window.open('tel:+79779920005','_blank');addRipple(event,this)"><div class="pi-icon">📞</div><div class="pi-body"><div class="pi-text">Позвонить</div><div class="pi-sub">+7 (977) 992-00-05</div></div><div class="pi-arr">›</div></div>
+      <div class="profile-item ripple-container" onclick="window.open('https://t.me/TEXHOLIVE','_blank');addRipple(event,this)"><div class="pi-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22"><path d="M4 14L22 5L17 23L12 16L4 14Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 16L15 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div><div class="pi-body"><div class="pi-text">Написать менеджеру</div><div class="pi-sub">@TEXHOLIVE</div></div><div class="pi-arr">›</div></div>
+      <div class="profile-item ripple-container" onclick="showPage('cart');addRipple(event,this)"><div class="pi-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22"><path d="M3 4H5.5L7 12M7 12L9 20H22L24 12H7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="23.5" r="1.5" fill="currentColor"/><circle cx="21" cy="23.5" r="1.5" fill="currentColor"/></svg></div><div class="pi-body"><div class="pi-text">Моя корзина</div><div class="pi-sub" id="profileCartSub">Пусто</div></div><div class="pi-arr">›</div></div>
+      <div class="profile-item ripple-container" onclick="window.open('tel:+79779920005','_blank');addRipple(event,this)"><div class="pi-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22"><path d="M8 4C8 4 6 4 5 6C4 8 4 10 7 13C10 16 12 16 14 15C15 14.5 16 14 17 15L20 18C21 19 21 21 19.5 22.5C18 24 15 24 11 20C7 16 4 12 4 8C4 5 6 4 8 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="pi-body"><div class="pi-text">Позвонить</div><div class="pi-sub">+7 (977) 992-00-05</div></div><div class="pi-arr">›</div></div>
     </div>
   </div>
   <div style="height:16px"></div>
@@ -1037,14 +1178,35 @@ body::before{
   <div style="height:16px"></div>
 </div>
 
+<!-- SEARCH PAGE -->
+<div class="page" id="page-search">
+  <div class="ph-head">Поиск</div>
+  <div class="search-page-wrap">
+    <div class="search-box-page">
+      <svg viewBox="0 0 28 28" fill="none" width="18" height="18" style="flex-shrink:0;opacity:.4"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2"/><path d="M17.5 17.5L23 23" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Поиск модели..." id="searchInput" oninput="searchPage()" autocomplete="off" autofocus>
+      <div class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none">
+        <svg viewBox="0 0 20 20" fill="none" width="16" height="16"><circle cx="10" cy="10" r="9" fill="rgba(28,28,30,0.12)"/><path d="M7 7L13 13M13 7L7 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="search-sort-row" id="searchSortRow" style="display:none">
+      <div class="sort-chip active" id="sort-none" onclick="setSort('none',this)">По умолчанию</div>
+      <div class="sort-chip" id="sort-asc" onclick="setSort('asc',this)">Сначала дешевле ↑</div>
+      <div class="sort-chip" id="sort-desc" onclick="setSort('desc',this)">Сначала дороже ↓</div>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+</div>
+
 <!-- NAV PILL -->
 <div class="nav-wrap">
   <nav class="nav" id="mainNav">
-    <div class="ni active" id="nav-home" onclick="showPage('home')"><div class="ni-icon">🏠</div></div>
-    <div class="ni" id="nav-cart" onclick="showPage('cart')"><div class="ni-icon">🛒</div></div>
-    <div class="ni" id="nav-info" onclick="showPage('info')"><div class="ni-icon">ℹ️</div></div>
-    <div class="ni" id="nav-profile" onclick="showPage('profile')"><div class="ni-icon">👤</div></div>
-    <div class="ni" id="nav-admin" onclick="showPage('admin')" style="display:none"><div class="ni-icon">⚙️</div></div>
+    <div class="ni active" id="nav-home" onclick="showPage('home')"><div class="ni-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12.5L14 4L24 12.5V24C24 24.55 23.55 25 23 25H18V18H10V25H5C4.45 25 4 24.55 4 24V12.5Z" fill="currentColor" stroke="none"/></svg></div></div>
+    <div class="ni" id="nav-search" onclick="showPage('search')"><div class="ni-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2"/><path d="M17.5 17.5L23 23" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div></div>
+    <div class="ni" id="nav-cart" onclick="showPage('cart')"><div class="ni-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4H5.5L7 12M7 12L9 20H22L24 12H7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="23.5" r="1.5" fill="currentColor"/><circle cx="21" cy="23.5" r="1.5" fill="currentColor"/></svg></div><div class="badge" id="cartBadge">0</div></div>
+    <div class="ni" id="nav-info" onclick="showPage('info')"><div class="ni-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="2"/><path d="M14 13V20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="14" cy="9.5" r="1.3" fill="currentColor"/></svg></div></div>
+    <div class="ni" id="nav-profile" onclick="showPage('profile')"><div class="ni-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="10" r="5" stroke="currentColor" stroke-width="2"/><path d="M5 24C5 19.582 9.029 16 14 16C18.971 16 23 19.582 23 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div></div>
+    <div class="ni" id="nav-admin" onclick="showPage('admin')" style="display:none"><div class="ni-icon"><svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="3" stroke="currentColor" stroke-width="2"/><path d="M14 4V7M14 21V24M4 14H7M21 14H24M6.34 6.34L8.46 8.46M19.54 19.54L21.66 21.66M6.34 21.66L8.46 19.54M19.54 8.46L21.66 6.34" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div></div>
   </nav>
 </div>
 
@@ -1159,7 +1321,7 @@ function initAdmin(){
 
 // ══ CATEGORIES ══
 const MARKUP_CATS = ['iPhone','Samsung','MacBook','iPad','Watch','AirPods'];
-const CAT_ICONS = {iPhone:'📱',Samsung:'📱',MacBook:'💻',iPad:'📟',Watch:'⌚',AirPods:'🎧',Аксессуары:'🔌'};
+const CAT_ICONS = {iPhone:'📱',Samsung:'📱',MacBook:'💻',iPad:'📟',Watch:'⌚',AirPods:'🎧',Аксессуары:'⚡'};
 const DEFAULT_MARKUPS = {iPhone:4000,Samsung:4000,MacBook:4000,iPad:4000,Watch:0,AirPods:0};
 
 function loadMarkups(){
@@ -1203,15 +1365,25 @@ let P = buildProducts();
 
 const BADGES={fire:'🔥 Хит',new:'✦ Новинка',hit:'💎 Топ'};
 const PROMOS={'TEXNO10':{disc:10,label:'Скидка 10%'},'LIVE15':{disc:15,label:'Скидка 15%'},'FIRST5':{disc:5,label:'Скидка 5%'}};
+const SVG_ICONS={
+  all:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><rect x="4" y="4" width="8" height="8" rx="2.5" stroke="currentColor" stroke-width="2"/><rect x="16" y="4" width="8" height="8" rx="2.5" stroke="currentColor" stroke-width="2"/><rect x="4" y="16" width="8" height="8" rx="2.5" stroke="currentColor" stroke-width="2"/><rect x="16" y="16" width="8" height="8" rx="2.5" stroke="currentColor" stroke-width="2"/></svg>`,
+  iPhone:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><rect x="8" y="2" width="12" height="24" rx="3" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="22" r="1.2" fill="currentColor"/><path d="M11 5H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  Samsung:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><rect x="6" y="3" width="16" height="22" rx="3" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="21.5" r="1.2" fill="currentColor"/><path d="M10 7H18M10 11H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  AirPods:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><path d="M9 6C9 6 7 8 7 12V18C7 19.1 7.9 20 9 20H10C11.1 20 12 19.1 12 18V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6C19 6 21 8 21 12V18C21 19.1 20.1 20 19 20H18C16.9 20 16 19.1 16 18V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 14C12 12.9 12.9 12 14 12C15.1 12 16 12.9 16 14" stroke="currentColor" stroke-width="1.8"/></svg>`,
+  MacBook:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><rect x="4" y="6" width="20" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 19H26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11 22H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  Watch:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><rect x="8" y="8" width="12" height="12" rx="4" stroke="currentColor" stroke-width="2"/><path d="M11 5L10 8M17 5L18 8M11 20L10 23M17 20L18 23" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11V14L16 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  iPad:`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><rect x="5" y="3" width="18" height="22" rx="3" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="21" r="1.2" fill="currentColor"/></svg>`,
+  'Аксессуары':`<svg viewBox="0 0 28 28" fill="none" width="20" height="20"><path d="M10 6H7C6.45 6 6 6.45 6 7V21C6 21.55 6.45 22 7 22H21C21.55 22 22 21.55 22 21V18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M15 6H22V13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 6L13 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+};
 const FILTER_META={
-  'all':{icon:'◈',title:'Весь каталог',color:'#4a9eff'},
-  'iPhone':{icon:'',title:'iPhone',color:'#ffffff'},
-  'Samsung':{icon:'',title:'Samsung',color:'#4a9eff'},
-  'AirPods':{icon:'',title:'AirPods',color:'#00e676'},
-  'MacBook':{icon:'',title:'MacBook',color:'#e040fb'},
-  'Watch':{icon:'',title:'Apple Watch',color:'#ffd740'},
-  'iPad':{icon:'',title:'iPad',color:'#ff9f0a'},
-  'Аксессуары':{icon:'🔌',title:'Аксессуары',color:'#ff9f0a'},
+  'all':{icon:'all',title:'Весь каталог',color:'#4a9eff'},
+  'iPhone':{icon:'iPhone',title:'iPhone',color:'#ffffff'},
+  'Samsung':{icon:'Samsung',title:'Samsung',color:'#4a9eff'},
+  'AirPods':{icon:'AirPods',title:'AirPods',color:'#00e676'},
+  'MacBook':{icon:'MacBook',title:'MacBook',color:'#e040fb'},
+  'Watch':{icon:'Watch',title:'Apple Watch',color:'#ffd740'},
+  'iPad':{icon:'iPad',title:'iPad',color:'#ff9f0a'},
+  'Аксессуары':{icon:'Аксессуары',title:'Аксессуары',color:'#ff9f0a'},
 };
 let cart=[],filter='all',sheetId=null,orderCount=0,deliveryType='pickup',promoApplied=null;
 const fmt=n=>n.toLocaleString('ru-RU')+' ₽';
@@ -1327,7 +1499,7 @@ function renderTrend(){
 function updateCatalogHeading(list){
   const m=FILTER_META[filter]||FILTER_META['all'];
   const ic=document.getElementById('catalogIcon');const ti=document.getElementById('catalogTitle');const co=document.getElementById('catalogCount');
-  ic.style.background=`${m.color}16`;ic.style.borderColor=`${m.color}2a`;ic.style.color=m.color;ic.style.boxShadow=`0 0 16px ${m.color}1a`;ic.textContent=m.icon;
+  ic.style.background=`${m.color}16`;ic.style.borderColor=`${m.color}2a`;ic.style.color=m.color;ic.style.boxShadow=`0 0 16px ${m.color}1a`;ic.innerHTML=SVG_ICONS[m.icon]||m.icon;
   ti.classList.remove('heading-anim');void ti.offsetWidth;ti.classList.add('heading-anim');ti.textContent=m.title;
   co.textContent=list.length===P.length?`${list.length} товаров`:`Найдено: ${list.length}`;
 }
@@ -1353,27 +1525,54 @@ function renderGrid(list){
   }).join('');
 }
 
-function setFilter(f,el){
+function setFilter(f){
   filter=f;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  el.classList.add('active');
   applyFilters();
 }
 function resetFilter(){
   filter='all';
-  document.querySelectorAll('.chip').forEach((c,i)=>{c.classList.toggle('active',i===0)});
-  applyFilters();
+  setFilterSheet('all','Все категории');
 }
 function applyFilters(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const mn=parseInt(document.getElementById('priceMin').value)||0;
-  const mx=parseInt(document.getElementById('priceMax').value)||Infinity;
   let list=P;
   if(filter!=='all')list=list.filter(p=>p.brand===filter||p.family.includes(filter));
-  if(q)list=list.filter(p=>p.family.toLowerCase().includes(q)||p.color.toLowerCase().includes(q)||p.memory.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q));
-  list=list.filter(p=>p.price>=mn&&p.price<=mx);
   updateCatalogHeading(list);renderGrid(list);
 }
+
+// ══ FILTER SHEET ══
+let filterSheetOpen=false;
+function toggleFilterSheet(){
+  filterSheetOpen?closeFilterSheet():openFilterSheet();
+}
+function openFilterSheet(){
+  filterSheetOpen=true;
+  document.getElementById('filterSheet').classList.add('open');
+  document.getElementById('filterSheetOverlay').classList.add('open');
+  document.getElementById('burgerBtn').classList.add('active-burger');
+}
+function closeFilterSheet(){
+  filterSheetOpen=false;
+  document.getElementById('filterSheet').classList.remove('open');
+  document.getElementById('filterSheetOverlay').classList.remove('open');
+  document.getElementById('burgerBtn').classList.remove('active-burger');
+}
+function setFilterSheet(f, label){
+  filter=f;
+  document.querySelectorAll('.fcat').forEach(el=>el.classList.remove('active'));
+  const active=document.getElementById('fcat-'+f);
+  if(active)active.classList.add('active');
+  const bar=document.getElementById('filterBar');
+  const chip=document.getElementById('activeFilterChip');
+  if(f==='all'){
+    if(bar)bar.style.display='none';
+  } else {
+    if(bar)bar.style.display='flex';
+    if(chip){document.getElementById('activeFilterLabel').textContent=label;}
+  }
+  applyFilters();
+  setTimeout(closeFilterSheet, 160);
+}
+
 
 function openSheet(idx){
   const p=P[idx];sheetId=p.id;
@@ -1521,202 +1720,3 @@ function changeQtyCart(id, d){
     removeFromCartAnimated(id);return;
   }
   // Update DOM directly for smooth experience
-  const qn=document.getElementById('cqn-'+id);
-  if(qn){qn.textContent=ci.qty;qn.classList.remove('pop');void qn.offsetWidth;qn.classList.add('pop')}
-  const cp=document.getElementById('cprice-'+id);
-  if(cp){cp.textContent=fmt(ci.price*ci.qty)}
-  updateBadge();updateProfile();
-  // Re-render totals
-  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);
-  const disc=promoApplied?Math.round(sub*promoApplied.disc/100):0;
-  const total=sub-disc;
-  const totEl=document.querySelector('.totals');
-  if(totEl){totEl.innerHTML=`<div class="tot-r"><span>Товары (${cart.reduce((s,c)=>s+c.qty,0)})</span><span>${fmt(sub)}</span></div>${disc?`<div class="tot-r"><span>Скидка ${promoApplied.disc}%</span><span style="color:var(--green)">−${fmt(disc)}</span></div>`:''}<div class="tot-r"><span>Доставка</span><span style="color:var(--green)">Уточнит менеджер</span></div><div class="tot-r big"><span>Итого</span><span class="v">${fmt(total)}</span></div>`}
-  applyFilters();renderTrend();
-}
-
-function removeFromCartAnimated(id, btnEl){
-  const ciEl=btnEl?btnEl.closest('.ci'):document.querySelector(`.ci`);
-  // find the exact ci by querying
-  const allCi=document.querySelectorAll('.ci');
-  let targetEl=null;
-  allCi.forEach(el=>{
-    if(el.querySelector(`[onclick*="removeFromCartAnimated(${id}"]`)||el.querySelector(`#cqn-${id}`)){targetEl=el}
-  });
-  if(targetEl){
-    targetEl.style.animation='itemRemove .35s ease forwards';
-    setTimeout(()=>{
-      cart=cart.filter(c=>c.id!==id);
-      updateBadge();renderCart();applyFilters();renderTrend();updateProfile();
-    },320);
-  } else {
-    cart=cart.filter(c=>c.id!==id);
-    updateBadge();renderCart();applyFilters();renderTrend();updateProfile();
-  }
-}
-
-function applyPromo(){
-  if(promoApplied)return;
-  const code=(document.getElementById('promoInput')?.value||'').trim().toUpperCase();
-  const promo=PROMOS[code];
-  if(promo){
-    promoApplied=promo;
-    showToast('🎉 Промокод: '+promo.label);
-    renderCart();
-  } else {
-    const inp=document.getElementById('promoInput');
-    if(inp){inp.classList.add('shake-anim');setTimeout(()=>inp.classList.remove('shake-anim'),400)}
-    const e=document.getElementById('promoErr');
-    if(e){e.textContent='❌ Неверный промокод';e.style.display='block';setTimeout(()=>e.style.display='none',2000)}
-  }
-}
-
-function selectDelivery(type){
-  deliveryType=type;
-  document.getElementById('dtab-pickup').classList.toggle('active',type==='pickup');
-  document.getElementById('dtab-delivery').classList.toggle('active',type==='delivery');
-  document.getElementById('form-pickup').classList.toggle('show',type==='pickup');
-  document.getElementById('form-delivery').classList.toggle('show',type==='delivery');
-  document.getElementById('orderSubtitle').textContent=type==='pickup'?'Самовывоз: Москва, пл. Победы, 2к2':'Курьер доставит в течение 3 часов';
-}
-
-function updateMapPreview(){const a=document.getElementById('delivAddress').value.trim();document.getElementById('mapAddrText').textContent=a?'Москва, '+a:'Введите адрес выше'}
-function openAddressInMap(){const a=document.getElementById('delivAddress').value.trim();if(!a){showToast('⚠️ Введите адрес');return}window.open(`https://yandex.ru/maps/?text=${encodeURIComponent('Москва, '+a)}`,'_blank')}
-
-function openOrderModal(){
-  const tg=window.Telegram?.WebApp;
-  if(tg?.initDataUnsafe?.user){const u=tg.initDataUnsafe.user;const n=[u.first_name,u.last_name].filter(Boolean).join(' ');['pickupName','delivName'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=n})}
-  document.getElementById('orderOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function maybeCloseOrder(e){if(e.target===document.getElementById('orderOverlay'))closeOrderModal()}
-function closeOrderModal(){document.getElementById('orderOverlay').classList.remove('open');document.body.style.overflow=''}
-
-function submitOrder(){
-  let name,phone,extra='';
-  if(deliveryType==='pickup'){
-    name=document.getElementById('pickupName').value.trim();
-    phone=document.getElementById('pickupPhone').value.trim();
-    const t=document.getElementById('pickupTime').value.trim();
-    extra=t?`\n🕐 Время: ${t}`:''
-  } else {
-    name=document.getElementById('delivName').value.trim();
-    phone=document.getElementById('delivPhone').value.trim();
-    const a=document.getElementById('delivAddress').value.trim();
-    const c=document.getElementById('delivComment').value.trim();
-    if(!a){showToast('⚠️ Введите адрес доставки');return}
-    extra=`\n📍 Адрес: ${a}`+(c?`\n💬 ${c}`:'')
-  }
-  if(!name){
-    const el=document.getElementById(deliveryType==='pickup'?'pickupName':'delivName');
-    if(el){el.classList.add('shake-anim');setTimeout(()=>el.classList.remove('shake-anim'),400)}
-    showToast('⚠️ Введите ваше имя');return;
-  }
-  if(!phone){
-    const el=document.getElementById(deliveryType==='pickup'?'pickupPhone':'delivPhone');
-    if(el){el.classList.add('shake-anim');setTimeout(()=>el.classList.remove('shake-anim'),400)}
-    showToast('⚠️ Введите номер телефона');return;
-  }
-  const sub=cart.reduce((s,c)=>s+c.price*c.qty,0);
-  const disc=promoApplied?Math.round(sub*promoApplied.disc/100):0;
-  const total=sub-disc;
-  const dl=deliveryType==='pickup'?'Самовывоз':'Доставка курьером';
-  const num='#'+String(++orderCount).padStart(3,'0')+'-'+Date.now().toString().slice(-4);
-  const msg=encodeURIComponent(`📦 Новый заказ ${num}\n👤 ${name}\n📞 ${phone}\n🚚 ${dl}${extra}\n\n`+cart.map(p=>`• ${p.family}${p.memory!=='—'?' '+p.memory:''} × ${p.qty} — ${fmt(p.price*p.qty)}`).join('\n')+(promoApplied?`\n🏷 Скидка: −${fmt(disc)}`:'')+`\n💰 Итого: ${fmt(total)}`);
-  const tg=window.Telegram?.WebApp;if(tg){try{tg.sendData(JSON.stringify({num,name,phone,deliveryType,total}))}catch(e){}}
-  window.open(`https://t.me/TEXHOLIVE?text=${msg}`,'_blank');
-  closeOrderModal();
-  const savedCart=[...cart];cart=[];promoApplied=null;
-  updateBadge();applyFilters();renderTrend();updateProfile();
-  showOrderStatus(num,name,total,savedCart);
-}
-
-function showOrderStatus(num,name,total,savedCart){
-  document.getElementById('statusTitle').textContent='Заказ принят!';
-  document.getElementById('statusSub').textContent=`${name}, менеджер свяжется в течение 15 минут`;
-  document.getElementById('statusNum').textContent=num;
-  const icon=document.getElementById('statusIcon');
-  icon.textContent='🎉';icon.classList.remove('pop');void icon.offsetWidth;icon.classList.add('pop');
-  document.getElementById('statusItems').innerHTML=(savedCart||[]).map(p=>`<div class="status-item"><span>${p.family} × ${p.qty}</span><span>${fmt(p.price*p.qty)}</span></div>`).join('')+`<div class="status-item"><span>Итого</span><span>${fmt(total)}</span></div>`;
-  document.getElementById('statusOverlay').classList.add('open');
-}
-function closeStatus(){document.getElementById('statusOverlay').classList.remove('open')}
-
-// ══ PAGE NAVIGATION — Telegram iOS spring ══
-function showPage(name){
-  // убираем was-active у всех
-  document.querySelectorAll('.ni').forEach(n=>{
-    if(n.classList.contains('active')){
-      n.classList.add('was-active');
-      n.classList.remove('active');
-      setTimeout(()=>n.classList.remove('was-active'), 300);
-    } else {
-      n.classList.remove('was-active','active');
-    }
-  });
-
-  // страница
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  const target=document.getElementById('page-'+name);
-  target.classList.add('on');
-
-  // активируем нужный таб — небольшая задержка чтоб was-active успел запуститься
-  const navEl=document.getElementById('nav-'+name);
-  if(navEl){
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        navEl.classList.remove('was-active');
-        navEl.classList.add('active');
-      });
-    });
-  }
-
-  if(name==='cart')renderCart();
-  if(name==='profile')updateProfile();
-  if(name==='admin'){renderMarkupRows();renderAdminList();}
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ══ TOAST ══
-let _tt;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.remove('hide');
-  t.classList.add('show');
-  clearTimeout(_tt);
-  _tt=setTimeout(()=>{
-    t.classList.remove('show');
-    t.classList.add('hide');
-    setTimeout(()=>t.classList.remove('hide'),250);
-  },2400);
-}
-
-function updateProfile(){
-  const t=cart.reduce((s,c)=>s+c.qty,0);
-  const ordEl=document.getElementById('statOrders');
-  const cartEl=document.getElementById('statCart');
-  if(ordEl){ordEl.textContent=orderCount;ordEl.classList.remove('count-up');void ordEl.offsetWidth;if(orderCount>0)ordEl.classList.add('count-up')}
-  if(cartEl){cartEl.textContent=t;cartEl.classList.remove('count-up');void cartEl.offsetWidth;if(t>0)cartEl.classList.add('count-up')}
-  document.getElementById('profileCartSub').textContent=t?`${t} товар(ов)`:'Пусто';
-}
-
-function loadTelegramUser(){
-  const tg=window.Telegram?.WebApp;
-  if(tg?.initDataUnsafe?.user){
-    const u=tg.initDataUnsafe.user;
-    document.getElementById('profileName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ')||'Пользователь';
-    document.getElementById('profileUsername').textContent=u.username?'@'+u.username:'Telegram';
-    if(u.first_name)document.getElementById('profileAvatar').textContent=u.first_name[0].toUpperCase();
-  } else {
-    document.getElementById('profileName').textContent='Гость';
-    document.getElementById('profileUsername').textContent='Открыто в браузере';
-  }
-}
-function openMaps(){window.open('https://yandex.com/maps/-/CPeUI4OR','_blank')}
-
-if(window.Telegram?.WebApp){const tg=window.Telegram.WebApp;tg.expand();tg.setHeaderColor('#e8eaed');tg.setBackgroundColor('#e8eaed')}
-initBanner();loadTelegramUser();renderTrend();applyFilters();initAdmin();
-</script>
-</body>
-</html>
