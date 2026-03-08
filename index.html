@@ -121,66 +121,153 @@ body::before{
 @keyframes headingSwap{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .heading-anim{animation:headingSwap .2s ease both}
 
-/* BANNER SLIDER */
 /* ── BANNERS ── */
-.banner-wrap{padding:20px 16px 20px;position:relative;z-index:1}
+.banner-wrap{
+  padding:18px 16px 6px;
+  position:relative;z-index:1;
+}
 .banner-slider{
   display:flex;
   width:300%;
-  transition:transform .42s cubic-bezier(.32,.72,0,1);
+  transition:transform .5s cubic-bezier(.32,.72,0,1);
   will-change:transform;user-select:none;
-  border-radius:26px;overflow:visible;
 }
-.banner-wrap{overflow:hidden;border-radius:26px}
+.banner-wrap{overflow:hidden;border-radius:30px}
+
+/* БАЗОВЫЙ БАННЕР */
 .banner{
-  flex:0 0 33.333%;min-width:33.333%;position:relative;padding:28px 24px 26px;
-  background:rgba(28,28,30,0.88);
-  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
-  border-radius:26px;
+  flex:0 0 33.333%;min-width:33.333%;
+  position:relative;
+  padding:26px 22px 26px;
+  min-height:186px;
+  border-radius:30px;
   overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  background:#0f0f14;
+  border:1px solid rgba(255,255,255,0.08);
 }
-/* Убираем любые тени снаружи — они были лишними */
-.banner-wrap{box-shadow:none!important}
+
+/* Глобальный световой блик сверху */
 .banner::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 120% 80% at 70% -10%,rgba(255,255,255,0.06) 0%,transparent 60%);
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,0.10) 0%,transparent 45%);
+}
+/* Нижний затемняющий градиент для читабельности текста */
+.banner::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 55%);
+}
+
+/* Декоративный большой круг-свечение */
+.banner-glow{
+  position:absolute;
+  width:220px;height:220px;
+  border-radius:50%;
+  filter:blur(55px);
+  z-index:0;
   pointer-events:none;
 }
-.banner h2{font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;letter-spacing:-.7px;
-  color:#fff;line-height:1.1;margin-bottom:6px;position:relative;z-index:1}
-.banner p{color:rgba(255,255,255,0.55);font-size:13px;margin-bottom:18px;line-height:1.5;position:relative;z-index:1}
+
+/* Большая эмодзи-иконка справа */
+.banner-emoji{
+  position:absolute;
+  right:-8px;top:50%;
+  transform:translateY(-58%);
+  font-size:110px;
+  line-height:1;
+  z-index:2;
+  filter:drop-shadow(0 12px 28px rgba(0,0,0,0.45));
+  pointer-events:none;
+  user-select:none;
+  opacity:0.92;
+}
+
+/* Контент баннера */
+.banner-content{position:relative;z-index:3;max-width:62%;}
+
+.banner-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,0.13);
+  color:rgba(255,255,255,0.75);
+  font-family:'Unbounded',sans-serif;font-size:8px;font-weight:700;letter-spacing:.8px;
+  padding:4px 10px;border-radius:50px;
+  border:1px solid rgba(255,255,255,0.18);
+  margin-bottom:9px;text-transform:uppercase;
+  backdrop-filter:blur(8px);
+}
+
+.banner h2{
+  font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;
+  letter-spacing:-.6px;color:#fff;line-height:1.1;margin-bottom:6px;
+}
+.banner p{
+  color:rgba(255,255,255,0.58);font-size:11.5px;
+  margin-bottom:16px;line-height:1.55;
+}
 .banner-btn{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,0.14);
-  border:1px solid rgba(255,255,255,0.22);
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.28);
   color:#fff;
-  padding:11px 20px;border-radius:50px;
-  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;
-  cursor:pointer;transition:background .15s,transform .15s;position:relative;z-index:1;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  padding:10px 18px;border-radius:50px;
+  font-family:'Unbounded',sans-serif;font-size:10px;font-weight:800;letter-spacing:.2px;
+  cursor:pointer;transition:all .2s;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  width:fit-content;
 }
-.banner-btn:active{background:rgba(255,255,255,0.22);transform:scale(.95)}
+.banner-btn:hover{background:rgba(255,255,255,0.26);}
+.banner-btn:active{background:rgba(255,255,255,0.30);transform:scale(.95)}
+
+/* Бейдж */
 .banner-badge{
-  position:absolute;top:16px;right:16px;
-  font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;
-  padding:4px 10px;border-radius:50px;z-index:2;text-transform:uppercase;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  position:absolute;top:14px;right:14px;
+  font-family:'Unbounded',sans-serif;font-size:8px;font-weight:800;
+  padding:4px 10px;border-radius:50px;z-index:4;text-transform:uppercase;
+  letter-spacing:.5px;
 }
-.banner-badge.fire{background:rgba(255,159,10,.22);color:#ffb938;border:1px solid rgba(255,159,10,.35)}
-.banner-badge.new{background:rgba(52,199,89,.22);color:#4cd964;border:1px solid rgba(52,199,89,.35)}
-.banner-badge.sale{background:rgba(255,59,48,.22);color:#ff6b60;border:1px solid rgba(255,59,48,.35)}
-.banner-tag{
-  display:inline-flex;align-items:center;
-  background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);
-  font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;letter-spacing:.5px;
-  padding:4px 10px;border-radius:50px;border:1px solid rgba(255,255,255,0.16);
-  margin-bottom:10px;text-transform:uppercase;position:relative;z-index:1;
+.banner-badge.fire{background:rgba(255,149,0,.25);color:#ffb340;border:1px solid rgba(255,149,0,.4);box-shadow:0 0 12px rgba(255,149,0,.2)}
+.banner-badge.new{background:rgba(48,209,88,.22);color:#30d158;border:1px solid rgba(48,209,88,.38);box-shadow:0 0 12px rgba(48,209,88,.15)}
+.banner-badge.sale{background:rgba(255,69,58,.22);color:#ff6961;border:1px solid rgba(255,69,58,.38);box-shadow:0 0 12px rgba(255,69,58,.15)}
+.banner-badge.gift{background:rgba(191,90,242,.22);color:#da8fff;border:1px solid rgba(191,90,242,.38);box-shadow:0 0 12px rgba(191,90,242,.15)}
+
+/* ── БАННЕР 1: Apple — тёмно-синий/фиолетовый ── */
+.banner-apple{
+  background:linear-gradient(145deg,#0a0a1a 0%,#0d1230 40%,#0a0a1a 100%);
 }
-.banner-green{background:linear-gradient(135deg,#0d4d0d 0%,#166416 50%,#0d4d0d 100%)!important}
-.banner-gold{background:linear-gradient(135deg,#2a2200 0%,#3d3000 50%,#2a2200 100%)!important}
-.banner-dots{display:flex;justify-content:center;gap:5px;margin-top:12px}
-.dot{width:6px;height:6px;border-radius:3px;background:rgba(28,28,30,0.18);cursor:pointer;transition:all .3s}
-.dot.active{width:20px;background:rgba(28,28,30,0.55)}
+.banner-apple .banner-glow{
+  background:radial-gradient(circle,rgba(120,100,255,0.7),transparent 70%);
+  top:-40px;right:40px;
+}
+
+/* ── БАННЕР 2: Рассрочка — изумрудно-зелёный ── */
+.banner-credit{
+  background:linear-gradient(145deg,#021a0a 0%,#042e12 45%,#021a0a 100%);
+}
+.banner-credit .banner-glow{
+  background:radial-gradient(circle,rgba(0,210,100,0.6),transparent 70%);
+  top:-30px;right:20px;
+}
+
+/* ── БАННЕР 3: Подарки — тёплый золотой ── */
+.banner-gifts{
+  background:linear-gradient(145deg,#1a0e00 0%,#2e1a00 45%,#1a0e00 100%);
+}
+.banner-gifts .banner-glow{
+  background:radial-gradient(circle,rgba(255,180,0,0.6),transparent 70%);
+  top:-40px;right:10px;
+}
+
+/* Точки */
+.banner-dots{display:flex;justify-content:center;gap:6px;margin-top:14px;margin-bottom:4px;}
+.dot{
+  width:6px;height:6px;border-radius:3px;
+  background:rgba(28,28,30,0.20);
+  cursor:pointer;
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);
+}
+.dot.active{width:22px;background:rgba(28,28,30,0.50);}
 
 /* TRENDING */
 .t-scroll{display:flex;gap:10px;padding:0 16px 22px;overflow-x:auto;scrollbar-width:none;position:relative;z-index:1}
@@ -317,13 +404,20 @@ body::before{
 
 /* BACK BUTTON */
 .back-btn{
-  display:flex;align-items:center;gap:6px;
-  padding:12px 18px 0;
-  color:var(--t2);font-size:14px;font-weight:500;cursor:pointer;
-  width:fit-content;
+  display:inline-flex;align-items:center;gap:6px;
+  margin:14px 16px 0;
+  padding:9px 16px 9px 11px;
+  background:rgba(255,255,255,0.72);
+  border:1px solid rgba(28,28,30,0.10);
+  border-radius:50px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 2px 12px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.9);
+  color:var(--text);font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s;
+  width:fit-content;letter-spacing:-.2px;
 }
-.back-btn svg{flex-shrink:0}
-.back-btn:active{opacity:.5}
+.back-btn:active{transform:scale(.91);box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.back-btn svg{flex-shrink:0;opacity:.7}
 
 /* NAV badge on cart icon */
 .nav-badge{
@@ -638,9 +732,20 @@ body::before{
 
 /* PROFILE */
 .profile-hero{padding:22px 18px 24px;display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.profile-avatar-wrap{position:relative;flex-shrink:0;cursor:pointer;}
 .profile-avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,rgba(190,205,255,0.9),rgba(215,195,255,0.9));
-  display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;flex-shrink:0;color:var(--text);
-  box-shadow:0 4px 24px var(--shadow2),0 0 0 2px rgba(255,255,255,0.8),inset 0 1px 0 white}
+  display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;color:var(--text);
+  box-shadow:0 4px 24px var(--shadow2),0 0 0 2px rgba(255,255,255,0.8),inset 0 1px 0 white;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.profile-avatar-wrap:active .profile-avatar{transform:scale(.92);}
+.profile-avatar-edit{
+  position:absolute;bottom:1px;right:1px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+}
+.profile-avatar-edit svg{display:block;}
 .profile-info h2{font-family:'Unbounded',sans-serif;font-size:19px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px}
 .profile-info p{font-size:13px;color:var(--t3)}
 .profile-stats{margin:0 16px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -664,6 +769,16 @@ body::before{
 .overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(24px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
 .overlay.open .sheet{transform:translateY(0)}
+/* Sheet image slider */
+.sheet-slider-wrap{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 4px 20px var(--shadow)}
+.sheet-slider-track{display:flex;height:100%;transition:transform .38s cubic-bezier(.32,.72,0,1);will-change:transform}
+.sheet-slide{flex:0 0 100%;height:100%;background:linear-gradient(135deg,rgba(255,255,255,0.65),rgba(220,225,235,0.55));display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;overflow:hidden}
+.sheet-slide img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.sheet-slide::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(220,225,235,0.3));pointer-events:none}
+.sheet-slider-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2}
+.sheet-slide-dot{width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,0.5);transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.sheet-slide-dot.active{width:16px;background:#fff}
+/* Legacy fallback */
 .sheet-img{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,0.65),rgba(220,225,235,0.55));display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;box-shadow:0 4px 20px var(--shadow),inset 0 1px 0 white}
 .sheet-img img{width:100%;height:100%;object-fit:cover}
 .sheet-img::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(220,225,235,0.45))}
@@ -679,12 +794,29 @@ body::before{
 .spec-l{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-family:'Unbounded',sans-serif;font-weight:600}
 .spec-v{font-size:12px;font-weight:600}
 .s-stock{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:50px;background:rgba(0,230,118,.11);color:var(--green);margin-bottom:14px;border:1px solid rgba(0,230,118,.18)}
-.s-bot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-top:1px solid var(--border);margin:0 -18px}
-.s-old{font-size:12px;color:var(--t3);text-decoration:line-through;margin-bottom:2px}
-.s-price{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;letter-spacing:-.8px;color:var(--green)}
-.s-note{font-size:10px;color:var(--t3);margin-top:1px}
-.s-add{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent2),#1565c0);color:#fff;border:none;padding:14px 22px;border-radius:50px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .15s;flex-shrink:0;box-shadow:0 6px 24px rgba(41,121,255,.38)}
-.s-add:active{opacity:.85;transform:scale(.96)}
+.s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px}
+.s-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.s-old{font-size:12px;color:var(--t3);text-decoration:line-through}
+.s-price{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.8px;color:var(--green)}
+.s-note{display:none}
+.s-credit-hint{font-size:12px;color:var(--t2);margin-bottom:14px;font-weight:500}
+.s-credit-hint b{color:#1a7d38;font-weight:700}
+.s-btns{display:flex;gap:10px;}
+.s-add{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,#1c1c1e,#3a3a3c);color:#fff;border:none;
+  padding:15px 18px;border-radius:18px;
+  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
+  cursor:pointer;transition:all .18s;
+  box-shadow:0 6px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.08)}
+.s-add:active{transform:scale(.96);opacity:.88}
+.s-credit-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+  background:linear-gradient(135deg,rgba(52,199,89,0.18),rgba(0,200,80,0.1));
+  border:1.5px solid rgba(52,199,89,0.45);color:#1a7d38;
+  padding:15px 14px;border-radius:18px;
+  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
+  cursor:pointer;transition:all .18s;white-space:nowrap;
+  box-shadow:0 4px 14px rgba(52,199,89,0.18),inset 0 1px 0 rgba(255,255,255,0.5)}
+.s-credit-btn:active{transform:scale(.96);background:rgba(52,199,89,0.28);}
 
 /* TOAST */
 .toast{position:fixed;bottom:calc(100px + var(--sb));left:50%;transform:translateX(-50%) translateY(12px);background:rgba(28,28,30,0.90);border:1px solid rgba(255,255,255,0.12);backdrop-filter:blur(30px) saturate(200%);-webkit-backdrop-filter:blur(30px) saturate(200%);color:#fff;padding:11px 20px;border-radius:50px;font-size:13px;font-weight:500;white-space:nowrap;z-index:600;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;display:flex;align-items:center;gap:7px;box-shadow:0 8px 32px var(--shadow2)}
@@ -869,6 +1001,38 @@ body::before{
 .adm-p-price{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:800;color:var(--green);flex-shrink:0;text-align:right}
 .adm-del{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(255,59,48,.12);border:1px solid rgba(255,59,48,.22);color:#c0281f;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer}
 .adm-del:active{background:var(--red);color:#fff}
+
+/* ═══ CATEGORY PAGES ═══ */
+.cat-page-header{
+  padding:14px 18px 6px;
+}
+.cat-page-header .back-btn{
+  margin:0 0 10px 0;
+}
+.cat-page-title{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Unbounded',sans-serif;font-size:26px;font-weight:900;
+  letter-spacing:-.6px;padding:4px 0 8px;
+}
+.cat-page-title span{font-size:28px;line-height:1}
+.cat-chips{padding:6px 16px 14px;}
+
+/* Разделитель внутри chips */
+.chip-divider{
+  flex-shrink:0;
+  width:1px;height:22px;
+  background:rgba(28,28,30,0.15);
+  align-self:center;
+  margin:0 2px;
+}
+/* Сортировочные чипы чуть отличаются визуально */
+.chip-sort{
+  background:rgba(28,28,30,0.06)!important;
+}
+.chip-sort.active{
+  background:rgba(28,28,30,0.88)!important;
+  color:#fff!important;
+}
 </style>
 </head>
 <body>
@@ -886,27 +1050,46 @@ body::before{
 
   <div class="banner-wrap au d2">
     <div class="banner-slider" id="bannerSlider">
-      <div class="banner">
-        <div class="banner-badge new">NEW</div>
-        <div class="banner-tag">НОВОСТИ МАРТА</div>
-        <h2>Новинки Apple 2025</h2>
-        <p>iPhone 16, MacBook M4, AirPods 4<br>Уже в наличии · Оригинал · Гарантия</p>
-        <button class="banner-btn" onclick="openSheet(0)">СМОТРЕТЬ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+
+      <!-- БАННЕР 1: Apple -->
+      <div class="banner banner-apple">
+        <div class="banner-glow"></div>
+        <div class="banner-badge new">✦ НОВИНКИ</div>
+        <div class="banner-emoji">📱</div>
+        <div class="banner-content">
+          <div class="banner-tag">МАРТ 2025</div>
+          <h2>Новинки<br>Apple 2025</h2>
+          <p>iPhone 17, MacBook M4<br>Оригинал · Гарантия 12 мес.</p>
+          <button class="banner-btn" onclick="openSheet(0)">СМОТРЕТЬ →</button>
+        </div>
       </div>
-      <div class="banner banner-green">
+
+      <!-- БАННЕР 2: Рассрочка -->
+      <div class="banner banner-credit">
+        <div class="banner-glow"></div>
         <div class="banner-badge sale">0%</div>
-        <div class="banner-tag">РАССРОЧКА</div>
-        <h2>Рассрочка без переплат</h2>
-        <p>На 3, 6 или 12 месяцев<br>Без первого взноса · Одобрение за минуту</p>
-        <button class="banner-btn" onclick="installmentOrder()">УЗНАТЬ УСЛОВИЯ →</button>
+        <div class="banner-emoji">💳</div>
+        <div class="banner-content">
+          <div class="banner-tag">РАССРОЧКА</div>
+          <h2>Без<br>переплат</h2>
+          <p>3, 6 или 12 месяцев<br>Одобрение за минуту</p>
+          <button class="banner-btn" onclick="installmentOrder()">УСЛОВИЯ →</button>
+        </div>
       </div>
-      <div class="banner banner-gold">
-        <div class="banner-badge fire">ПОДАРКИ</div>
-        <div class="banner-tag">К РАССРОЧКЕ</div>
-        <h2>Подарки до 15 000 ₽</h2>
-        <p>Чехол, стекло, зарядка, Алиса<br>При оформлении рассрочки 0%</p>
-        <button class="banner-btn" onclick="installmentOrder()">ПОЛУЧИТЬ ПОДАРКИ →</button>
+
+      <!-- БАННЕР 3: Подарки -->
+      <div class="banner banner-gifts">
+        <div class="banner-glow"></div>
+        <div class="banner-badge gift">🎁 ПОДАРКИ</div>
+        <div class="banner-emoji">🎁</div>
+        <div class="banner-content">
+          <div class="banner-tag">К РАССРОЧКЕ</div>
+          <h2>Подарки<br>до 15 000 ₽</h2>
+          <p>Чехол, стекло, зарядка<br>При оформлении 0%</p>
+          <button class="banner-btn" onclick="installmentOrder()">ПОЛУЧИТЬ →</button>
+        </div>
       </div>
+
     </div>
     <div class="banner-dots" id="bannerDots"></div>
   </div>
@@ -917,7 +1100,7 @@ body::before{
   <div class="t-scroll au d3" id="trendScroll"></div>
 
   <div class="catalog-heading au d4">
-    <div class="catalog-icon" id="catalogIcon">◈</div>
+    <div class="catalog-icon" id="catalogIcon">🛍</div>
     <div>
       <div class="catalog-title" id="catalogTitle">Весь каталог</div>
       <div class="catalog-count" id="catalogCount"></div>
@@ -931,16 +1114,22 @@ body::before{
   <div class="search-wrap" style="padding-top:20px">
     <div class="search-box">
       <span style="opacity:.45;display:flex;align-items:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-      <input type="text" placeholder="Поиск модели..." id="searchInput2" oninput="applySearch2()" autofocus>
+      <input type="text" placeholder="Поиск модели..." id="searchInput2" oninput="applySearch2()">
     </div>
   </div>
   <div class="chips" id="searchChips">
     <div class="chip active" onclick="setSearchFilter('all',this)">Все</div>
     <div class="chip" onclick="setSearchFilter('smartphones',this)">Смартфоны</div>
     <div class="chip" onclick="setSearchFilter('apple',this)">Apple</div>
+    <div class="chip" onclick="setSearchFilter('iPhone',this)">iPhone</div>
     <div class="chip" onclick="setSearchFilter('AirPods',this)">Аудио</div>
-    <div class="chip" onclick="setSearchFilter('consoles',this)">Приставки</div>
+    <div class="chip" onclick="setSearchFilter('MacBook',this)">Mac</div>
     <div class="chip" onclick="setSearchFilter('accessories',this)">Аксессуары</div>
+    <div class="chip-divider"></div>
+    <div class="chip chip-sort active" id="sortAll" onclick="setSort('all',this)">Все</div>
+    <div class="chip chip-sort" id="sortStock" onclick="setSort('instock',this)">✓ В наличии</div>
+    <div class="chip chip-sort" id="sortCheap" onclick="setSort('cheap',this)">↑ Дешевле</div>
+    <div class="chip chip-sort" id="sortExp" onclick="setSort('expensive',this)">↓ Дороже</div>
   </div>
   <div class="grid" id="searchGrid"></div>
 </div>
@@ -953,10 +1142,7 @@ body::before{
 
 <!-- INFO -->
 <div class="page" id="page-info">
-  <div class="back-btn" onclick="goBack()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    Назад
-  </div>
+  <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
   <div class="ph-head">О нас</div>
   <div class="info-hero au">
     <div class="info-em">
@@ -1005,9 +1191,13 @@ body::before{
 <!-- PROFILE -->
 <div class="page" id="page-profile">
   <div class="profile-hero au">
-    <div class="profile-avatar" id="profileAvatar" onclick="openAvatarPicker()">T</div>
-    <div class="avatar-edit-hint">нажми чтобы сменить</div>
-    <div class="profile-info"><h2 id="profileName">Загрузка...</h2><p id="profileUsername">@username</p></div>
+    <div class="profile-avatar-wrap" onclick="openAvatarPicker()">
+      <div class="profile-avatar" id="profileAvatar">T</div>
+      <div class="profile-avatar-edit">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+    </div>
+    <div class="profile-info"><h2 id="profileName">Загрузка...</h2><p id="profileUsername" style="display:none;font-size:13px;color:var(--t3);margin-top:2px"></p></div>
   </div>
   <div class="profile-stats au d1">
     <div class="stat-card"><div class="stat-n" id="statOrders">0</div><div class="stat-l">Заказов</div></div>
@@ -1043,10 +1233,7 @@ body::before{
 
 <!-- ADMIN PAGE -->
 <div class="page" id="page-admin">
-  <div class="back-btn" onclick="goBack()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    Назад
-  </div>
+  <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
   <div class="ph-head">Админка</div>
   <div style="padding:0 16px 14px;position:relative;z-index:1">
     <div class="admin-section-title">Наценка по категориям</div>
@@ -1107,6 +1294,102 @@ body::before{
   <div style="height:16px"></div>
 </div>
 
+
+<!-- CATEGORY PAGES -->
+<div class="page" id="page-cat-iphone">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>📱</span>iPhone</div>
+  </div>
+  <div class="chips cat-chips" id="chips-iphone">
+    <div class="chip active" onclick="setCatFilter('iphone','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('iphone','instock',this)">В наличии</div>
+    <div class="chip" onclick="setCatFilter('iphone','trend',this)">🔥 Хиты</div>
+    <div class="chip" onclick="setCatFilter('iphone','256',this)">256GB</div>
+    <div class="chip" onclick="setCatFilter('iphone','512',this)">512GB</div>
+  </div>
+  <div class="grid" id="grid-iphone"></div>
+</div>
+
+<div class="page" id="page-cat-samsung">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>📱</span>Samsung</div>
+  </div>
+  <div class="chips cat-chips" id="chips-samsung">
+    <div class="chip active" onclick="setCatFilter('samsung','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('samsung','instock',this)">В наличии</div>
+    <div class="chip" onclick="setCatFilter('samsung','trend',this)">🔥 Хиты</div>
+    <div class="chip" onclick="setCatFilter('samsung','256',this)">256GB</div>
+    <div class="chip" onclick="setCatFilter('samsung','512',this)">512GB</div>
+  </div>
+  <div class="grid" id="grid-samsung"></div>
+</div>
+
+<div class="page" id="page-cat-macbook">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>💻</span>MacBook</div>
+  </div>
+  <div class="chips cat-chips" id="chips-macbook">
+    <div class="chip active" onclick="setCatFilter('macbook','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('macbook','instock',this)">В наличии</div>
+    <div class="chip" onclick="setCatFilter('macbook','256',this)">256GB</div>
+    <div class="chip" onclick="setCatFilter('macbook','512',this)">512GB</div>
+  </div>
+  <div class="grid" id="grid-macbook"></div>
+</div>
+
+<div class="page" id="page-cat-ipad">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>📟</span>iPad</div>
+  </div>
+  <div class="chips cat-chips" id="chips-ipad">
+    <div class="chip active" onclick="setCatFilter('ipad','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('ipad','instock',this)">В наличии</div>
+    <div class="chip" onclick="setCatFilter('ipad','wifi',this)">Wi-Fi</div>
+  </div>
+  <div class="grid" id="grid-ipad"></div>
+</div>
+
+<div class="page" id="page-cat-watch">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>⌚</span>Apple Watch</div>
+  </div>
+  <div class="chips cat-chips" id="chips-watch">
+    <div class="chip active" onclick="setCatFilter('watch','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('watch','instock',this)">В наличии</div>
+  </div>
+  <div class="grid" id="grid-watch"></div>
+</div>
+
+<div class="page" id="page-cat-airpods">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>🎧</span>AirPods</div>
+  </div>
+  <div class="chips cat-chips" id="chips-airpods">
+    <div class="chip active" onclick="setCatFilter('airpods','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('airpods','instock',this)">В наличии</div>
+    <div class="chip" onclick="setCatFilter('airpods','trend',this)">🔥 Хиты</div>
+  </div>
+  <div class="grid" id="grid-airpods"></div>
+</div>
+
+<div class="page" id="page-cat-accessories">
+  <div class="cat-page-header">
+    <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
+    <div class="cat-page-title"><span>🧩</span>Аксессуары</div>
+  </div>
+  <div class="chips cat-chips" id="chips-accessories">
+    <div class="chip active" onclick="setCatFilter('accessories','all',this)">Все</div>
+    <div class="chip" onclick="setCatFilter('accessories','instock',this)">В наличии</div>
+  </div>
+  <div class="grid" id="grid-accessories"></div>
+</div>
+
 <!-- NAV PILL -->
 <div class="nav-wrap">
   <nav class="nav" id="mainNav">
@@ -1142,10 +1425,10 @@ body::before{
       <svg class="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="drawer-sub-list" id="drawerSmartphones">
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('Samsung')">Samsung</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('Xiaomi')">Xiaomi</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('Huawei')">Huawei</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('OnePlus')">OnePlus</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-samsung')">Samsung</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showCatPage('xiaomi','Xiaomi','📱')">Xiaomi</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showCatPage('huawei','Huawei','📱')">Huawei</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showCatPage('oneplus','OnePlus','📱')">OnePlus</div>
     </div>
 
     <!-- Apple — раскрывается -->
@@ -1155,11 +1438,11 @@ body::before{
       <svg class="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="drawer-sub-list" id="drawerApple">
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('iPhone')">iPhone</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('MacBook')">MacBook</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('iPad')">iPad</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('Watch')">Apple Watch</div>
-      <div class="drawer-sub-item" onclick="closeDrawer();filterAndGo('AirPods')">AirPods</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-iphone')">iPhone</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-macbook')">MacBook</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-ipad')">iPad</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-watch')">Apple Watch</div>
+      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-airpods')">AirPods</div>
     </div>
 
     <!-- Одиночные разделы -->
@@ -1169,7 +1452,7 @@ body::before{
       <svg class="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
 
-    <div class="drawer-item" onclick="closeDrawer();filterAndGo('accessories')">
+    <div class="drawer-item" onclick="closeDrawer();showPage('cat-accessories')">
       <div class="drawer-icon" style="background:rgba(255,159,10,.12)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
       <span>Аксессуары</span>
       <svg class="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1222,7 +1505,10 @@ body::before{
 <div class="overlay" id="overlay" onclick="maybeClose(event)">
   <div class="sheet">
     <div style="width:40px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0"></div>
-    <div class="sheet-img" id="sImg"></div>
+    <div class="sheet-slider-wrap" id="sSliderWrap">
+      <div class="sheet-slider-track" id="sSliderTrack"></div>
+      <div class="sheet-slider-dots" id="sSliderDots"></div>
+    </div>
     <div class="sheet-body">
       <div class="s-cat" id="sCat"></div>
       <div class="s-name" id="sName"></div>
@@ -1230,22 +1516,21 @@ body::before{
       <div class="specs" id="sSpecs"></div>
       <div class="s-stock"><svg width="8" height="8" viewBox="0 0 8 8" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="4" cy="4" r="4" fill="#34c759"/></svg>В наличии</div>
       <div class="s-bot">
-        <div><div class="s-old" id="sOld"></div><div class="s-price" id="sPrice"></div><div class="s-note">Цена за наличный расчёт</div></div>
-        <button class="s-add pulse" id="sAdd" onclick="addFromSheet()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          В корзину
-        </button>
-      </div>
-      <!-- INSTALLMENT BLOCK -->
-      <div class="install-section">
-        <div class="install-title">💳 Рассрочка 0%</div>
-        <div class="install-sub">Без переплат · Одобрение за 2 минуты</div>
-        <div class="install-plans" id="installPlans">
-          <div class="iplan active" onclick="selectPlan(this,3)"><div class="iplan-months">3</div><div class="iplan-month">мес.</div><div class="iplan-pay" id="ip3">— ₽/мес</div></div>
-          <div class="iplan" onclick="selectPlan(this,6)"><div class="iplan-months">6</div><div class="iplan-month">мес.</div><div class="iplan-pay" id="ip6">— ₽/мес</div></div>
-          <div class="iplan" onclick="selectPlan(this,12)"><div class="iplan-months">12</div><div class="iplan-month">мес.</div><div class="iplan-pay" id="ip12">— ₽/мес</div></div>
+        <div class="s-price-row">
+          <div class="s-old" id="sOld"></div>
+          <div class="s-price" id="sPrice"></div>
         </div>
-        <button class="install-cta" onclick="installmentOrder()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> РАССРОЧКА 0%</button>
+        <div class="s-credit-hint">💳 В рассрочку от <b>1 490 ₽/мес</b></div>
+        <div class="s-btns">
+          <button class="s-add pulse" id="sAdd" onclick="addFromSheet()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            В корзину
+          </button>
+          <button class="s-credit-btn" onclick="installmentOrder()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Рассрочка 0%
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1375,7 +1660,7 @@ let P = buildProducts();
 const BADGES = {fire:'Хит', new:'Новинка', hit:'Топ'};
 const PROMOS = {'TEXNO10':{disc:10,label:'Скидка 10%'},'LIVE15':{disc:15,label:'Скидка 15%'},'FIRST5':{disc:5,label:'Скидка 5%'}};
 const FILTER_META = {
-  'all':{icon:'◈',title:'Весь каталог'},
+  'all':{icon:'🛍',title:'Весь каталог'},
   'smartphones':{icon:'📱',title:'Смартфоны'},
   'apple':{icon:'',title:'Техника Apple'},
   'iPhone':{icon:'📱',title:'iPhone'},
@@ -1476,21 +1761,80 @@ const CAT_HINTS = [
   ['😸','Хороший выбор — лучшие цены!'],
 ];
 let hintIdx = 0;
-function startCatHints(){
-  // Первая подсказка через 8 секунд
-  setTimeout(()=>{
-    showCat(CAT_HINTS[hintIdx][0], CAT_HINTS[hintIdx][1], 4000);
-    hintIdx = (hintIdx+1) % CAT_HINTS.length;
-    // Потом каждые 30 секунд
-    catHintTimer = setInterval(()=>{
-      const b = document.getElementById('catBubble');
-      if(!b.classList.contains('show')){
-        showCat(CAT_HINTS[hintIdx][0], CAT_HINTS[hintIdx][1], 4000);
-        hintIdx = (hintIdx+1) % CAT_HINTS.length;
-      }
-    }, 30000);
-  }, 8000);
+
+// ══════════════════════════════════════
+// 📂 CATEGORY PAGES
+// ══════════════════════════════════════
+const CAT_PAGE_MAP = {
+  'iphone':      {brand:'iPhone',    title:'iPhone',      icon:'📱'},
+  'samsung':     {brand:'Samsung',   title:'Samsung',     icon:'📱'},
+  'macbook':     {brand:'MacBook',   title:'MacBook',     icon:'💻'},
+  'ipad':        {brand:'iPad',      title:'iPad',        icon:'📟'},
+  'watch':       {brand:'Watch',     title:'Apple Watch', icon:'⌚'},
+  'airpods':     {brand:'AirPods',   title:'AirPods',     icon:'🎧'},
+  'accessories': {brand:'Аксессуары',title:'Аксессуары',  icon:'🧩'},
+};
+
+let catFilters = {}; // catFilters['iphone'] = 'instock' etc
+
+function renderCatPage(catKey){
+  const meta = CAT_PAGE_MAP[catKey];
+  if(!meta) return;
+  const f = catFilters[catKey] || 'all';
+  let list = P.filter(p => p.brand === meta.brand);
+  if(f === 'instock') list = list.filter(p => p.inStock);
+  else if(f === 'trend') list = list.filter(p => p.trend);
+  else if(f === '256') list = list.filter(p => p.memory && p.memory.includes('256'));
+  else if(f === '512') list = list.filter(p => p.memory && p.memory.includes('512'));
+  else if(f === 'wifi') list = list.filter(p => p.sim && p.sim.includes('Wi-Fi'));
+  const el = document.getElementById('grid-' + catKey);
+  if(!el) return;
+  if(!list.length){
+    el.innerHTML = `<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Нет товаров</div>`;
+    return;
+  }
+  el.innerHTML = list.map((p,i) => {
+    const ci = cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
+    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .3s ${i*.04}s both ease">
+      <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
+      <div class="p-body">
+        <div class="p-name">${p.family}</div>
+        <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
+        <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#34c759'/></svg> В наличии`:`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#ff3b30'/></svg> Нет`}</div>
+        <div class="p-rating"><span class="p-stars">${'★'.repeat(Math.round(p.rating))}</span><span class="p-rn">(${p.reviews})</span></div>
+        <div class="p-foot">
+          <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
+          ${on?`<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${p.id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${p.id},1)">+</div></div>`:`<div class="p-add" onclick="event.stopPropagation();quickAdd(${p.id},this)">+</div>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
+
+function setCatFilter(catKey, f, el){
+  catFilters[catKey] = f;
+  document.querySelectorAll('#chips-'+catKey+' .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderCatPage(catKey);
+}
+
+function showCatPage(catKey, title, icon){
+  // Для брендов без отдельной страницы — динамически создаём контент в поиске
+  setSearchFilter(catKey === 'xiaomi' ? 'Xiaomi' : catKey === 'huawei' ? 'Huawei' : catKey, 
+    document.querySelector('#searchChips .chip'));
+  showPage('search');
+}
+
+// ══ SORT в поиске ══
+let searchSort = 'all';
+function setSort(s, el){
+  searchSort = s;
+  document.querySelectorAll('.chip-sort').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  applySearch2();
+}
+
+function startCatHints(){ /* отключено — кот только по делу */ }
 
 // ══════════════════════════════════════
 // ⬛ SKELETON LOADING
@@ -1563,6 +1907,9 @@ function updateInstallmentPrices(price){
     const el = document.getElementById('ip'+m);
     if(el) el.textContent = Math.ceil(price/m).toLocaleString('ru-RU') + ' ₽/мес';
   });
+  // Обновляем хинт "от X ₽/мес" (минимальный платёж = 12 мес)
+  const minPay = document.getElementById('sMinPay');
+  if(minPay) minPay.textContent = Math.ceil(price/12).toLocaleString('ru-RU');
 }
 
 // ══ GIFT MODAL ══
@@ -1734,7 +2081,45 @@ function filterAndGo(f){
 let pulseTimer = null;
 function openSheet(idx){
   const p = P[idx]; sheetId = p.id;
-  document.getElementById('sImg').innerHTML = img(p, true);
+
+  // ── Слайдер изображений ──
+  const track = document.getElementById('sSliderTrack');
+  const dotsEl = document.getElementById('sSliderDots');
+  const wrap = document.getElementById('sSliderWrap');
+
+  // Набор слайдов: основное фото + эмодзи как заглушка
+  const slides = p.photo ? [p.photo] : [];
+  const slideCount = slides.length || 1;
+
+  track.style.width = (slideCount * 100) + '%';
+  track.style.transform = 'translateX(0)';
+  track.innerHTML = slides.length
+    ? slides.map(src => `<div class="sheet-slide"><img src="${src}" alt="${p.family}" loading="lazy"></div>`).join('')
+    : `<div class="sheet-slide"><span style="font-size:90px">${p.icon}</span></div>`;
+
+  // Точки навигации (только если >1 слайда)
+  dotsEl.innerHTML = slideCount > 1
+    ? Array.from({length:slideCount},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
+    : '';
+
+  let slideIdx = 0;
+  function goSlide(i){
+    slideIdx = i;
+    track.style.transform = `translateX(-${i * (100/slideCount)}%)`;
+    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+  }
+
+  // Свайп по слайдеру
+  let tsx = 0;
+  wrap.ontouchstart = e => { tsx = e.touches[0].clientX; };
+  wrap.ontouchend = e => {
+    const dx = e.changedTouches[0].clientX - tsx;
+    if(Math.abs(dx) > 35){
+      if(dx < 0 && slideIdx < slideCount-1) goSlide(slideIdx+1);
+      else if(dx > 0 && slideIdx > 0) goSlide(slideIdx-1);
+    }
+  };
+
   document.getElementById('sCat').textContent = p.brand;
   document.getElementById('sName').textContent = p.family;
   document.getElementById('sRating').textContent = p.rating.toFixed(1);
@@ -1755,12 +2140,6 @@ function openSheet(idx){
   btn.innerHTML = on ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> В корзине` : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> В корзину`;
   btn.style.background = on ? 'linear-gradient(135deg,#34c759,#00c853)' : '';
   btn.classList.remove('pulse');
-
-  // Обновляем цены рассрочки
-  updateInstallmentPrices(p.price);
-
-  // Кот у кнопки
-  showCat('😺','Нажми «Рассрочка» — 0% без переплат!', 4000);
 
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2072,7 +2451,18 @@ function showPage(name, isBack=false){
   if(name==='cart') renderCart();
   if(name==='profile') updateProfile();
   if(name==='admin'){ renderMarkupRows(); renderAdminList(); }
-  if(name==='search'){ applySearch2(); setTimeout(()=>document.getElementById('searchInput2')?.focus(),100); }
+  if(name==='search'){
+    // Сбрасываем поле и показываем пустой экран
+    const inp = document.getElementById('searchInput2');
+    if(inp) inp.value = '';
+    searchSort = 'all';
+    document.querySelectorAll('.chip-sort').forEach((b,i)=>b.classList.toggle('active',i===0));
+    applySearch2();
+    setTimeout(()=>inp?.focus(), 100);
+  }
+  // Category pages
+  const catKey = name.startsWith('cat-') ? name.replace('cat-','') : null;
+  if(catKey) renderCatPage(catKey);
   window.scrollTo(0,0);
 }
 
@@ -2106,8 +2496,8 @@ function loadTelegramUser(){
   // Restore saved emoji avatar
   try{ const saved=localStorage.getItem('userAvatar'); if(saved){ const av=document.getElementById('profileAvatar'); av.textContent=saved; av.style.fontSize='32px'; av.style.background='rgba(255,255,255,0.6)'; } }catch(e){}
   } else {
-    document.getElementById('profileName').textContent = 'Гость';
-    document.getElementById('profileUsername').textContent = 'Открыто в браузере';
+    document.getElementById('profileName').textContent = 'Привет! 👋';
+    document.getElementById('profileUsername').style.display = 'none';
   }
 }
 
@@ -2197,13 +2587,56 @@ function setSearchFilter(f, el){
   el.classList.add('active');
   applySearch2();
 }
+// Транслит RU→EN для поиска
+const RU_MAP = {
+  'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z',
+  'и':'i','й':'j','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r',
+  'с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch',
+  'ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya',
+  // часто пишут по-русски названия брендов
+  'айфон':'iphone','самсунг':'samsung','макбук':'macbook','эпл':'apple',
+  'айпад':'ipad','вотч':'watch','аирподс':'airpods','ксиоми':'xiaomi',
+  'хуавей':'huawei','плейстейшн':'playstation','иксбокс':'xbox',
+};
+function ruToEn(s){
+  // Сначала проверяем целые слова
+  let r = s;
+  Object.entries(RU_MAP).forEach(([ru,en])=>{ r = r.replaceAll(ru,en); });
+  // Потом побуквенно то что осталось
+  return r.split('').map(c=>RU_MAP[c]||c).join('');
+}
+function matchProduct(p, q){
+  if(!q) return false;
+  const qEn = ruToEn(q);
+  const fields = [p.family, p.brand, p.color, p.memory, p.cat||''].map(f=>f.toLowerCase());
+  const fieldsEn = fields.map(ruToEn);
+  return fields.some(f=>f.includes(q)) || fieldsEn.some(f=>f.includes(qEn));
+}
+
 function applySearch2(){
-  const q = (document.getElementById('searchInput2')?.value||'').toLowerCase();
-  let list = filterByCategory(P, searchFilter2);
-  if(q) list = list.filter(p=>p.family.toLowerCase().includes(q)||p.color.toLowerCase().includes(q)||p.memory.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q));
+  const q = (document.getElementById('searchInput2')?.value||'').trim().toLowerCase();
   const el = document.getElementById('searchGrid');
   if(!el) return;
-  if(!list.length){ el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено</div>`; return; }
+
+  // Пустой запрос + фильтр "Все" → пустой экран с подсказкой
+  if(!q && searchFilter2 === 'all'){
+    el.innerHTML = `<div style="grid-column:span 2;text-align:center;padding:60px 20px;color:var(--t3)">
+      <div style="font-size:40px;margin-bottom:12px">🔍</div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--t2);margin-bottom:6px">Начни поиск</div>
+      <div style="font-size:12px;line-height:1.6">Введи название модели,<br>бренд или цвет</div>
+    </div>`;
+    return;
+  }
+
+  let list = filterByCategory(P, searchFilter2);
+  if(q) list = list.filter(p => matchProduct(p, q));
+
+  // Сортировка
+  if(searchSort === 'instock') list = list.filter(p=>p.inStock);
+  else if(searchSort === 'cheap') list = [...list].sort((a,b)=>a.price-b.price);
+  else if(searchSort === 'expensive') list = [...list].sort((a,b)=>b.price-a.price);
+
+  if(!list.length){ el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено 😔</div>`; return; }
   el.innerHTML = list.map((p,i)=>{
     const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
     return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .3s ${i*.04}s both ease">
@@ -2321,7 +2754,6 @@ try{
   renderTrend();
   setTimeout(()=>{ try{ applyFilters(); }catch(e){ console.warn('applyFilters',e); } }, 500);
   initAdmin();
-  startCatHints();
 }catch(e){ console.error('Init error:',e); }
 </script>
 </body>
