@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ТЕХНО LIVE</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js" async></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -29,7 +29,7 @@ html,body{width:100%;overflow-x:hidden;position:relative;overscroll-behavior:non
 body{
   background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
   min-height:100dvh;padding-bottom:calc(90px + var(--sb));
-  -webkit-overflow-scrolling:touch;touch-action:pan-y;
+  -webkit-overflow-scrolling:touch;touch-action:manipulation;
 }
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -123,15 +123,17 @@ body::before{
 
 /* BANNER SLIDER */
 /* ── BANNERS ── */
-.banner-wrap{padding:0 16px 20px;position:relative;z-index:1}
+.banner-wrap{padding:20px 16px 20px;position:relative;z-index:1}
 .banner-slider{
   display:flex;
+  width:300%;
   transition:transform .42s cubic-bezier(.32,.72,0,1);
-  will-change:transform;touch-action:pan-y;user-select:none;
-  border-radius:26px;overflow:hidden;
+  will-change:transform;user-select:none;
+  border-radius:26px;overflow:visible;
 }
+.banner-wrap{overflow:hidden;border-radius:26px}
 .banner{
-  min-width:100%;position:relative;padding:28px 24px 26px;
+  flex:0 0 33.333%;min-width:33.333%;position:relative;padding:28px 24px 26px;
   background:rgba(28,28,30,0.88);
   backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
   border-radius:26px;
@@ -174,6 +176,8 @@ body::before{
   padding:4px 10px;border-radius:50px;border:1px solid rgba(255,255,255,0.16);
   margin-bottom:10px;text-transform:uppercase;position:relative;z-index:1;
 }
+.banner-green{background:linear-gradient(135deg,#0d4d0d 0%,#166416 50%,#0d4d0d 100%)!important}
+.banner-gold{background:linear-gradient(135deg,#2a2200 0%,#3d3000 50%,#2a2200 100%)!important}
 .banner-dots{display:flex;justify-content:center;gap:5px;margin-top:12px}
 .dot{width:6px;height:6px;border-radius:3px;background:rgba(28,28,30,0.18);cursor:pointer;transition:all .3s}
 .dot.active{width:20px;background:rgba(28,28,30,0.55)}
@@ -336,11 +340,13 @@ body::before{
   background:rgba(0,0,0,0);
   pointer-events:none;
   transition:background .3s ease;
+  visibility:hidden;
 }
 .drawer-overlay.open{
   background:rgba(0,0,0,0.25);
   pointer-events:all;
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  visibility:visible;
 }
 .drawer{
   position:fixed;bottom:0;left:0;right:0;z-index:400;
@@ -382,9 +388,9 @@ body::before{
   position:fixed;inset:0;z-index:600;
   background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .3s;
+  opacity:0;pointer-events:none;transition:opacity .3s;visibility:hidden;
 }
-.gift-modal-overlay.open{opacity:1;pointer-events:all}
+.gift-modal-overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .gift-modal{
   width:100%;max-width:480px;
   background:rgba(240,242,245,0.97);
@@ -436,9 +442,9 @@ body::before{
   position:fixed;inset:0;z-index:700;
   background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .28s;
+  opacity:0;pointer-events:none;transition:opacity .28s;visibility:hidden;
 }
-.avatar-picker-overlay.open{opacity:1;pointer-events:all}
+.avatar-picker-overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .avatar-picker{
   width:100%;max-width:480px;
   background:rgba(240,242,245,0.97);
@@ -541,8 +547,8 @@ body::before{
 /* ORDER MODAL */
 .order-overlay{position:fixed;inset:0;z-index:400;background:rgba(150,155,165,0.45);
   backdrop-filter:blur(30px) saturate(200%);-webkit-backdrop-filter:blur(30px) saturate(200%);
-  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
-.order-overlay.open{opacity:1;pointer-events:all}
+  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;visibility:hidden;}
+.order-overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .order-sheet{width:100%;background:rgba(235,237,240,0.95);
   border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);
   padding:16px 18px calc(30px + var(--sb));transform:translateY(100%);
@@ -582,8 +588,8 @@ body::before{
 
 /* STATUS */
 .status-overlay{position:fixed;inset:0;z-index:500;background:rgba(150,155,165,0.50);backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
-  display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s}
-.status-overlay.open{opacity:1;pointer-events:all}
+  display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .3s;visibility:hidden;}
+.status-overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .status-card{width:100%;background:rgba(240,242,245,0.95);border-radius:28px;
   border:1px solid rgba(255,255,255,0.95);padding:32px 24px;text-align:center;
   transform:scale(.9);transition:transform .3s cubic-bezier(.34,1.56,.64,1);
@@ -665,8 +671,8 @@ body::before{
 .pi-arr{color:var(--t3);font-size:16px}
 
 /* SHEET */
-.overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
-.overlay.open{opacity:1;pointer-events:all}
+.overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;visibility:hidden;}
+.overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(24px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
 .overlay.open .sheet{transform:translateY(0)}
 .sheet-img{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background:linear-gradient(135deg,rgba(255,255,255,0.65),rgba(220,225,235,0.55));display:flex;align-items:center;justify-content:center;font-size:90px;position:relative;box-shadow:0 4px 20px var(--shadow),inset 0 1px 0 white}
@@ -701,22 +707,48 @@ body::before{
 /* ═══ CONFETTI ═══ */
 #confettiCanvas{position:fixed;inset:0;z-index:900;pointer-events:none}
 
-/* ═══ CAT MASCOT ═══ */
+/* ═══ CAT MASCOT — Dynamic Island style ═══ */
 .cat-bubble{
-  position:fixed;bottom:calc(90px + var(--sb) + 10px);left:16px;z-index:500;
-  display:flex;align-items:flex-end;gap:8px;
-  opacity:0;transform:translateY(14px);
-  transition:opacity .3s,transform .3s;pointer-events:none;
+  position:fixed;
+  top:calc(var(--st) + 60px);
+  left:50%;
+  transform:translateX(-50%) scale(0.72);
+  z-index:500;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 18px 10px 14px;
+  width:max-content;
+  max-width:44px;
+  background:rgba(0,0,0,0.92);
+  border-radius:50px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.06);
+  backdrop-filter:blur(40px) saturate(180%);
+  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  opacity:0;
+  transition:opacity .4s cubic-bezier(.34,1.56,.64,1),transform .4s cubic-bezier(.34,1.56,.64,1),max-width .45s cubic-bezier(.32,.72,0,1);
+  pointer-events:none;
+  overflow:hidden;
 }
-.cat-bubble.show{opacity:1;transform:translateY(0);pointer-events:all}
-.cat-face{font-size:36px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12));animation:catBob 2s ease-in-out infinite}
-@keyframes catBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.cat-bubble.show{
+  opacity:1;
+  transform:translateX(-50%) scale(1);
+  max-width:320px;
+  pointer-events:none;
+}
+.cat-face{
+  font-size:28px;
+  flex-shrink:0;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+  animation:catBob 2s ease-in-out infinite;
+}
+@keyframes catBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.05)}}
 .cat-speech{
-  background:rgba(240,242,245,0.95);border:1px solid rgba(255,255,255,0.95);
-  border-radius:18px 18px 18px 4px;padding:10px 14px;
-  font-size:13px;font-weight:500;color:var(--text);max-width:200px;line-height:1.4;
-  box-shadow:0 4px 20px var(--shadow),inset 0 1px 0 white;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  font-size:13px;
+  font-weight:500;
+  color:rgba(255,255,255,0.95);
+  line-height:1.4;
+  max-width:240px;
 }
 
 /* ═══ SKELETON ═══ */
@@ -829,27 +861,25 @@ body::before{
   <div class="banner-wrap au d2">
     <div class="banner-slider" id="bannerSlider">
       <div class="banner">
-        <div class="banner-badge fire">ХИТ</div>
-        <div class="banner-tag">НОВИНКА 2025</div>
-        <h2>iPhone 17 Pro Max</h2>
-        <p>Black Titanium · 256GB · eSim<br>Оригинал · Гарантия 12 мес.</p>
-        <button class="banner-btn" onclick="openSheet(0)">ПОДРОБНЕЕ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
-      </div>
-      <div class="banner" style="background:linear-gradient(135deg,#1a1a1a,#252525,#1a1a1a)">
-        <div style="position:absolute;top:-70px;right:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(191,90,242,.18),transparent 65%);pointer-events:none"></div>
         <div class="banner-badge new">NEW</div>
-        <div class="banner-tag">ПРЕМИУМ</div>
-        <h2>MacBook Pro M4</h2>
-        <p>Silver · 512GB · M4 Pro<br>Мощность нового уровня</p>
-        <button class="banner-btn" onclick="openSheet(11)">ПОДРОБНЕЕ →</button>
+        <div class="banner-tag">НОВОСТИ МАРТА</div>
+        <h2>Новинки Apple 2025</h2>
+        <p>iPhone 16, MacBook M4, AirPods 4<br>Уже в наличии · Оригинал · Гарантия</p>
+        <button class="banner-btn" onclick="openSheet(0)">СМОТРЕТЬ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
       </div>
-      <div class="banner" style="background:linear-gradient(135deg,#141414,#1c1c1c,#141414)">
-        <div style="position:absolute;top:-70px;right:-50px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(52,199,89,.14),transparent 65%);pointer-events:none"></div>
-        <div class="banner-badge sale">−15%</div>
-        <div class="banner-tag">ВЫГОДА</div>
-        <h2>AirPods Pro 2</h2>
-        <p>White · Оригинал · Россия<br>Лучшая цена на рынке</p>
-        <button class="banner-btn" onclick="openSheet(8)">ПОДРОБНЕЕ →</button>
+      <div class="banner banner-green">
+        <div class="banner-badge sale">0%</div>
+        <div class="banner-tag">РАССРОЧКА</div>
+        <h2>Рассрочка без переплат</h2>
+        <p>На 3, 6 или 12 месяцев<br>Без первого взноса · Одобрение за минуту</p>
+        <button class="banner-btn" onclick="installmentOrder()">УЗНАТЬ УСЛОВИЯ →</button>
+      </div>
+      <div class="banner banner-gold">
+        <div class="banner-badge fire">ПОДАРКИ</div>
+        <div class="banner-tag">К РАССРОЧКЕ</div>
+        <h2>Подарки до 15 000 ₽</h2>
+        <p>Чехол, стекло, зарядка, Алиса<br>При оформлении рассрочки 0%</p>
+        <button class="banner-btn" onclick="installmentOrder()">ПОЛУЧИТЬ ПОДАРКИ →</button>
       </div>
     </div>
     <div class="banner-dots" id="bannerDots"></div>
@@ -1589,7 +1619,7 @@ function initBanner(){
 }
 function goBanner(i){
   bannerIdx=i;
-  document.getElementById('bannerSlider').style.transform=`translateX(-${i*100}%)`;
+  document.getElementById('bannerSlider').style.transform=`translateX(-${i*33.333}%)`;
   document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active',j===i));
 }
 
@@ -1657,7 +1687,7 @@ function setFilter(f, el){
 function resetFilter(){
   filter='all';
   const chips=document.querySelectorAll('#homeChips .chip');
-  chips.forEach((c,i)=>c.classList.toggle('active',i===0));
+  if(chips.length) chips.forEach((c,i)=>c.classList.toggle('active',i===0));
   applyFilters();
 }
 function applyFilters(){
@@ -1708,3 +1738,567 @@ function openSheet(idx){
   // Кот у кнопки
   showCat('😺','Нажми «Рассрочка» — 0% без переплат!', 4000);
 
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Пульсация кнопки через 4 секунды просмотра
+  clearTimeout(pulseTimer);
+  pulseTimer = setTimeout(()=>{
+    if(!cart.some(c=>c.id===p.id)){
+      btn.classList.add('pulse');
+      showCat('😸','Долго смотришь — может купить? 😄', 3000);
+    }
+  }, 5000);
+}
+
+function maybeClose(e){ if(e.target===document.getElementById('overlay')) closeSheet(); }
+function closeSheet(){
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow='';
+  clearTimeout(pulseTimer);
+  document.getElementById('sAdd')?.classList.remove('pulse');
+}
+
+function addFromSheet(){
+  if(!sheetId) return;
+  if(addToCart(sheetId)){
+    const btn = document.getElementById('sAdd');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> В корзине`;
+    btn.style.background = 'linear-gradient(135deg,#34c759,#00c853)';
+    btn.classList.remove('pulse');
+  }
+}
+
+// ══════════════════════════════════════
+// 🛒 CART ANIMATION
+// ══════════════════════════════════════
+function animateToCart(btnEl){
+  const cartBtn = document.getElementById('cartBtn');
+  const bR = cartBtn.getBoundingClientRect();
+  const sR = btnEl.getBoundingClientRect();
+  const fly = document.createElement('div');
+  fly.textContent = '🛒';
+  fly.style.cssText = `position:fixed;left:${sR.left+sR.width/2}px;top:${sR.top+sR.height/2}px;font-size:20px;z-index:9999;pointer-events:none;transition:all 0.55s cubic-bezier(.25,.46,.45,.94);transform:scale(1)`;
+  document.body.appendChild(fly);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      fly.style.left = bR.left + bR.width/2 + 'px';
+      fly.style.top = bR.top + bR.height/2 + 'px';
+      fly.style.transform = 'scale(0.2)';
+      fly.style.opacity = '0';
+    });
+  });
+  setTimeout(()=>fly.remove(), 600);
+  cartBtn.classList.remove('cart-anim'); void cartBtn.offsetWidth; cartBtn.classList.add('cart-anim');
+  setTimeout(()=>cartBtn.classList.remove('cart-anim'), 400);
+}
+
+function quickAdd(id, btnEl){
+  if(addToCart(id) && btnEl) animateToCart(btnEl);
+  applyFilters(); renderTrend();
+}
+
+function addToCart(id){
+  const ex = cart.find(c=>c.id===id);
+  if(ex){ ex.qty++; updateBadge(); updateProfile(); return false; }
+  const p = P.find(x=>x.id===id); if(!p) return false;
+  cart.push({...p, qty:1});
+  updateBadge(); updateProfile();
+  showToast(p.family+' добавлен');
+  catOnAdd();
+  return true;
+}
+
+function changeQty(id, d){
+  const ci = cart.find(c=>c.id===id); if(!ci) return;
+  const wasInCart = ci.qty > 0;
+  ci.qty += d;
+  if(ci.qty <= 0){
+    cart = cart.filter(c=>c.id!==id);
+    catOnRemove();
+  } else if(d > 0 && wasInCart){
+    catOnReturn();
+  }
+  updateBadge(); applyFilters(); renderTrend(); updateProfile();
+  if(document.getElementById('page-cart').classList.contains('on')) renderCart();
+}
+
+function removeFromCart(id){
+  cart = cart.filter(c=>c.id!==id);
+  catOnRemove();
+  updateBadge(); renderCart(); applyFilters(); renderTrend(); updateProfile();
+}
+
+function updateBadge(){
+  const t = cart.reduce((s,c)=>s+c.qty, 0);
+  const b = document.getElementById('badge');
+  b.textContent = t; b.classList.toggle('show', t>0);
+  // Nav dot badge on cart icon
+  const nb = document.getElementById('navBadge');
+  if(nb) nb.classList.toggle('show', t>0);
+}
+
+// ══════════════════════════════════════
+// 🛒 CART PAGE
+// ══════════════════════════════════════
+function renderCart(){
+  const el = document.getElementById('cartContent');
+  if(!cart.length){
+    el.innerHTML = `<div class="cart-empty"><div class="cart-empty-i">🛒</div><h3>Корзина пуста</h3><p>Добавьте товары из каталога</p><div class="go-btn" onclick="showPage('home')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> В КАТАЛОГ</div></div>`;
+    return;
+  }
+  const sub = cart.reduce((s,c)=>s+c.price*c.qty, 0);
+  const disc = promoApplied ? Math.round(sub*promoApplied.disc/100) : 0;
+  const total = sub - disc;
+  el.innerHTML = `
+    <div class="cart-list">
+      ${cart.map(p=>`
+        <div class="ci">
+          <div class="ci-img">${p.photo?`<img src="${p.photo}" alt="">`:p.icon}</div>
+          <div class="ci-info">
+            <div class="ci-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div>
+            <div class="ci-sub">${p.color}${p.sim!=='—'?' · '+p.sim:''}</div>
+            <div class="ci-qty-row">
+              <div class="ci-qty-btn m" onclick="changeQty(${p.id},-1)">−</div>
+              <div class="ci-qty-n">${p.qty}</div>
+              <div class="ci-qty-btn p" onclick="changeQty(${p.id},1)">+</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+            <div class="ci-price">${fmt(p.price*p.qty)}</div>
+            <div class="ci-del" onclick="removeFromCart(${p.id})">✕</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="promo-wrap">
+      <div class="promo-row">
+        <input class="promo-input" id="promoInput" placeholder="Промокод" ${promoApplied?'disabled':''}>
+        <button class="promo-btn" onclick="applyPromo()" ${promoApplied?'style="background:rgba(52,199,89,.2);color:#1a7d38"':''}>
+          ${promoApplied?`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'/></svg>`}
+        </button>
+      </div>
+      <div class="promo-ok" id="promoOk" style="${promoApplied?'display:block':''}">✅ ${promoApplied?promoApplied.label:''}</div>
+      <div class="promo-err" id="promoErr"></div>
+    </div>
+    <div class="totals">
+      <div class="tot-r"><span>Товары (${cart.reduce((s,c)=>s+c.qty,0)})</span><span>${fmt(sub)}</span></div>
+      ${disc?`<div class="tot-r"><span>Скидка ${promoApplied.disc}%</span><span style="color:#1a7d38">−${fmt(disc)}</span></div>`:''}
+      <div class="tot-r"><span>Доставка</span><span style="color:#1a7d38">Уточнит менеджер</span></div>
+      <div class="tot-r big"><span>Итого</span><span class="v">${fmt(total)}</span></div>
+    </div>
+    <button class="checkout-btn" onclick="openOrderModal()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ОФОРМИТЬ ЗАКАЗ</button>
+    <div style="height:12px"></div>`;
+}
+
+function applyPromo(){
+  if(promoApplied) return;
+  const code = (document.getElementById('promoInput')?.value||'').trim().toUpperCase();
+  const promo = PROMOS[code];
+  if(promo){ promoApplied=promo; showToast('Промокод применён: '+promo.label); renderCart(); }
+  else {
+    const e=document.getElementById('promoErr');
+    if(e){ e.textContent='❌ Неверный промокод'; e.style.display='block'; setTimeout(()=>e.style.display='none',2000); }
+  }
+}
+
+// ══════════════════════════════════════
+// 📝 ORDER MODAL
+// ══════════════════════════════════════
+function selectDelivery(type){
+  deliveryType = type;
+  document.getElementById('dtab-pickup').classList.toggle('active', type==='pickup');
+  document.getElementById('dtab-delivery').classList.toggle('active', type==='delivery');
+  document.getElementById('form-pickup').classList.toggle('show', type==='pickup');
+  document.getElementById('form-delivery').classList.toggle('show', type==='delivery');
+  document.getElementById('orderSubtitle').textContent = type==='pickup' ? 'Самовывоз: Москва, пл. Победы, 2к2' : 'Курьер доставит в течение 3 часов';
+}
+
+function updateMapPreview(){
+  const a = document.getElementById('delivAddress').value.trim();
+  document.getElementById('mapAddrText').textContent = a ? 'Москва, '+a : 'Введите адрес выше';
+}
+
+function openAddressInMap(){
+  const a = document.getElementById('delivAddress').value.trim();
+  if(!a){ showToast('Введите адрес'); return; }
+  window.open(`https://yandex.ru/maps/?text=${encodeURIComponent('Москва, '+a)}`, '_blank');
+}
+
+function openOrderModal(){
+  const tg = window.Telegram?.WebApp;
+  if(tg?.initDataUnsafe?.user){
+    const u = tg.initDataUnsafe.user;
+    const n = [u.first_name,u.last_name].filter(Boolean).join(' ');
+    ['pickupName','delivName'].forEach(id=>{ const el=document.getElementById(id); if(el&&!el.value) el.value=n; });
+  }
+  document.getElementById('orderOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function maybeCloseOrder(e){ if(e.target===document.getElementById('orderOverlay')) closeOrderModal(); }
+function closeOrderModal(){ document.getElementById('orderOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+function submitOrder(){
+  let name, phone, extra='';
+  if(deliveryType==='pickup'){
+    name = document.getElementById('pickupName').value.trim();
+    phone = document.getElementById('pickupPhone').value.trim();
+    const t = document.getElementById('pickupTime').value.trim();
+    extra = t ? `\n🕐 Время: ${t}` : '';
+  } else {
+    name = document.getElementById('delivName').value.trim();
+    phone = document.getElementById('delivPhone').value.trim();
+    const a = document.getElementById('delivAddress').value.trim();
+    const c = document.getElementById('delivComment').value.trim();
+    if(!a){ showToast('Введите адрес доставки'); return; }
+    extra = `\n📍 Адрес: ${a}` + (c?`\n💬 ${c}`:'');
+  }
+  if(!name){ showToast('Введите ваше имя'); return; }
+  if(!phone){ showToast('Введите номер телефона'); return; }
+
+  const sub = cart.reduce((s,c)=>s+c.price*c.qty, 0);
+  const disc = promoApplied ? Math.round(sub*promoApplied.disc/100) : 0;
+  const total = sub - disc;
+  const dl = deliveryType==='pickup' ? 'Самовывоз' : 'Доставка курьером';
+  const num = '#'+String(++orderCount).padStart(3,'0')+'-'+Date.now().toString().slice(-4);
+  const msg = encodeURIComponent(
+    `📦 Новый заказ ${num}\n👤 ${name}\n<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 012 1.18 2 2 0 013.98 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> ${phone}\n🚚 ${dl}${extra}\n\n`+
+    cart.map(p=>`• ${p.family}${p.memory!=='—'?' '+p.memory:''} × ${p.qty} — ${fmt(p.price*p.qty)}`).join('\n')+
+    (promoApplied?`\n🏷 Скидка: −${fmt(disc)}`:'')+
+    `\n💰 Итого: ${fmt(total)}`
+  );
+  const tg = window.Telegram?.WebApp;
+  if(tg){ try{ tg.sendData(JSON.stringify({num,name,phone,deliveryType,total})); }catch(e){} }
+  window.open(`https://t.me/TEXHOLIVE?text=${msg}`, '_blank');
+
+  closeOrderModal();
+  const savedCart = [...cart];
+  cart = []; promoApplied = null;
+  updateBadge(); applyFilters(); renderTrend(); updateProfile();
+
+  // Показываем статус + конфетти!
+  showOrderStatus(num, name, total, savedCart);
+}
+
+function showOrderStatus(num, name, total, savedCart){
+  document.getElementById('statusTitle').textContent = 'Заказ оформлен!';
+  document.getElementById('statusSub').textContent = `${name}, менеджер свяжется в течение 15 минут`;
+  document.getElementById('statusNum').textContent = num;
+  const icon = document.getElementById('statusIcon');
+  icon.textContent='🎊'; icon.classList.remove('pop'); void icon.offsetWidth; icon.classList.add('pop');
+  document.getElementById('statusItems').innerHTML =
+    (savedCart||[]).map(p=>`<div class="status-item"><span>${p.family} × ${p.qty}</span><span>${fmt(p.price*p.qty)}</span></div>`).join('')+
+    `<div class="status-item"><span>Итого</span><span>${fmt(total)}</span></div>`;
+  document.getElementById('statusOverlay').classList.add('open');
+
+  // КОНФЕТТИ после заказа!
+  setTimeout(()=>launchConfetti(4000), 200);
+  // Кот поздравляет
+  setTimeout(()=>showCat('😺','Заказ принят! Скоро свяжемся 🎉', 4000), 800);
+}
+
+function closeStatus(){ document.getElementById('statusOverlay').classList.remove('open'); }
+
+// ══════════════════════════════════════
+// 🗺 NAVIGATION
+// ══════════════════════════════════════
+// ══ NAVIGATION HISTORY ══
+let pageHistory = ['home'];
+
+function showPage(name, isBack=false){
+  const currentId = pageHistory[pageHistory.length-1];
+  if(currentId === name) return;
+  const currentEl = document.getElementById('page-'+currentId);
+  const nextEl = document.getElementById('page-'+name);
+  if(!nextEl) return;
+
+  // Hide current with out-animation
+  if(currentEl && currentEl.classList.contains('on')){
+    currentEl.classList.remove('on');
+    currentEl.style.animation = isBack
+      ? 'pageOutBack .22s cubic-bezier(.4,0,.2,1) both'
+      : 'pageOut .22s cubic-bezier(.4,0,.2,1) both';
+    setTimeout(()=>{
+      currentEl.style.animation='';
+      currentEl.style.display='none';
+    }, 220);
+  }
+
+  // Show next
+  nextEl.style.display='block';
+  nextEl.style.animation='';
+  void nextEl.offsetWidth;
+  nextEl.style.animation = isBack
+    ? 'pageInBack .3s cubic-bezier(.4,0,.2,1) both'
+    : 'pageIn .3s cubic-bezier(.4,0,.2,1) both';
+  nextEl.classList.add('on');
+
+  // History
+  if(isBack){ pageHistory.pop(); }
+  else { if(pageHistory[pageHistory.length-1]!==name) pageHistory.push(name); }
+
+  // Nav active — only main tabs
+  const mainTabs=['home','search','cart','profile'];
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  if(mainTabs.includes(name)){
+    const navEl=document.getElementById('nav-'+name);
+    if(navEl) navEl.classList.add('active');
+  }
+
+  if(name==='cart') renderCart();
+  if(name==='profile') updateProfile();
+  if(name==='admin'){ renderMarkupRows(); renderAdminList(); }
+  if(name==='search'){ applySearch2(); setTimeout(()=>document.getElementById('searchInput2')?.focus(),100); }
+  window.scrollTo(0,0);
+}
+
+function goBack(){
+  if(pageHistory.length<=1){ showPage('home',true); return; }
+  const prev=pageHistory[pageHistory.length-2];
+  showPage(prev, true);
+}
+
+let _tt;
+function showToast(msg){
+  const t = document.getElementById('toast'); t.textContent=msg;
+  t.classList.add('show'); clearTimeout(_tt);
+  _tt = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function updateProfile(){
+  const t = cart.reduce((s,c)=>s+c.qty, 0);
+  document.getElementById('statOrders').textContent = orderCount;
+  document.getElementById('statCart').textContent = t;
+  document.getElementById('profileCartSub').textContent = t ? `${t} товар(ов)` : 'Пусто';
+}
+
+function loadTelegramUser(){
+  const tg = window.Telegram?.WebApp;
+  if(tg?.initDataUnsafe?.user){
+    const u = tg.initDataUnsafe.user;
+    document.getElementById('profileName').textContent = [u.first_name,u.last_name].filter(Boolean).join(' ')||'Пользователь';
+    document.getElementById('profileUsername').textContent = u.username ? '@'+u.username : 'Telegram';
+    if(u.first_name) document.getElementById('profileAvatar').textContent = u.first_name[0].toUpperCase();
+  // Restore saved emoji avatar
+  try{ const saved=localStorage.getItem('userAvatar'); if(saved){ const av=document.getElementById('profileAvatar'); av.textContent=saved; av.style.fontSize='32px'; av.style.background='rgba(255,255,255,0.6)'; } }catch(e){}
+  } else {
+    document.getElementById('profileName').textContent = 'Гость';
+    document.getElementById('profileUsername').textContent = 'Открыто в браузере';
+  }
+}
+
+function openMaps(){ window.open('https://yandex.com/maps/-/CPeUI4OR','_blank'); }
+
+// ══════════════════════════════════════
+// ⚙️ ADMIN PANEL
+// ══════════════════════════════════════
+function renderMarkupRows(){
+  const el = document.getElementById('markupRows'); if(!el) return;
+  el.innerHTML = MARKUP_CATS.map(cat=>`
+    <div class="markup-row">
+      <div class="markup-label">${CAT_ICONS[cat]||''} ${cat}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input class="markup-input" type="number" id="mk_${cat}" value="${markups[cat]||0}" placeholder="0">
+        <span style="font-size:12px;color:var(--t3)">₽</span>
+      </div>
+    </div>`).join('');
+}
+
+function saveMarkups(){
+  MARKUP_CATS.forEach(cat=>{ markups[cat] = parseInt(document.getElementById('mk_'+cat)?.value)||0; });
+  saveMarkupsToStorage(markups); P=buildProducts(); applyFilters(); renderTrend();
+  showToast('Наценки сохранены!');
+}
+
+function adminAddProduct(){
+  const brand = document.getElementById('a_brand').value;
+  const family = document.getElementById('a_family').value.trim();
+  const basePrice = parseInt(document.getElementById('a_price').value)||0;
+  if(!family||!basePrice){ showToast('Заполни название и цену'); return; }
+  const custom = loadCustomProducts();
+  const maxId = Math.max(...P.map(p=>p.id), 100);
+  const newP = {
+    id:maxId+1, brand, family,
+    memory: document.getElementById('a_memory').value.trim()||'—',
+    color: document.getElementById('a_color').value.trim()||'—',
+    sim: document.getElementById('a_sim').value.trim()||'—',
+    basePrice, oldPrice: parseInt(document.getElementById('a_oldprice').value)||null,
+    icon: CAT_ICONS[brand]||'📦',
+    flag: document.getElementById('a_flag').value.trim()||'🇷🇺',
+    photo: document.getElementById('a_photo').value.trim()||null,
+    trend: document.getElementById('a_trend').checked,
+    badge: document.getElementById('a_badge').value||null,
+    rating:5.0, reviews:0,
+    inStock: document.getElementById('a_instock').checked,
+    custom:true
+  };
+  custom.push(newP); saveProductsToStorage(custom);
+  P=buildProducts(); applyFilters(); renderTrend(); renderAdminList();
+  ['a_family','a_memory','a_color','a_price','a_oldprice','a_sim','a_photo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('a_flag').value='🇷🇺';
+  document.getElementById('a_badge').value='';
+  document.getElementById('a_trend').checked=false;
+  document.getElementById('a_instock').checked=true;
+  showToast('Товар добавлен: '+family);
+}
+
+function adminDeleteProduct(id){
+  const custom = loadCustomProducts().filter(p=>p.id!==id);
+  saveProductsToStorage(custom); P=buildProducts(); applyFilters(); renderTrend(); renderAdminList();
+  showToast('Товар удалён');
+}
+
+function renderAdminList(){
+  const el=document.getElementById('adminProductList'); if(!el) return;
+  const countEl=document.getElementById('adminCount'); if(countEl) countEl.textContent=P.length;
+  el.innerHTML = P.map(p=>`
+    <div class="adm-p">
+      <div class="adm-p-icon">${p.icon}</div>
+      <div class="adm-p-info">
+        <div class="adm-p-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div>
+        <div class="adm-p-sub">${p.color} · ${p.brand}${p.custom?' · ➕ Добавлен':''}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="adm-p-price">${fmt(p.price)}</div>
+        ${(markups[p.brand]||0)>0?`<div style="font-size:9px;color:var(--t3)">база: ${fmt(p.basePrice)}</div>`:''}
+      </div>
+      ${p.custom?`<div class="adm-del" onclick="adminDeleteProduct(${p.id})">✕</div>`:''}
+    </div>`).join('');
+}
+
+let searchFilter2 = 'all';
+function setSearchFilter(f, el){
+  searchFilter2 = f;
+  document.querySelectorAll('#searchChips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  applySearch2();
+}
+function applySearch2(){
+  const q = (document.getElementById('searchInput2')?.value||'').toLowerCase();
+  let list = filterByCategory(P, searchFilter2);
+  if(q) list = list.filter(p=>p.family.toLowerCase().includes(q)||p.color.toLowerCase().includes(q)||p.memory.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q));
+  const el = document.getElementById('searchGrid');
+  if(!el) return;
+  if(!list.length){ el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено</div>`; return; }
+  el.innerHTML = list.map((p,i)=>{
+    const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
+    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .3s ${i*.04}s both ease">
+      <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
+      <div class="p-body">
+        <div class="p-name">${p.family}</div>
+        <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
+        <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#34c759'/></svg> В наличии`:`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#ff3b30'/></svg> Нет`}</div>
+        <div class="p-rating"><span class="p-stars">${'★'.repeat(Math.round(p.rating))}</span><span class="p-rn">(${p.reviews})</span></div>
+        <div class="p-foot">
+          <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
+          ${on?`<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${p.id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${p.id},1)">+</div></div>`:`<div class="p-add" onclick="event.stopPropagation();quickAdd(${p.id},this)">+</div>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ DRAWER ══
+function openDrawer(){
+  const dr = document.getElementById('drawer');
+  const ov = document.getElementById('drawerOverlay');
+  dr.classList.add('open');
+  ov.classList.add('open');
+  document.body.style.overflow='hidden';
+  // Swipe down to close — re-attach fresh each open
+  let startY=0, curY=0, dragging=false;
+  function onStart(e){ startY=e.touches[0].clientY; dragging=true; curY=0; dr.style.transition='none'; }
+  function onMove(e){ if(!dragging)return; curY=Math.max(0,e.touches[0].clientY-startY); dr.style.transform=`translateY(${curY}px)`; }
+  function onEnd(){
+    if(!dragging)return; dragging=false; dr.style.transition='';
+    if(curY>90){ closeDrawer(); } else { dr.style.transform=''; }
+  }
+  dr.removeEventListener('touchstart',dr._ts||null);
+  dr.removeEventListener('touchmove',dr._tm||null);
+  dr.removeEventListener('touchend',dr._te||null);
+  dr._ts=onStart; dr._tm=onMove; dr._te=onEnd;
+  dr.addEventListener('touchstart',onStart,{passive:true});
+  dr.addEventListener('touchmove',onMove,{passive:true});
+  dr.addEventListener('touchend',onEnd);
+}
+function closeDrawer(){
+  const dr = document.getElementById('drawer');
+  dr.style.transform='';
+  dr.classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ══ AVATAR EMOJI PICKER ══
+const ANIMAL_EMOJIS = ['🐶','🐱','🦊','🐺','🐻','🐼','🐨','🐯','🦁','🐸','🐵','🦝','🐰','🐹','🦔','🐧','🦉','🦅','🐙','🦋','🐬','🦈','🐲','🦄'];
+let selectedEmoji = null;
+
+function openAvatarPicker(){
+  const grid = document.getElementById('avatarGrid');
+  const current = document.getElementById('profileAvatar').textContent;
+  grid.innerHTML = ANIMAL_EMOJIS.map(e=>
+    `<div class="avatar-opt${e===current?' selected':''}" onclick="selectEmoji('${e}',this)">${e}</div>`
+  ).join('');
+  selectedEmoji = ANIMAL_EMOJIS.includes(current) ? current : null;
+  document.getElementById('avatarPickerOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  initAvatarSwipe();
+}
+function selectEmoji(e, el){
+  document.querySelectorAll('.avatar-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEmoji = e;
+}
+function confirmAvatar(){
+  if(!selectedEmoji) return closeAvatarPicker();
+  const av = document.getElementById('profileAvatar');
+  av.textContent = selectedEmoji;
+  av.style.fontSize = '32px';
+  av.style.background = 'rgba(255,255,255,0.6)';
+  try{ localStorage.setItem('userAvatar', selectedEmoji); }catch(e){}
+  closeAvatarPicker();
+  showCat('😺','Красивый выбор! 🐾', 2500);
+}
+function closeAvatarPicker(){
+  document.getElementById('avatarPickerOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function maybeCloseAvatarPicker(e){
+  if(e.target===document.getElementById('avatarPickerOverlay')) closeAvatarPicker();
+}
+function initAvatarSwipe(){
+  const sh = document.getElementById('avatarPickerSheet');
+  let sy=0,cy=0,d=false;
+  sh.addEventListener('touchstart',e=>{ sy=e.touches[0].clientY; d=true; cy=0; sh.style.transition='none'; },{passive:true,once:true});
+  sh.addEventListener('touchmove',e=>{ if(!d)return; cy=Math.max(0,e.touches[0].clientY-sy); sh.style.transform=`translateY(${cy}px)`; },{passive:true});
+  sh.addEventListener('touchend',()=>{ if(!d)return; d=false; sh.style.transition=''; if(cy>80){closeAvatarPicker();sh.style.transform='';}else{sh.style.transform='';} });
+}
+
+
+setTimeout(()=>{
+  if(window.Telegram?.WebApp){
+    const tg=window.Telegram.WebApp;
+    tg.expand();
+    tg.setHeaderColor('#e8eaed');
+    tg.setBackgroundColor('#e8eaed');
+  }
+}, 150);
+
+// Показываем skeleton сразу
+try{ showSkeleton(); }catch(e){ console.warn('skeleton',e); }
+
+// Restore avatar
+try{const sv=localStorage.getItem('userAvatar');if(sv){const av=document.getElementById('profileAvatar');av.textContent=sv;av.style.fontSize='32px';av.style.background='rgba(255,255,255,0.6)';}}catch(e){}
+
+// Инициализация
+try{
+  initBanner();
+  loadTelegramUser();
+  renderTrend();
+  setTimeout(()=>{ try{ applyFilters(); }catch(e){ console.warn('applyFilters',e); } }, 500);
+  initAdmin();
+  startCatHints();
+}catch(e){ console.error('Init error:',e); }
+</script>
+</body>
+</html>
