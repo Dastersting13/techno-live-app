@@ -480,18 +480,7 @@ body::before{
 /* swipe handle on all bottom sheets */
 .sheet-swipe-bar{width:40px;height:4px;border-radius:2px;background:rgba(0,0,0,.12);margin:12px auto 0;cursor:pointer}
 
-.drawer-contacts{
-  display:flex;gap:10px;padding:0 22px;margin-top:4px;
-  border-top:1px solid rgba(0,0,0,0.06);padding-top:16px;
-}
-.drawer-contact{
-  flex:1;height:44px;border-radius:14px;
-  background:var(--glass2);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text);cursor:pointer;box-shadow:inset 0 1px 0 white;
-  transition:all .15s;
-}
-.drawer-contact:active{background:var(--glass3);transform:scale(.95)}
+
 
 /* CART */
 .cart-empty{display:flex;flex-direction:column;align-items:center;padding:80px 40px;text-align:center;gap:12px}
@@ -710,45 +699,82 @@ body::before{
 /* ═══ CAT MASCOT — Dynamic Island style ═══ */
 .cat-bubble{
   position:fixed;
-  top:calc(var(--st) + 60px);
+  top:calc(var(--st) + 14px);
   left:50%;
-  transform:translateX(-50%) scale(0.72);
   z-index:500;
+  pointer-events:none;
+  transform:translateX(-50%);
+  width:36px;
+  height:36px;
+  border-radius:50px;
+  background:rgba(0,0,0,0.93);
+  box-shadow:0 8px 40px rgba(0,0,0,0.55),0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.07);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  overflow:hidden;
   display:flex;
   align-items:center;
-  gap:10px;
-  padding:10px 18px 10px 14px;
-  width:max-content;
-  max-width:44px;
-  background:rgba(0,0,0,0.92);
-  border-radius:50px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.06);
-  backdrop-filter:blur(40px) saturate(180%);
-  -webkit-backdrop-filter:blur(40px) saturate(180%);
+  justify-content:center;
   opacity:0;
-  transition:opacity .4s cubic-bezier(.34,1.56,.64,1),transform .4s cubic-bezier(.34,1.56,.64,1),max-width .45s cubic-bezier(.32,.72,0,1);
-  pointer-events:none;
-  overflow:hidden;
+  visibility:hidden;
+  transition:
+    width   0.65s cubic-bezier(0.34,1.4,0.64,1),
+    height  0.55s cubic-bezier(0.34,1.3,0.64,1),
+    border-radius 0.55s cubic-bezier(0.34,1.2,0.64,1),
+    opacity 0.3s ease,
+    visibility 0s linear 0.3s,
+    box-shadow 0.4s ease;
 }
 .cat-bubble.show{
   opacity:1;
-  transform:translateX(-50%) scale(1);
-  max-width:320px;
-  pointer-events:none;
+  visibility:visible;
+  width:clamp(200px, 70vw, 320px);
+  height:52px;
+  border-radius:26px;
+  box-shadow:0 16px 56px rgba(0,0,0,0.6),0 4px 16px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.1);
+  transition:
+    width   0.65s cubic-bezier(0.34,1.4,0.64,1),
+    height  0.55s cubic-bezier(0.34,1.3,0.64,1),
+    border-radius 0.55s cubic-bezier(0.34,1.2,0.64,1),
+    opacity 0.25s ease,
+    visibility 0s linear 0s,
+    box-shadow 0.4s ease;
+}
+.cat-inner{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:0 16px 0 10px;
+  white-space:nowrap;
+  opacity:0;
+  transform:scale(0.7) translateY(4px);
+  transition:opacity 0.3s ease 0.25s, transform 0.4s cubic-bezier(0.34,1.56,0.64,1) 0.22s;
+  width:100%;
+}
+.cat-bubble.show .cat-inner{
+  opacity:1;
+  transform:scale(1) translateY(0);
 }
 .cat-face{
-  font-size:28px;
+  font-size:26px;
   flex-shrink:0;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
-  animation:catBob 2s ease-in-out infinite;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));
+  animation:catBob 2.5s ease-in-out infinite;
 }
-@keyframes catBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.05)}}
+@keyframes catBob{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  40%{transform:translateY(-2px) rotate(-4deg)}
+  70%{transform:translateY(-1px) rotate(3deg)}
+}
 .cat-speech{
   font-size:13px;
   font-weight:500;
   color:rgba(255,255,255,0.95);
-  line-height:1.4;
-  max-width:240px;
+  line-height:1.3;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  max-width:220px;
 }
 
 /* ═══ SKELETON ═══ */
@@ -1151,11 +1177,7 @@ body::before{
 
 
   </div>
-  <div class="drawer-contacts">
-    <div class="drawer-contact" onclick="window.open('https://t.me/TEXHOLIVE','_blank')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
-    <div class="drawer-contact" onclick="window.open('tel:+79779920005','_blank')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 012 1.18 2 2 0 013.98 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
-    <div class="drawer-contact" onclick="window.open('https://texnolive.com/','_blank')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
-  </div>
+
 </div>
 
 <!-- AVATAR EMOJI PICKER -->
@@ -1270,10 +1292,12 @@ body::before{
 
 <canvas id="confettiCanvas"></canvas>
 
-<!-- CAT MASCOT -->
+<!-- CAT MASCOT — Dynamic Island -->
 <div class="cat-bubble" id="catBubble">
-  <div class="cat-face" id="catFace">😺</div>
-  <div class="cat-speech" id="catSpeech">Привет! Чем помочь?</div>
+  <div class="cat-inner">
+    <div class="cat-face" id="catFace">😺</div>
+    <div class="cat-speech" id="catSpeech">Привет! Чем помочь?</div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
