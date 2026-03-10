@@ -392,7 +392,8 @@ body::before{
 @keyframes flyToBadge{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
 
 /* NAV — LIQUID GLASS PILL */
-.nav-wrap{position:fixed;bottom:calc(8px + var(--sb));left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto}
+.nav-wrap{position:fixed;bottom:calc(8px + var(--sb));left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto;transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .2s}
+.nav-wrap.hidden{transform:translateX(-50%) translateY(120%);opacity:0;pointer-events:none}
 .nav{
   background:rgba(235,237,242,0.95);border:1px solid var(--border);
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
@@ -882,7 +883,7 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 /* SHEET */
 .overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;visibility:hidden;}
 .overlay.open{opacity:1;pointer-events:all;visibility:visible;}
-.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(16px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
+.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(24px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:92dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
 .overlay.open .sheet{transform:translateY(0)}
 /* Sheet image slider */
 .sheet-slider-wrap{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 4px 20px var(--shadow)}
@@ -1093,6 +1094,15 @@ body.dark .var-chip.active .var-color-dot{border-color:rgba(8,8,16,0.4);}
 .wishlist-empty .we-icon{font-size:56px;margin-bottom:14px}
 .wishlist-empty h3{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:800;color:var(--t2);margin-bottom:6px}
 .wishlist-empty p{font-size:13px;line-height:1.6}
+.wish-drop-badge{
+  position:absolute;bottom:8px;left:8px;
+  background:linear-gradient(135deg,#ff3b30,#ff6b35);
+  color:#fff;font-size:10px;font-weight:700;
+  padding:3px 7px;border-radius:20px;
+  animation:fadeUp .3s ease both;
+  box-shadow:0 2px 8px rgba(255,59,48,.4);
+}
+.price-drop{color:#ff3b30!important;}
 .wish-nav-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;
   background:var(--red);border:2px solid rgba(240,242,245,0.9);display:none}
 .wish-nav-dot.show{display:block}
@@ -1665,7 +1675,7 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
       </div>
     </div>
   </div>
-  <div style="height:16px"></div>
+  <div style="height:4px"></div>
 </div>
 
 <!-- WISHLIST PAGE -->
@@ -2478,7 +2488,8 @@ async function loadFromGSheets(callback){
       if(products.length > 0){
         const mapped = mapProducts(products);
         try{ localStorage.setItem('tl_prices_cache', JSON.stringify(mapped)); }catch(e){}
-        callback(mapped); // тихо обновляем
+        checkPriceDrops(mapped); // проверяем снижение цен для избранного
+        callback(mapped);
         break;
       }
     } catch(e) {
@@ -3047,6 +3058,7 @@ function openSheet(idx){
   updateSheetCartBtn(on, qty);
 
   document.getElementById('overlay').classList.add('open');
+  document.querySelector('.nav-wrap')?.classList.add('hidden');
   document.body.style.overflow = 'hidden';
   logActivity('👁', `Просмотрел: ${p.family}${p.memory!=='—'?' '+p.memory:''} — ${fmt(p.price)}`);
 
@@ -3070,6 +3082,7 @@ function openSheet(idx){
 function maybeClose(e){ if(e.target===document.getElementById('overlay')) closeSheet(); }
 function closeSheet(){
   document.getElementById('overlay').classList.remove('open');
+  document.querySelector('.nav-wrap')?.classList.remove('hidden');
   document.body.style.overflow='';
   clearTimeout(pulseTimer);
   document.getElementById('sAdd')?.classList.remove('pulse');
@@ -4542,22 +4555,24 @@ function endCatcherGame(ctx,W,H){
 // Переопределяем showPage чтобы запоминать откуда пришли в категорию
 
 let wishlist = [];
+let wishlistPrices = {}; // {id: savedPrice} — цены в момент добавления в избранное
 
 function loadWishlist(){
   const tg = window.Telegram?.WebApp;
-  // Пробуем CloudStorage сначала
   if(tg?.CloudStorage){
     tg.CloudStorage.getItem('tl_wishlist', (err, val) => {
       if(!err && val){
         try{ wishlist = JSON.parse(val); }catch(e){ wishlist = []; }
       } else {
-        // Fallback на localStorage
         try{ const s=localStorage.getItem('tl_wishlist'); wishlist=s?JSON.parse(s):[]; }catch(e){ wishlist=[]; }
       }
+      // Загружаем сохранённые цены
+      try{ const s=localStorage.getItem('tl_wish_prices'); wishlistPrices=s?JSON.parse(s):{}; }catch(e){ wishlistPrices={}; }
       updateWishNavDot();
     });
   } else {
     try{ const s=localStorage.getItem('tl_wishlist'); wishlist=s?JSON.parse(s):[]; }catch(e){ wishlist=[]; }
+    try{ const s=localStorage.getItem('tl_wish_prices'); wishlistPrices=s?JSON.parse(s):{}; }catch(e){ wishlistPrices={}; }
     updateWishNavDot();
   }
 }
@@ -4565,41 +4580,70 @@ function loadWishlist(){
 function saveWishlist(){
   const tg = window.Telegram?.WebApp;
   const data = JSON.stringify(wishlist);
-  if(tg?.CloudStorage){
-    tg.CloudStorage.setItem('tl_wishlist', data);
-  }
+  if(tg?.CloudStorage) tg.CloudStorage.setItem('tl_wishlist', data);
   try{ localStorage.setItem('tl_wishlist', data); }catch(e){}
+  try{ localStorage.setItem('tl_wish_prices', JSON.stringify(wishlistPrices)); }catch(e){}
   updateWishNavDot();
+}
+
+// Проверяем снижение цен при обновлении прайса
+function checkPriceDrops(newProducts){
+  if(!wishlist.length) return;
+  const drops = [];
+  newProducts.forEach(p => {
+    if(!wishlist.includes(p.id)) return;
+    const savedPrice = wishlistPrices[p.id];
+    if(savedPrice && p.price < savedPrice){
+      drops.push({ p, oldPrice: savedPrice, newPrice: p.price, diff: savedPrice - p.price });
+      wishlistPrices[p.id] = p.price; // обновляем сохранённую цену
+    } else if(!savedPrice){
+      wishlistPrices[p.id] = p.price; // первый раз — просто запоминаем
+    }
+  });
+  if(drops.length > 0){
+    try{ localStorage.setItem('tl_wish_prices', JSON.stringify(wishlistPrices)); }catch(e){}
+    // Показываем уведомление
+    setTimeout(()=>{
+      drops.forEach(({p, oldPrice, diff}) => {
+        showToast(`🎉 ${p.family} подешевел на ${fmt(diff)}!`, 5000);
+      });
+      if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+    }, 1200);
+    // Обновляем вишлист если открыт
+    if(document.getElementById('page-wishlist')?.classList.contains('on')) renderWishlist();
+  }
 }
 
 function toggleWish(id){
   const idx = wishlist.indexOf(id);
   if(idx >= 0){
     wishlist.splice(idx, 1);
+    delete wishlistPrices[id];
     showToast('Убрано из избранного');
     logActivity('🤍', `Убрал из избранного: ${P.find(p=>p.id===id)?.family||''}`);
   } else {
     wishlist.push(id);
-    showToast('❤️ Добавлено в избранное!');
+    // Запоминаем текущую цену
+    const p = P.find(x=>x.id===id);
+    if(p) wishlistPrices[id] = p.price;
+    showToast('❤️ Добавлено! Следим за ценой 📉');
     logActivity('❤️', `Добавил в избранное: ${P.find(p=>p.id===id)?.family||''}`);
     if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('success');
   }
   saveWishlist();
-  // Обновляем кнопку в шторке
   const btn = document.getElementById('sheetWishBtn');
   if(btn){ btn.textContent = wishlist.includes(id) ? '❤️' : '🤍'; btn.classList.toggle('active', wishlist.includes(id)); }
   renderProfileWishlist();
 }
 
 function updateWishNavDot(){
-  // nav wishlist dot no longer in nav, but we update profile wishlist section if visible
   renderProfileWishlist();
 }
 
 function renderProfileWishlist(){
   const sub = document.getElementById('profileWishSub');
   if(sub){
-    sub.textContent = wishlist.length > 0 ? `${wishlist.length} товар(ов)` : 'Пока пусто';
+    sub.textContent = wishlist.length > 0 ? `${wishlist.length} товар(ов) · следим за ценой` : 'Пока пусто';
   }
 }
 
@@ -4610,22 +4654,29 @@ function renderWishlist(){
     el.innerHTML = `<div class="wishlist-empty">
       <div class="we-icon">🤍</div>
       <h3>Список пуст</h3>
-      <p>Нажми ❤️ на любом товаре,<br>чтобы сохранить в избранное</p>
+      <p>Нажми ❤️ на любом товаре,<br>чтобы сохранить в избранное<br><span style="font-size:12px;opacity:.6">Уведомим когда цена снизится 📉</span></p>
     </div>`;
     return;
   }
   el.innerHTML = `<div class="grid" style="padding-top:4px">`+items.map((p,i)=>{
     const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
-    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .3s ${i*.04}s both ease">
+    const savedPrice = wishlistPrices[p.id];
+    const dropped = savedPrice && p.price < savedPrice;
+    const dropDiff = dropped ? savedPrice - p.price : 0;
+    return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${P.indexOf(p)})">
       <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}
         <div style="position:absolute;top:8px;right:8px;cursor:pointer;font-size:18px;z-index:2" onclick="event.stopPropagation();toggleWish(${p.id})">❤️</div>
+        ${dropped?`<div class="wish-drop-badge">📉 −${fmt(dropDiff)}</div>`:''}
       </div>
       <div class="p-body">
         <div class="p-name">${p.family}</div>
         <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
         <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#34c759'/></svg> В наличии`:`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#ff3b30'/></svg> Нет`}</div>
         <div class="p-foot">
-          <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
+          <div>
+            <div class="p-old">${dropped ? fmt(savedPrice) : (p.oldPrice?fmt(p.oldPrice):'')}</div>
+            <div class="p-price${dropped?' price-drop':''}">${fmt(p.price)}</div>
+          </div>
           ${on?`<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${p.id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${p.id},1)">+</div></div>`:`<div class="p-add" onclick="event.stopPropagation();quickAdd(${p.id},this)">+</div>`}
         </div>
       </div>
@@ -4793,6 +4844,7 @@ function openDrawer(){
   dr.classList.add('open');
   ov.classList.add('open');
   document.body.style.overflow='hidden';
+  document.querySelector('.nav-wrap')?.classList.add('hidden');
   // Swipe down to close — re-attach fresh each open
   let startY=0, curY=0, dragging=false;
   function onStart(e){ startY=e.touches[0].clientY; dragging=true; curY=0; dr.style.transition='none'; }
@@ -4815,6 +4867,7 @@ function closeDrawer(){
   dr.classList.remove('open');
   document.getElementById('drawerOverlay').classList.remove('open');
   document.body.style.overflow='';
+  document.querySelector('.nav-wrap')?.classList.remove('hidden');
 }
 
 // ══ AVATAR EMOJI PICKER ══
