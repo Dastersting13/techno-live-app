@@ -389,12 +389,13 @@ body::before{
 @keyframes flyToBadge{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
 
 /* NAV — LIQUID GLASS PILL */
-.nav-wrap{position:fixed;bottom:calc(24px + var(--sb));left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto}
+.nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:8px 16px calc(8px + var(--sb));pointer-events:auto;background:transparent}
 .nav{
   background:rgba(235,237,242,0.95);border:1px solid var(--border);
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
   border-radius:50px;display:flex;align-items:center;justify-content:space-around;padding:8px 10px;
-  box-shadow:0 4px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.95)
+  box-shadow:0 4px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.95);
+  max-width:400px;margin:0 auto;
 }
 .ni{
   flex:1;display:flex;align-items:center;justify-content:center;padding:10px 8px;cursor:pointer;
@@ -2876,7 +2877,7 @@ function filterAndGo(f){
 // ══════════════════════════════════════
 let pulseTimer = null;
 function openSheet(idx){
-  const p = P[idx]; sheetId = p.id;
+  const p = P[idx]; if(!p) return; sheetId = p.id;
 
   // ── Слайдер изображений ──
   const track = document.getElementById('sSliderTrack');
@@ -4795,10 +4796,9 @@ try{
   updateOnlineStatus();
   initAdmin();
 
-  // Сразу рендерим пустой каталог — кнопки работают сразу
+  // Сразу показываем скелетон — интерфейс отзывчивый
   P = [];
-  renderTrend();
-  applyFilters();
+  showSkeleton();
   updateBadge();
 
   // Грузим прайс из GitHub в фоне
@@ -4806,14 +4806,12 @@ try{
     if(freshProducts.length > 0){
       P = freshProducts;
       loadSavedPhotos();
-      renderTrend();
-      applyFilters();
     }
+    renderTrend();
+    applyFilters();
     loadCartCloud(()=>{
       cart = loadCart();
       updateBadge();
-      renderTrend();
-      applyFilters();
     });
   });
 }catch(e){ console.error('Init error:',e); }
