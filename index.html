@@ -909,6 +909,85 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 .warranty-badge-text{font-size:11px;color:var(--t2);font-weight:500;line-height:1.4}
 .warranty-badge-text b{color:var(--text);font-weight:700}
 
+/* INFO TOOLTIP BADGE — маленькая кнопка «i» */
+.info-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:50px;cursor:pointer;
+  border:1px solid var(--border2);background:var(--glass2);
+  font-size:11px;font-weight:600;color:var(--t2);
+  transition:all .15s;box-shadow:0 1px 4px var(--shadow);
+  white-space:nowrap;
+}
+.info-badge:active{transform:scale(.95);opacity:.8}
+.info-badge-i{
+  width:14px;height:14px;border-radius:50%;
+  background:var(--t3);color:var(--bg);
+  font-size:9px;font-weight:800;font-family:'Unbounded',sans-serif;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.info-badges-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+
+/* INFO TOOLTIP POPUP */
+.info-tip-overlay{
+  position:fixed;inset:0;z-index:800;
+  background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);
+  display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;visibility:hidden;transition:opacity .22s;
+}
+.info-tip-overlay.open{opacity:1;pointer-events:all;visibility:visible}
+.info-tip-sheet{
+  width:100%;max-width:480px;
+  background:rgba(240,242,245,0.98);border-radius:24px 24px 0 0;
+  border-top:1px solid rgba(255,255,255,.9);
+  padding:0 20px calc(28px + var(--sb));
+  backdrop-filter:blur(40px);box-shadow:0 -6px 32px rgba(0,0,0,.15);
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.info-tip-overlay.open .info-tip-sheet{transform:translateY(0)}
+body.dark .info-tip-sheet{background:rgba(10,10,20,0.98)}
+.info-tip-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 10px}
+.info-tip-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px}
+.info-tip-body{font-size:13px;color:var(--t2);line-height:1.6}
+.info-tip-close{
+  width:100%;margin-top:16px;padding:13px;border:1px solid var(--border);
+  border-radius:50px;background:var(--glass2);color:var(--t2);
+  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;
+  transition:opacity .15s;
+}
+.info-tip-close:active{opacity:.7}
+
+/* CLOSE BUTTON for overlays */
+.overlay-close-btn{
+  position:absolute;top:14px;right:16px;
+  width:30px;height:30px;border-radius:50%;
+  background:var(--glass3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;color:var(--t2);
+  transition:all .15s;z-index:10;
+  box-shadow:0 2px 8px var(--shadow);
+}
+.overlay-close-btn:active{transform:scale(.9);background:var(--border)}
+
+/* Cart counter in sheet button */
+.s-add-qty{
+  display:inline-flex;align-items:center;gap:8px;
+}
+.s-add-counter{
+  display:inline-flex;align-items:center;gap:0;
+  background:rgba(255,255,255,0.2);border-radius:20px;padding:2px;
+  margin-left:4px;
+}
+.s-add-minus,.s-add-plus{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:14px;font-weight:700;
+  transition:background .12s;
+  border:none;color:inherit;
+}
+.s-add-minus:active,.s-add-plus:active{background:rgba(255,255,255,0.45)}
+.s-add-qty-n{min-width:20px;text-align:center;font-size:13px;font-weight:700}
+
 /* VARIANTS PICKER (цвет / память / SIM) */
 .variants-section{margin-bottom:14px}
 .variants-label{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px}
@@ -1540,6 +1619,7 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 
 <!-- WISHLIST PAGE -->
 <div class="page" id="page-wishlist">
+  <div class="back-btn" onclick="goBack()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Назад</div>
   <div class="ph-head">❤️ Избранное</div>
   <div id="wishlistContent"></div>
 </div>
@@ -1900,8 +1980,9 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 
 <!-- PRODUCT SHEET -->
 <div class="overlay" id="overlay" onclick="maybeClose(event)">
-  <div class="sheet">
+  <div class="sheet" style="position:relative">
     <div style="width:40px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0"></div>
+    <div class="overlay-close-btn" onclick="closeSheet()" title="Закрыть">✕</div>
     <div class="sheet-slider-wrap" id="sSliderWrap">
       <div class="sheet-slider-track" id="sSliderTrack"></div>
       <div class="sheet-slider-dots" id="sSliderDots"></div>
@@ -1913,10 +1994,20 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
       <div class="specs" id="sSpecs"></div>
       <div class="s-stock"><svg width="8" height="8" viewBox="0 0 8 8" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="4" cy="4" r="4" fill="#34c759"/></svg>В наличии</div>
 
-      <!-- WARRANTY BADGE -->
-      <div class="warranty-badge">
-        <div class="warranty-badge-icon">🛡️</div>
-        <div class="warranty-badge-text"><b>Гарантия 12 месяцев</b> — официальная гарантия производителя на заводской брак и неисправности</div>
+      <!-- INFO BADGES -->
+      <div class="info-badges-row" id="infoBadgesRow">
+        <div class="info-badge" onclick="showInfoTip('warranty')">
+          <div class="info-badge-i">i</div>
+          <span>🛡 Гарантия · 12 мес</span>
+        </div>
+        <div class="info-badge" onclick="showInfoTip('condition')">
+          <div class="info-badge-i">i</div>
+          <span>✅ Состояние</span>
+        </div>
+        <div class="info-badge" onclick="showInfoTip('delivery')">
+          <div class="info-badge-i">i</div>
+          <span>🚚 Доставка · 3 часа</span>
+        </div>
       </div>
 
       <!-- ВАРИАНТЫ ЦВЕТА/ПАМЯТИ/SIM -->
@@ -1928,7 +2019,7 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
         </div>
         <div class="s-btns">
           <button class="wish-btn" id="sheetWishBtn" onclick="toggleWish(sheetId)">🤍</button>
-          <button class="s-add pulse" id="sAdd" onclick="addFromSheet()">
+          <button class="s-add" id="sAdd" onclick="addFromSheet()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
             В корзину
           </button>
@@ -1940,8 +2031,9 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 
 <!-- ORDER MODAL -->
 <div class="order-overlay" id="orderOverlay" onclick="maybeCloseOrder(event)">
-  <div class="order-sheet">
+  <div class="order-sheet" style="position:relative">
     <div class="sheet-handle"></div>
+    <div class="overlay-close-btn" onclick="closeOrderModal()" title="Закрыть">✕</div>
     <div class="order-title">Оформление заказа</div>
     <div class="order-sub" id="orderSubtitle">Менеджер свяжется в течение 15 минут</div>
     <div class="delivery-tabs">
@@ -2052,6 +2144,16 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 
 <!-- CAT MINI GAME -->
 <canvas id="gameCanvas" style="display:none"></canvas>
+
+<!-- INFO TIP OVERLAY -->
+<div class="info-tip-overlay" id="infoTipOverlay" onclick="maybeCloseInfoTip(event)">
+  <div class="info-tip-sheet" id="infoTipSheet">
+    <div class="info-tip-handle"></div>
+    <div class="info-tip-title" id="infoTipTitle"></div>
+    <div class="info-tip-body" id="infoTipBody"></div>
+    <button class="info-tip-close" onclick="closeInfoTip()">Понятно</button>
+  </div>
+</div>
 
 <canvas id="confettiCanvas"></canvas>
 
@@ -2478,6 +2580,57 @@ function selectPlan(el, months){
 }
 
 
+// ══ INFO TIP POPUP ══
+const INFO_TIPS = {
+  warranty: {
+    title: '🛡 Гарантия 12 месяцев',
+    body: 'Официальная гарантия производителя на заводской брак и производственные неисправности. Распространяется на все товары в нашем магазине. Не распространяется на механические повреждения и попадание жидкости.'
+  },
+  condition: {
+    title: '✅ Состояние товара',
+    body: 'Мы продаём только <b>оригинальную новую технику</b> в заводской упаковке. Каждый товар проходит проверку при получении. Вы платите только после того, как убедились в исправности и комплектности.'
+  },
+  delivery: {
+    title: '🚚 Доставка · 3 часа',
+    body: 'Курьерская доставка по Москве и МО. <b>После принятия заказа с вами свяжется курьер</b> для уточнения времени и адреса. Среднее время доставки — 3 часа. По России отправляем через СДЭК.'
+  },
+  sim: {
+    title: '📱 Типы SIM-карт',
+    body: '<b>Nano SIM</b> — обычная физическая карта.<br><br><b>eSIM</b> — встроенная электронная SIM, активируется через QR-код оператора. Не нужна физическая карта.<br><br><b>Dual SIM (nano+eSIM)</b> — одна физическая + одна виртуальная, можно использовать два номера одновременно.'
+  },
+};
+
+function showInfoTip(type, simLabel){
+  const tip = INFO_TIPS[type];
+  if(!tip) return;
+  let title = tip.title;
+  let body = tip.body;
+  if(type === 'sim' && simLabel){
+    title = `📱 ${simLabel}`;
+    if(simLabel.toLowerCase().includes('esim') && simLabel.toLowerCase().includes('nano')){
+      body = INFO_TIPS.sim.body;
+    } else if(simLabel.toLowerCase().includes('esim')){
+      body = '<b>eSIM</b> — встроенная электронная SIM-карта. Активируется через QR-код оператора. Физическая карта не нужна. Поддерживается большинством российских операторов (МТС, Билайн, МегаФон, Tele2).';
+    } else {
+      body = `<b>${simLabel}</b> — ${INFO_TIPS.sim.body}`;
+    }
+  }
+  document.getElementById('infoTipTitle').textContent = title;
+  document.getElementById('infoTipBody').innerHTML = body;
+  const ov = document.getElementById('infoTipOverlay');
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInfoTip(){
+  document.getElementById('infoTipOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function maybeCloseInfoTip(e){
+  if(e.target === document.getElementById('infoTipOverlay')) closeInfoTip();
+}
+
 // ══ DRAWER SECTIONS ══
 function toggleDrawerSection(id, itemEl){
   const sub = document.getElementById(id);
@@ -2654,9 +2807,9 @@ function openSheet(idx){
   document.getElementById('sOld').textContent = p.oldPrice ? fmt(p.oldPrice) : '';
   document.getElementById('sPrice').textContent = fmt(p.price);
   const on = cart.some(c=>c.id===p.id);
+  const qty = cart.find(c=>c.id===p.id)?.qty || 0;
   const btn = document.getElementById('sAdd');
-  btn.innerHTML = on ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> В корзине` : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> В корзину`;
-  btn.style.background = on ? 'linear-gradient(135deg,#34c759,#00c853)' : '';
+  updateSheetCartBtn(btn, on, qty);
   btn.classList.remove('pulse');
 
   document.getElementById('overlay').classList.add('open');
@@ -2688,13 +2841,52 @@ function closeSheet(){
   document.getElementById('sAdd')?.classList.remove('pulse');
 }
 
+function updateSheetCartBtn(btn, inCart, qty){
+  if(!btn) return;
+  if(inCart && qty > 0){
+    btn.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      В корзине
+      <span class="s-add-counter" onclick="event.stopPropagation()">
+        <span class="s-add-minus" onclick="sheetChangeQty(-1)">−</span>
+        <span class="s-add-qty-n" id="sAddQtyN">${qty}</span>
+        <span class="s-add-plus" onclick="sheetChangeQty(1)">+</span>
+      </span>`;
+    btn.style.background = 'linear-gradient(135deg,#34c759,#00c853)';
+    btn.onclick = null; // disable click on btn itself when in cart
+  } else {
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> В корзину`;
+    btn.style.background = '';
+    btn.onclick = addFromSheet;
+  }
+}
+
+function sheetChangeQty(d){
+  if(!sheetId) return;
+  const ci = cart.find(c=>c.id===sheetId);
+  if(!ci) return;
+  ci.qty += d;
+  if(ci.qty <= 0){
+    cart = cart.filter(c=>c.id!==sheetId);
+    saveCart(); updateBadge(); renderCart(); applyFilters(); renderTrend(); updateProfile();
+    const btn = document.getElementById('sAdd');
+    updateSheetCartBtn(btn, false, 0);
+    btn.classList.add('pulse');
+    catOnRemove();
+  } else {
+    saveCart(); updateBadge(); renderCart(); applyFilters(); updateProfile();
+    const btn = document.getElementById('sAdd');
+    updateSheetCartBtn(btn, true, ci.qty);
+  }
+}
+
 function addFromSheet(){
   if(!sheetId) return;
   if(addToCart(sheetId)){
+    const ci = cart.find(c=>c.id===sheetId);
     const btn = document.getElementById('sAdd');
-    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> В корзине`;
-    btn.style.background = 'linear-gradient(135deg,#34c759,#00c853)';
-    btn.classList.remove('pulse');
+    updateSheetCartBtn(btn, true, ci?.qty||1);
+    animateToCart(btn);
   }
 }
 
@@ -3698,6 +3890,22 @@ function renderVariants(p){
   const sec = document.getElementById('variantsSection');
   if(!sec) return;
   const v = getVariants(p);
+
+  // Update dynamic info badges (SIM)
+  const badgesRow = document.getElementById('infoBadgesRow');
+  if(badgesRow){
+    const simBadge = document.getElementById('infoBadgeSim');
+    if(simBadge) simBadge.remove();
+    if(p.sim && p.sim !== '—'){
+      const sb = document.createElement('div');
+      sb.className = 'info-badge';
+      sb.id = 'infoBadgeSim';
+      sb.setAttribute('onclick', `showInfoTip('sim','${p.sim.replace(/'/g,"\\'")}')`);
+      sb.innerHTML = `<div class="info-badge-i">i</div><span>📱 ${p.sim}</span>`;
+      badgesRow.appendChild(sb);
+    }
+  }
+
   if(!v){ sec.innerHTML = ''; return; }
 
   let html = '<div class="variants-section">';
