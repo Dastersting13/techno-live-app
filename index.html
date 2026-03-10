@@ -2903,9 +2903,9 @@ function updateCatalogHeading(list){
 function renderGrid(list){
   const el = document.getElementById('grid');
   if(!list.length){ el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено</div>`; return; }
-  el.innerHTML = list.map((p,i)=>{
+  el.innerHTML = list.map((p)=>{
     const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
-    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .35s ${i*.05}s both ease">
+    return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${P.indexOf(p)})">
       <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
       <div class="p-body">
         <div class="p-name">${p.family}</div>
@@ -3132,9 +3132,24 @@ function animateToCart(btnEl){
   setTimeout(()=>cartBtn.classList.remove('cart-anim'), 400);
 }
 
+function updateCardUI(id){
+  const p = P.find(x=>x.id===id); if(!p) return;
+  const ci = cart.find(c=>c.id===id); const on=!!ci; const qty=ci?.qty||0;
+  document.querySelectorAll(`.p-card[data-pid="${id}"]`).forEach(card=>{
+    card.classList.toggle('on', on);
+    const foot = card.querySelector('.p-foot');
+    if(!foot) return;
+    const priceHtml = `<div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>`;
+    const ctrlHtml = on
+      ? `<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${id},1)">+</div></div>`
+      : `<div class="p-add" onclick="event.stopPropagation();quickAdd(${id},this)">+</div>`;
+    foot.innerHTML = priceHtml + ctrlHtml;
+  });
+}
+
 function quickAdd(id, btnEl){
   if(addToCart(id) && btnEl) animateToCart(btnEl);
-  applyFilters(); renderTrend();
+  updateCardUI(id);
 }
 
 function addToCart(id){
@@ -3159,7 +3174,7 @@ function changeQty(id, d){
   } else if(d > 0 && wasInCart){
     catOnReturn();
   }
-  saveCart(); updateBadge(); applyFilters(); renderTrend(); updateProfile();
+  saveCart(); updateBadge(); updateCardUI(id); updateProfile();
   if(document.getElementById('page-cart').classList.contains('on')) renderCart();
 }
 
@@ -3168,7 +3183,7 @@ function removeFromCart(id){
   if(p) logActivity('🗑', `Убрал из корзины: ${p.family}${p.memory!=='—'?' '+p.memory:''}`);
   cart = cart.filter(c=>c.id!==id);
   saveCart(); catOnRemove();
-  updateBadge(); renderCart(); applyFilters(); renderTrend(); updateProfile();
+  updateBadge(); renderCart(); updateCardUI(id); updateProfile();
 }
 
 function updateBadge(){
@@ -4894,32 +4909,40 @@ try{
   updateOnlineStatus();
   initAdmin();
 
-  // ── ШАГ 1: МГНОВЕННО из кеша ──
-  const cached = (() => {
-    try {
-      const s = localStorage.getItem('tl_prices_cache');
-      if(!s) return [];
-      const {data, ts} = JSON.parse(s);
-      return Array.isArray(data) ? data : [];
-    } catch(e){ return []; }
-  })();
-
-  if(cached.length > 0){
-    // Кеш есть — показываем сразу, нав работает немедленно
-    P = cached;
-    loadSavedPhotos();
-    loadCartCloud(()=>{ cart = loadCart(); updateBadge(); });
-    renderTrend();
-    applyFilters();
+  // ── ШАГ 1: INLINE цены — мгновенно, синхронно ──
+  if(typeof INLINE_PRICES !== 'undefined' && INLINE_PRICES){
+    const inlined = mapProducts(INLINE_PRICES.products || INLINE_PRICES);
+    if(inlined.length > 0){
+      P = inlined;
+      loadSavedPhotos();
+      loadCartCloud(()=>{ cart = loadCart(); updateBadge(); });
+      renderTrend();
+      applyFilters();
+    }
   } else {
-    // Первый запуск — скелетон пока грузим
-    showSkeleton();
+    // Фолбек на кэш если нет inline
+    const cached = (()=>{
+      try {
+        const s = localStorage.getItem('tl_prices_cache');
+        if(!s) return [];
+        const {data} = JSON.parse(s);
+        return Array.isArray(data) ? data : [];
+      } catch(e){ return []; }
+    })();
+    if(cached.length > 0){
+      P = cached;
+      loadSavedPhotos();
+      loadCartCloud(()=>{ cart = loadCart(); updateBadge(); });
+      renderTrend();
+      applyFilters();
+    } else {
+      showSkeleton();
+    }
   }
 
-  // ── ШАГ 2: ФОНОМ обновляем с GitHub ──
+  // ── ШАГ 2: Фоновое обновление (не блокирует UI) ──
   loadFromGSheets(freshProducts => {
     if(freshProducts.length > 0){
-      // Сохраняем в кеш
       try {
         localStorage.setItem('tl_prices_cache', JSON.stringify({
           data: freshProducts,
@@ -4930,12 +4953,7 @@ try{
       loadSavedPhotos();
       renderTrend();
       applyFilters();
-    }
-    if(!cached.length){
-      // Первый запуск — теперь рендерим
       loadCartCloud(()=>{ cart = loadCart(); updateBadge(); });
-      renderTrend();
-      applyFilters();
     }
   });
 
