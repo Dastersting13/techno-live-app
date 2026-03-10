@@ -389,12 +389,12 @@ body::before{
 @keyframes flyToBadge{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
 
 /* NAV — LIQUID GLASS PILL */
-.nav-wrap{position:fixed;bottom:calc(14px + var(--sb));left:50%;transform:translateX(-50%);z-index:200;width:calc(100% - 32px);max-width:400px}
+.nav-wrap{position:fixed;bottom:calc(14px + var(--sb));left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto}
 .nav{
-  background:rgba(240,242,245,0.80);border:1px solid var(--border);
+  background:rgba(235,237,242,0.95);border:1px solid var(--border);
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
   border-radius:50px;display:flex;align-items:center;justify-content:space-around;padding:8px 10px;
-  box-shadow:0 8px 32px var(--shadow2),inset 0 1px 0 rgba(255,255,255,0.95)
+  box-shadow:0 4px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.95)
 }
 .ni{
   flex:1;display:flex;align-items:center;justify-content:center;padding:10px 8px;cursor:pointer;
@@ -2337,17 +2337,11 @@ function saveMarkupsToStorage(m){ try{localStorage.setItem('tl_markups',JSON.str
 function loadCustomProducts(){ try{const s=localStorage.getItem('tl_products');return s?JSON.parse(s):[]}catch(e){return[]} }
 
 function saveProductsToStorage(arr){
-  try{ localStorage.setItem('tl_products', JSON.stringify(arr)); }catch(e){}
-  // Синхронизируем в CloudStorage чтобы все клиенты видели обновлённый каталог
-  const tg = window.Telegram?.WebApp;
-  if(tg?.CloudStorage){
-    const chunks = chunkProductsForCloud(arr);
-    chunks.forEach((chunk, i) => {
-      tg.CloudStorage.setItem('tl_products_'+i, JSON.stringify(chunk));
-    });
-    tg.CloudStorage.setItem('tl_products_chunks', String(chunks.length));
-  }
+  // Не сохраняем прайс в localStorage — он всегда грузится свежим с GitHub
+  // CloudStorage используем только для синхронизации фото владельцем
 }
+
+function buildProducts(){ return []; }
 
 function chunkProductsForCloud(arr){
   // CloudStorage лимит ~4KB на ключ, делим на части по 20 товаров
@@ -4800,18 +4794,17 @@ try{
   loadWishlist();
   updateOnlineStatus();
   initAdmin();
-  // Сначала показываем кеш, потом подгружаем свежий прайс из Google Sheets
-  P = buildProducts();
-  renderTrend();
-  applyFilters();
+
+  // Загружаем прайс из GitHub
   loadFromGSheets(freshProducts => {
     if(freshProducts.length > 0){
       P = freshProducts;
-      renderTrend();
-      applyFilters();
     }
+    try{ renderTrend(); }catch(e){ console.warn('renderTrend',e); }
+    try{ applyFilters(); }catch(e){ console.warn('applyFilters',e); }
+    try{ hideSkeleton?.(); }catch(e){}
     loadCartCloud(()=>{
-      setTimeout(()=>{ try{ applyFilters(); }catch(e){ console.warn(e); } }, 300);
+      try{ renderCart(); }catch(e){}
     });
   });
 }catch(e){ console.error('Init error:',e); }
