@@ -290,14 +290,6 @@ body::before{
   top:-40px;right:40px;
 }
 
-/* ── БАННЕР 2: Рассрочка — изумрудно-зелёный ── */
-.banner-credit{
-  background:linear-gradient(145deg,#021a0a 0%,#042e12 45%,#021a0a 100%);
-}
-.banner-credit .banner-glow{
-  background:radial-gradient(circle,rgba(0,210,100,0.6),transparent 70%);
-  top:-30px;right:20px;
-}
 
 /* ── БАННЕР 3: Подарки — тёплый золотой ── */
 .banner-gifts{
@@ -526,47 +518,7 @@ body::before{
 .drawer-expandable .drawer-chev{transition:transform .28s cubic-bezier(.4,0,.2,1)}
 .drawer-expandable.open .drawer-chev{transform:rotate(90deg)}
 
-/* GIFT MODAL (при рассрочке) */
-.gift-modal-overlay{
-  position:fixed;inset:0;z-index:600;
-  background:rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  display:flex;align-items:flex-end;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .3s;visibility:hidden;
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
-}
-.gift-modal-overlay.open{opacity:1;pointer-events:all;visibility:visible;}
-.gift-modal{
-  width:100%;max-width:480px;
-  background:rgba(240,242,245,0.97);
-  border:1px solid var(--border2);border-radius:28px 28px 0 0;
-  padding:0 0 calc(32px + var(--sb));
-  backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
-  box-shadow:0 -8px 40px rgba(0,0,0,0.18),inset 0 1px 0 white;
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.4,0,.2,1);
-  max-height:90dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
-}
-.gift-modal-overlay.open .gift-modal{transform:translateY(0)}
-.gift-modal-handle{width:40px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0}
-.gift-modal-hero{text-align:center;padding:20px 24px 16px}
-.gift-modal-box{font-size:64px;display:block;animation:giftShake 2.5s ease-in-out infinite;margin-bottom:10px}
-.gift-modal-box.opened{animation:giftPop .6s cubic-bezier(.34,1.56,.64,1) forwards!important}
-.gift-modal-title{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:900;color:var(--text);margin-bottom:6px}
-.gift-modal-sub{font-size:13px;color:var(--t2);line-height:1.5}
-.gift-modal-items{padding:0 16px;display:none;flex-direction:column;gap:8px}
-.gift-modal-items.show{display:flex}
-.gift-modal-item{
-  display:flex;align-items:center;gap:12px;padding:12px 14px;
-  background:var(--glass3);border:1px solid var(--border);border-radius:18px;
-  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 white;
-  opacity:0;transform:scale(.85) translateY(12px);transition:opacity .4s,transform .4s;
-}
-.gift-modal-item.revealed{opacity:1;transform:scale(1) translateY(0)}
-.gift-modal-total{margin:12px 16px 16px;padding:14px 16px;background:linear-gradient(135deg,rgba(255,159,10,.12),rgba(255,200,0,.08));border:1px solid rgba(255,159,10,.3);border-radius:18px;text-align:center;font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;color:#8a5500;display:none}
-.gift-modal-cta{margin:0 16px;display:flex;flex-direction:column;gap:10px}
-.gift-modal-btn{width:100%;padding:15px;border:none;border-radius:50px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:transform .15s}
-.gift-modal-btn.primary{background:rgba(28,28,30,.88);color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.18);animation:pulseBuy 2.5s ease-in-out infinite}
-.gift-modal-btn.secondary{background:var(--glass2);color:var(--t2);border:1px solid var(--border)}
-.gift-modal-btn:active{transform:scale(.96);animation:none}
+
 .drawer-item{
   display:flex;align-items:center;gap:14px;
   padding:13px 10px;border-radius:16px;cursor:pointer;
@@ -638,12 +590,12 @@ body::before{
 .go-btn:active{opacity:.8}
 .cart-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .ci{background:var(--glass2);border:1px solid var(--border);
-  border-radius:20px;padding:12px;display:flex;align-items:center;gap:10px;
+  border-radius:20px;padding:12px;display:flex;align-items:stretch;gap:10px;
   box-shadow:0 2px 12px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-.ci-img{width:54px;height:54px;border-radius:14px;flex-shrink:0;background:var(--glass3);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
+.ci-img{width:54px;height:54px;border-radius:14px;flex-shrink:0;background:var(--glass3);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;align-self:flex-start}
 .ci-img img{width:100%;height:100%;object-fit:cover}
-.ci-info{flex:1;min-width:0}
+.ci-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
 .ci-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ci-sub{font-size:11px;color:var(--t3)}
 .ci-qty-row{display:flex;align-items:center;gap:8px;margin-top:6px}
@@ -651,7 +603,8 @@ body::before{
 .ci-qty-btn.m{background:rgba(255,59,48,.13);color:#c0281f}
 .ci-qty-btn.p{background:rgba(28,28,30,.08);color:var(--text)}
 .ci-qty-n{font-size:13px;font-weight:700;min-width:16px;text-align:center}
-.ci-price{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:800;color:#1a7d38;flex-shrink:0;text-align:right}
+.ci-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:6px;flex-shrink:0}
+.ci-price{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:800;color:#1a7d38;text-align:right;white-space:nowrap}
 .ci-del{width:26px;height:26px;border-radius:8px;flex-shrink:0;background:rgba(255,59,48,.10);border:1px solid rgba(255,59,48,.20);color:#c0281f;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
 .ci-del:active{background:var(--red);color:#fff}
 .promo-wrap{margin:0 16px 14px}
@@ -693,29 +646,114 @@ body::before{
 .order-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;letter-spacing:-.5px;margin-bottom:4px}
 .order-sub{font-size:13px;color:var(--t3);margin-bottom:20px}
 .delivery-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
-.dtab{padding:16px 12px;border-radius:20px;border:1px solid var(--border);background:var(--glass2);cursor:pointer;text-align:center;transition:all .2s}
+.dtab{padding:16px 12px;border-radius:20px;border:1px solid var(--border);background:var(--glass2);cursor:pointer;text-align:center;transition:all .25s;overflow:hidden;position:relative}
 .dtab.active{border-color:rgba(28,28,30,0.28);background:rgba(28,28,30,0.88);box-shadow:0 4px 16px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.10)}
-.dtab-icon{font-size:24px;margin-bottom:6px}
+.dtab-icon{font-size:24px;margin-bottom:6px;position:relative;height:30px;display:flex;align-items:center;justify-content:center}
 .dtab-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--text)}
 .dtab-sub{font-size:10px;color:var(--t3);margin-top:3px}
 .dtab.active .dtab-title{color:#fff}
 .dtab.active .dtab-sub{color:rgba(255,255,255,0.55)}
+
+/* Pickup animation — person walking to house */
+@keyframes personWalk{
+  0%{transform:translateX(-22px) scaleX(1);opacity:0}
+  15%{opacity:1}
+  80%{transform:translateX(0px) scaleX(1);opacity:1}
+  100%{transform:translateX(0px) scaleX(1);opacity:1}
+}
+@keyframes houseGlow{
+  0%,60%{filter:none}
+  75%{filter:drop-shadow(0 0 6px rgba(255,210,50,0.9))}
+  100%{filter:drop-shadow(0 0 4px rgba(255,210,50,0.6))}
+}
+@keyframes carDrive{
+  0%{transform:translateX(-32px);opacity:0}
+  12%{opacity:1}
+  80%{transform:translateX(6px);opacity:1}
+  90%{transform:translateX(4px);opacity:1}
+  100%{transform:translateX(6px);opacity:1}
+}
+@keyframes roadLine{
+  0%{transform:translateX(30px);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateX(-40px);opacity:0}
+}
+.dtab-anim-wrap{position:relative;width:56px;height:30px;display:flex;align-items:center;justify-content:center;margin:0 auto 2px}
+.dtab-house{font-size:22px;position:absolute;right:0}
+.dtab-person{font-size:16px;position:absolute;left:0;transform:translateX(-22px);opacity:0}
+.dtab-car{font-size:18px;position:absolute;left:0;transform:translateX(-32px);opacity:0}
+.dtab-road{position:absolute;bottom:2px;left:0;right:0;height:2px;overflow:hidden;border-radius:1px;background:rgba(255,255,255,0.1)}
+.dtab-road-line{width:10px;height:100%;background:rgba(255,255,255,0.35);position:absolute;border-radius:1px}
+.dtab.active #pickupPersonAnim{animation:personWalk 1.1s .1s cubic-bezier(.4,0,.2,1) forwards}
+.dtab.active #pickupHouseAnim{animation:houseGlow 1.1s .1s ease forwards}
+.dtab.active #deliveryCarAnim{animation:carDrive 1.0s .1s cubic-bezier(.4,0,.2,1) forwards}
+.dtab.active .dtab-road-line{animation:roadLine 0.55s .15s linear forwards}
 .form-section{display:none}.form-section.show{display:block}
-.form-field{margin-bottom:12px}
+.form-field{margin-bottom:12px;position:relative}
 .form-field label{font-size:11px;color:var(--t3);font-weight:600;margin-bottom:6px;display:block;font-family:'Unbounded',sans-serif;letter-spacing:.2px}
 .form-field input,.form-field textarea{width:100%;background:var(--glass2);border:1px solid var(--border2);border-radius:16px;padding:13px 16px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
 .form-field input:focus,.form-field textarea:focus{border-color:rgba(28,28,30,0.35)}
 .form-field input::placeholder,.form-field textarea::placeholder{color:var(--t3)}
-.map-preview{width:100%;height:128px;border-radius:18px;overflow:hidden;background:var(--glass2);
+
+/* Address suggestions */
+.addr-suggestions{
+  position:absolute;top:100%;left:0;right:0;z-index:50;
+  background:rgba(240,242,245,0.98);
+  border:1px solid var(--border2);border-radius:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.9);
+  overflow:hidden;display:none;margin-top:4px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+body.dark .addr-suggestions{background:rgba(16,16,28,0.98);border-color:rgba(255,255,255,0.12);}
+.addr-suggestions.show{display:block}
+.addr-suggest-item{
+  padding:11px 16px;cursor:pointer;font-size:13px;color:var(--text);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;
+  transition:background .12s;
+}
+.addr-suggest-item:last-child{border-bottom:none}
+.addr-suggest-item:active,.addr-suggest-item:hover{background:var(--glass3)}
+.addr-suggest-pin{font-size:14px;flex-shrink:0;opacity:.7}
+.addr-suggest-main{font-weight:600;font-size:13px}
+.addr-suggest-sub{font-size:11px;color:var(--t3);margin-top:1px}
+
+/* Map with route */
+.map-preview{width:100%;height:160px;border-radius:18px;overflow:hidden;
+  background:linear-gradient(160deg,#d4e8c2 0%,#c8ddb5 30%,#b8cfaa 60%,#a8c49a 100%);
+  border:1px solid var(--border2);margin-bottom:12px;
+  position:relative;cursor:pointer;transition:opacity .15s}
+.map-preview:active{opacity:.8}
+.map-preview-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;pointer-events:none}
+.map-preview::before{content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(100,140,80,.15) 22px,rgba(100,140,80,.15) 23px),
+    repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(100,140,80,.15) 22px,rgba(100,140,80,.15) 23px);
+  pointer-events:none;z-index:1}
+.map-preview-iframe{width:100%;height:100%;border:none;display:none;position:absolute;inset:0}
+.map-preview-iframe.show{display:block}
+body.dark .map-preview{background:linear-gradient(160deg,#1a2a14 0%,#1e3018 40%,#162610 100%);}
+body.dark .map-preview::before{background:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(80,120,60,.2) 22px,rgba(80,120,60,.2) 23px),repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(80,120,60,.2) 22px,rgba(80,120,60,.2) 23px);}
+.map-preview{width:100%;height:128px;border-radius:18px;overflow:hidden;
+  background:linear-gradient(160deg,#d4e8c2 0%,#c8ddb5 30%,#b8cfaa 60%,#a8c49a 100%);
   border:1px solid var(--border2);margin-bottom:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   position:relative;cursor:pointer;transition:opacity .15s}
 .map-preview:active{opacity:.8}
 .map-preview::before{content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(255,255,255,.03) 28px,rgba(255,255,255,.03) 29px),
-             repeating-linear-gradient(90deg,transparent,transparent 28px,rgba(255,255,255,.03) 28px,rgba(255,255,255,.03) 29px)}
-.map-pin-big{font-size:30px;position:relative}
-.map-addr-text{font-size:12px;color:var(--t2);position:relative;text-align:center;padding:0 20px}
-.map-open-btn{font-size:11px;color:var(--blue);position:relative;font-weight:600}
+  background:
+    repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(100,140,80,.15) 22px,rgba(100,140,80,.15) 23px),
+    repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(100,140,80,.15) 22px,rgba(100,140,80,.15) 23px);
+  pointer-events:none}
+.map-preview::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-80%);
+  width:60px;height:8px;border-radius:50%;background:rgba(0,0,0,0.15);filter:blur(4px)}
+body.dark .map-preview{background:linear-gradient(160deg,#1a2a14 0%,#1e3018 40%,#162610 100%);}
+body.dark .map-preview::before{background:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(80,120,60,.2) 22px,rgba(80,120,60,.2) 23px),repeating-linear-gradient(90deg,transparent,transparent 22px,rgba(80,120,60,.2) 22px,rgba(80,120,60,.2) 23px);}
+.map-pin-big{font-size:32px;position:relative;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));z-index:2}
+.map-addr-text{font-size:12px;color:rgba(30,60,20,0.85);position:relative;text-align:center;padding:0 20px;font-weight:600;z-index:2}
+body.dark .map-addr-text{color:rgba(180,220,160,0.9);}
+.map-open-btn{font-size:11px;color:#1a5c0e;position:relative;font-weight:700;background:rgba(255,255,255,0.75);padding:4px 12px;border-radius:50px;z-index:2;backdrop-filter:blur(8px)}
+body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
+.map-route-btn{font-size:11px;color:#fff;background:rgba(10,132,255,0.85);padding:5px 14px;border-radius:50px;font-weight:700;z-index:2;position:relative;border:none;cursor:pointer;backdrop-filter:blur(8px)}
+.map-route-btn:active{opacity:.8}
 .form-submit{width:100%;background:rgba(28,28,30,0.88);color:#fff;border:none;border-radius:50px;
   padding:16px;font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;cursor:pointer;
   transition:opacity .15s,transform .15s;box-shadow:0 6px 28px rgba(0,0,0,0.3);margin-top:4px}
@@ -851,8 +889,6 @@ body::before{
 .s-old{font-size:12px;color:var(--t3);text-decoration:line-through}
 .s-price{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.8px;color:var(--green)}
 .s-note{display:none}
-.s-credit-hint{font-size:12px;color:var(--t2);margin-bottom:14px;font-weight:500}
-.s-credit-hint b{color:#1a7d38;font-weight:700}
 .s-btns{display:flex;gap:10px;}
 .s-add{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
   background:linear-gradient(135deg,#1c1c1e,#3a3a3c);color:#fff;border:none;
@@ -861,48 +897,17 @@ body::before{
   cursor:pointer;transition:all .18s;
   box-shadow:0 6px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.08)}
 .s-add:active{transform:scale(.96);opacity:.88}
-.s-credit-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
-  background:linear-gradient(135deg,#34c759,#00c853);
-  border:none;color:#fff;
-  padding:15px 14px;border-radius:18px;
-  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
-  cursor:pointer;transition:all .18s;white-space:nowrap;
-  box-shadow:0 6px 20px rgba(52,199,89,0.45),inset 0 1px 0 rgba(255,255,255,0.25)}
-.s-credit-btn:active{transform:scale(.96);box-shadow:0 3px 10px rgba(52,199,89,0.35);}
 
-/* WARRANTY PANEL */
-.warranty-section{margin:0 0 14px}
-.warranty-toggle{
-  display:flex;align-items:center;gap:10px;padding:12px 14px;
-  background:var(--glass2);border:1px solid var(--border);border-radius:16px;
-  cursor:pointer;transition:all .2s;
-  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.8);
+/* WARRANTY BADGE */
+.warranty-badge{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;margin-bottom:14px;
+  background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.22);
+  border-radius:14px;
 }
-.warranty-toggle:active{transform:scale(.97);}
-.warranty-toggle-icon{font-size:20px;flex-shrink:0}
-.warranty-toggle-body{flex:1}
-.warranty-toggle-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--text)}
-.warranty-toggle-sub{font-size:10px;color:var(--t3);margin-top:1px}
-.warranty-chev{color:var(--t3);transition:transform .28s cubic-bezier(.4,0,.2,1);flex-shrink:0}
-.warranty-toggle.open .warranty-chev{transform:rotate(90deg)}
-.warranty-options{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s;padding:0 2px}
-.warranty-options.open{max-height:500px;opacity:1}
-.warranty-opt{
-  display:flex;align-items:flex-start;gap:12px;padding:12px 14px;margin-top:8px;
-  background:var(--glass2);border:2px solid var(--border);border-radius:16px;
-  cursor:pointer;transition:all .2s;box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.8);
-}
-.warranty-opt.selected{border-color:var(--green);background:rgba(52,199,89,0.08);}
-.warranty-opt:active{transform:scale(.97);}
-.warranty-opt-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:var(--glass3);transition:all .2s}
-.warranty-opt.selected .warranty-opt-radio{background:var(--green);border-color:var(--green)}
-.warranty-opt.selected .warranty-opt-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff}
-.warranty-opt-body{flex:1}
-.warranty-opt-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px}
-.warranty-opt-desc{font-size:10px;color:var(--t3);line-height:1.5;margin-bottom:5px}
-.warranty-opt-price{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:800;color:var(--green)}
-.warranty-opt-badge{display:inline-block;font-size:8px;font-weight:700;font-family:'Unbounded',sans-serif;padding:2px 7px;border-radius:50px;text-transform:uppercase;letter-spacing:.3px;margin-left:6px;vertical-align:middle}
-.warranty-opt-badge.best{background:rgba(255,159,10,.18);color:#a05800;border:1px solid rgba(255,159,10,.4)}
+.warranty-badge-icon{font-size:16px;flex-shrink:0}
+.warranty-badge-text{font-size:11px;color:var(--t2);font-weight:500;line-height:1.4}
+.warranty-badge-text b{color:var(--text);font-weight:700}
 
 /* VARIANTS PICKER (цвет / память / SIM) */
 .variants-section{margin-bottom:14px}
@@ -928,12 +933,6 @@ body.dark .var-chip.active{background:#f5f5ff;color:#080810;border-color:#f5f5ff
 .var-chip.active .var-color-dot{border-color:rgba(255,255,255,0.4);}
 body.dark .var-chip.active .var-color-dot{border-color:rgba(8,8,16,0.4);}
 
-/* CREDIT INFO POPUP */
-.credit-info-overlay{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,0.45);backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .28s}
-.credit-info-overlay.open{opacity:1;pointer-events:all;visibility:visible}
-.credit-info-sheet{width:100%;max-width:480px;background:rgba(240,242,245,0.98);border-radius:28px 28px 0 0;border-top:1px solid rgba(255,255,255,.95);padding:0 0 calc(32px + var(--sb));backdrop-filter:blur(40px);box-shadow:0 -8px 40px rgba(0,0,0,.18),inset 0 1px 0 white;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);max-height:90dvh;overflow-y:auto}
-.credit-info-overlay.open .credit-info-sheet{transform:translateY(0)}
-body.dark .credit-info-sheet{background:rgba(10,10,20,0.99)}
 
 /* MINI GAME */
 .game-canvas-wrap{background:#050510;border-radius:20px;overflow:hidden;margin:0 16px;position:relative;border:1px solid rgba(255,255,255,0.08)}
@@ -947,14 +946,19 @@ body.dark .credit-info-sheet{background:rgba(10,10,20,0.99)}
 
 /* WISHLIST BUTTON */
 .wish-btn{
-  width:46px;height:46px;border-radius:16px;flex-shrink:0;
-  background:var(--glass2);border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1);
-  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9);
+  width:46px;height:46px;border-radius:18px;flex-shrink:0;
+  background:var(--glass2);border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+  cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 4px 12px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.95);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-.wish-btn.active{background:rgba(255,59,48,.12);border-color:rgba(255,59,48,.4);}
-.wish-btn:active{transform:scale(.85);}
+.wish-btn.active{
+  background:linear-gradient(135deg,rgba(255,59,48,.14),rgba(255,100,80,.08));
+  border-color:rgba(255,59,48,.45);
+  box-shadow:0 4px 16px rgba(255,59,48,.18),inset 0 1px 0 rgba(255,255,255,0.9);
+}
+.wish-btn:active{transform:scale(.82);}
 
 /* WISHLIST PAGE */
 .wishlist-empty{text-align:center;padding:60px 20px;color:var(--t3)}
@@ -1147,7 +1151,6 @@ body.dark .credit-info-sheet{background:rgba(10,10,20,0.99)}
 /* ═══ PULSE BUY BUTTON ═══ */
 @keyframes pulseBuy{0%,100%{box-shadow:0 6px 20px rgba(52,199,89,0.30)}50%{box-shadow:0 6px 28px rgba(52,199,89,0.55),0 0 0 6px rgba(52,199,89,0.12)}}
 .s-add.pulse{animation:none}
-.s-credit-btn.pulse{animation:pulseBuy 2s ease-in-out infinite}
 
 /* ═══ GIFT BOX SECTION ═══ */
 .gift-section{margin:16px 16px 0;border-radius:26px;overflow:hidden;
@@ -1178,19 +1181,6 @@ body.dark .credit-info-sheet{background:rgba(10,10,20,0.99)}
 .gift-item-name{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
 .gift-item-val{font-size:11px;color:var(--t3)}
 .gift-total{margin:0 16px 16px;padding:14px 16px;background:linear-gradient(135deg,rgba(255,159,10,0.12),rgba(255,200,0,0.08));border:1px solid rgba(255,159,10,0.3);border-radius:18px;text-align:center;font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;color:#8a5500;display:none}
-
-/* ═══ INSTALLMENT SECTION ═══ */
-.install-section{margin:12px 16px 0;background:var(--glass2);border:1px solid var(--border);border-radius:22px;padding:16px;box-shadow:0 4px 20px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
-.install-title{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
-.install-sub{font-size:12px;color:var(--t2);margin-bottom:14px}
-.install-plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:14px}
-.iplan{padding:10px 8px;background:var(--glass3);border:1px solid var(--border);border-radius:14px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:inset 0 1px 0 white}
-.iplan.active{background:rgba(28,28,30,0.12);border-color:rgba(28,28,30,0.25);box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 white}
-.iplan-months{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;color:var(--text)}
-.iplan-month{font-size:9px;color:var(--t3)}
-.iplan-pay{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:#1a7d38;margin-top:2px}
-.install-cta{display:flex;align-items:center;gap:8px;background:rgba(28,28,30,0.88);color:#fff;border:none;border-radius:50px;padding:14px 20px;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;width:100%;justify-content:center;box-shadow:0 4px 16px var(--shadow2);animation:pulseBuy 2.5s ease-in-out infinite}
-.install-cta:active{transform:scale(.97);animation:none}
 
 /* ADMIN */
 .admin-section-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;padding:0 2px}
@@ -1354,20 +1344,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 .price-prev-name{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--text)}
 .price-prev-sub{font-size:10px;color:var(--t3);margin-top:1px}
 .price-prev-price{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;color:#1a7d38;flex-shrink:0}
-.install-cond-item{
-  display:flex;align-items:center;gap:12px;
-  padding:11px 14px;
-  background:var(--glass2);border:1px solid var(--border);border-radius:16px;
-  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 white;
-}
-.install-cond-icon{
-  width:36px;height:36px;border-radius:12px;flex-shrink:0;
-  background:rgba(28,28,30,0.07);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--accent);
-}
-.install-cond-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--text);margin-bottom:2px}
-.install-cond-sub{font-size:11px;color:var(--t3)}
 /* Сортировочные чипы чуть отличаются визуально */
 .chip-sort{
   background:rgba(28,28,30,0.06)!important;
@@ -1409,32 +1385,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
           <h2>Новинки<br>Apple 2025</h2>
           <p>iPhone 17, MacBook M4<br>Оригинал · Гарантия 12 мес.</p>
           <button class="banner-btn" onclick="openSheet(0)">СМОТРЕТЬ →</button>
-        </div>
-      </div>
-
-      <!-- БАННЕР 2: Рассрочка -->
-      <div class="banner banner-credit">
-        <div class="banner-glow"></div>
-        <div class="banner-badge sale">0%</div>
-        <div class="banner-emoji">💳</div>
-        <div class="banner-content">
-          <div class="banner-tag">РАССРОЧКА</div>
-          <h2>Без<br>переплат</h2>
-          <p>3, 6 или 12 месяцев<br>Одобрение за минуту</p>
-          <button class="banner-btn" onclick="installmentOrder()">УСЛОВИЯ →</button>
-        </div>
-      </div>
-
-      <!-- БАННЕР 3: Подарки -->
-      <div class="banner banner-gifts">
-        <div class="banner-glow"></div>
-        <div class="banner-badge gift">🎁 ПОДАРКИ</div>
-        <div class="banner-emoji">🎁</div>
-        <div class="banner-content">
-          <div class="banner-tag">К РАССРОЧКЕ</div>
-          <h2>Подарки<br>до 15 000 ₽</h2>
-          <p>Чехол, стекло, зарядка<br>При оформлении 0%</p>
-          <button class="banner-btn" onclick="installmentOrder()">ПОЛУЧИТЬ →</button>
         </div>
       </div>
 
@@ -1564,17 +1514,15 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
       <div class="profile-item" onclick="window.open('tel:+79779920005','_blank')"><div class="pi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 012 1.18 2 2 0 013.98 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div><div class="pi-body"><div class="pi-text">Позвонить</div><div class="pi-sub">+7 (977) 992-00-05</div></div><div class="pi-arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div></div>
     </div>
   </div>
-  <!-- Активность -->
+  <!-- Избранное + О магазине -->
   <div class="profile-section au d3">
-    <div class="profile-section-title">История действий</div>
-    <div id="activityLog">
-      <div style="text-align:center;padding:24px;color:var(--t3);font-size:13px">Пока пусто</div>
-    </div>
-  </div>
-  <!-- О магазине -->
-  <div class="profile-section au d4">
-    <div class="profile-section-title">О магазине</div>
+    <div class="profile-section-title">Избранное и магазин</div>
     <div class="profile-list">
+      <div class="profile-item" onclick="showPage('wishlist')">
+        <div class="pi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+        <div class="pi-body"><div class="pi-text">Избранное</div><div class="pi-sub" id="profileWishSub">Пока пусто</div></div>
+        <div class="pi-arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
       <div class="profile-item" onclick="showPage('info')">
         <div class="pi-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
         <div class="pi-body"><div class="pi-text">О нас</div><div class="pi-sub">4 года · 4 500+ клиентов</div></div>
@@ -1870,7 +1818,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
   <nav class="nav" id="mainNav">
     <div class="ni active" id="nav-home" onclick="showPage('home')"><div class="ni-icon"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div></div>
     <div class="ni" id="nav-search" onclick="showPage('search')"><div class="ni-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
-    <div class="ni" id="nav-wishlist" onclick="showPage('wishlist')"><div class="ni-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><div class="wish-nav-dot" id="wishNavDot"></div></div></div>
     <div class="ni" id="nav-cart" onclick="showPage('cart')"><div class="ni-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><div class="nav-badge" id="navBadge"></div></div></div>
     <div class="ni" id="nav-menu" onclick="openDrawer()"><div class="ni-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
     <div class="ni" id="nav-profile" onclick="showPage('profile')"><div class="ni-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div>
@@ -1950,107 +1897,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
   </div>
 </div>
 
-<!-- GIFT MODAL (рассрочка + подарки) -->
-<div class="gift-modal-overlay" id="giftModalOverlay" onclick="maybeCloseGiftModal(event)">
-  <div class="gift-modal">
-    <div class="gift-modal-handle"></div>
-
-    <!-- ШАБЛОН 1: Условия рассрочки -->
-    <div id="installSection">
-      <div style="padding:20px 20px 10px;text-align:center">
-        <div style="font-size:44px;margin-bottom:10px">💳</div>
-        <div class="gift-modal-title">Рассрочка 0%</div>
-        <div class="gift-modal-sub" style="margin-bottom:0">Без переплат · Подбираем из 18 банков</div>
-      </div>
-      <div style="padding:10px 16px 16px;display:flex;flex-direction:column;gap:8px">
-        <div class="install-cond-item">
-          <div class="install-cond-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          </div>
-          <div><div class="install-cond-title">Рассрочка 0% без переплат</div><div class="install-cond-sub">Никаких скрытых условий</div></div>
-        </div>
-        <div class="install-cond-item">
-          <div class="install-cond-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          </div>
-          <div><div class="install-cond-title">Срок — 24 или 36 месяцев</div><div class="install-cond-sub">Выбираешь удобный период</div></div>
-        </div>
-        <div class="install-cond-item">
-          <div class="install-cond-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div><div class="install-cond-title">Гарантия оформляется отдельно</div><div class="install-cond-sub">Подберём пакет — цена останется выгодной</div></div>
-        </div>
-        <div class="install-cond-item">
-          <div class="install-cond-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-          </div>
-          <div><div class="install-cond-title">Досрочное погашение</div><div class="install-cond-sub">На любом этапе без штрафов</div></div>
-        </div>
-        <div class="install-cond-item">
-          <div class="install-cond-icon">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          </div>
-          <div><div class="install-cond-title">Оформление ~5 минут</div><div class="install-cond-sub">Из 18 банков — подберём лучший</div></div>
-        </div>
-      </div>
-      <div style="padding:0 16px 8px">
-        <button class="gift-modal-btn primary" onclick="showGiftsSection()" style="width:100%;padding:15px;border:none;border-radius:50px;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(52,199,89,0.4)">
-          🎁 СМОТРЕТЬ ПОДАРКИ →
-        </button>
-        <button class="gift-modal-btn secondary" onclick="closeGiftModal()" style="width:100%;margin-top:8px;padding:13px;border:1px solid var(--border);border-radius:50px;background:var(--glass2);color:var(--t2);font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Закрыть</button>
-      </div>
-    </div>
-
-    <!-- ШАБЛОН 2: Подарки (скрыт, показывается после кнопки) -->
-    <div id="giftsSection" style="display:none">
-      <div class="gift-modal-hero">
-        <span class="gift-modal-box" id="giftModalBox">🎁</span>
-        <div class="gift-modal-title">Подарки при покупке</div>
-        <div class="gift-modal-sub">При оформлении рассрочки 0% без переплат</div>
-      </div>
-      <div class="gift-modal-items" id="giftModalItems">
-        <div class="gift-modal-item" id="gmi0">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bf5af2" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Яндекс Станция Алиса</div><div class="gift-item-val">умная колонка в подарок</div></div>
-        </div>
-        <div class="gift-modal-item" id="gmi1">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2.5"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Оригинальный чехол</div><div class="gift-item-val">фирменный, под модель</div></div>
-        </div>
-        <div class="gift-modal-item" id="gmi2">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff9f0a" stroke-width="2" stroke-linecap="round"><path d="M5 12H3a9 9 0 1018 0h-2"/><polyline points="12 2 12 12"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Оригинальный блок 20W</div><div class="gift-item-val">быстрая зарядка Apple</div></div>
-        </div>
-        <div class="gift-modal-item" id="gmi3">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Премиум-стекло + защита линз</div><div class="gift-item-val">полная защита экрана и камеры</div></div>
-        </div>
-        <div class="gift-modal-item" id="gmi4">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff375f" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Картхолдер</div><div class="gift-item-val">стильный держатель карт</div></div>
-        </div>
-        <div class="gift-modal-item" id="gmi5">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Перенос данных и настройка</div><div class="gift-item-val">под ключ — займёт 15 минут</div></div>
-        </div>
-        <div class="gift-modal-item" id="gmi6">
-          <div class="gift-item-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bf5af2" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-          <div class="gift-item-info"><div class="gift-item-name">Банковские приложения</div><div class="gift-item-val">включая отсутствующие в App Store</div></div>
-        </div>
-      </div>
-      <div class="gift-modal-total" id="giftModalTotal" style="display:block;margin-top:8px">🎁 Подарки при оформлении рассрочки 0%</div>
-      <div style="padding:12px 16px 4px;display:flex;flex-direction:column;gap:8px">
-        <button class="gift-modal-btn primary" id="giftModalInstallBtn" onclick="confirmInstallmentWithGift()" style="width:100%;padding:15px;border:none;border-radius:50px;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(52,199,89,0.4);animation:pulseBuy 2.5s ease-in-out infinite">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:inline;vertical-align:-2px;margin-right:6px"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          ОФОРМИТЬ РАССРОЧКУ + ПОДАРКИ
-        </button>
-        <button onclick="closeGiftModal()" style="width:100%;padding:13px;border:1px solid var(--border);border-radius:50px;background:var(--glass2);color:var(--t2);font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Закрыть</button>
-      </div>
-    </div>
-
-  </div>
-</div>
 
 <!-- PRODUCT SHEET -->
 <div class="overlay" id="overlay" onclick="maybeClose(event)">
@@ -2067,42 +1913,10 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
       <div class="specs" id="sSpecs"></div>
       <div class="s-stock"><svg width="8" height="8" viewBox="0 0 8 8" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="4" cy="4" r="4" fill="#34c759"/></svg>В наличии</div>
 
-      <!-- WARRANTY PANEL -->
-      <div class="warranty-section">
-        <div class="warranty-toggle" id="warrantyToggle" onclick="toggleWarranty()">
-          <div class="warranty-toggle-icon">🛡️</div>
-          <div class="warranty-toggle-body">
-            <div class="warranty-toggle-title" id="warrantyToggleTitle">Гарантия: 12 месяцев</div>
-            <div class="warranty-toggle-sub" id="warrantyToggleSub">Нажми, чтобы расширить защиту →</div>
-          </div>
-          <svg class="warranty-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
-        <div class="warranty-options" id="warrantyOptions">
-          <div class="warranty-opt selected" id="wopt-0" onclick="selectWarranty(0,this)">
-            <div class="warranty-opt-radio"></div>
-            <div class="warranty-opt-body">
-              <div class="warranty-opt-title">Стандарт · 12 месяцев <span style="font-size:10px;color:var(--t3);font-weight:500;font-family:'Inter',sans-serif">включено</span></div>
-              <div class="warranty-opt-desc">Официальная гарантия производителя. Покрывает заводской брак и неисправности.</div>
-              <div class="warranty-opt-price">Бесплатно</div>
-            </div>
-          </div>
-          <div class="warranty-opt" id="wopt-1" onclick="selectWarranty(1,this)">
-            <div class="warranty-opt-radio"></div>
-            <div class="warranty-opt-body">
-              <div class="warranty-opt-title">Защита Экрана · 24 месяца <span class="warranty-opt-badge best">популярно</span></div>
-              <div class="warranty-opt-desc">Полная защита на 2 года включая разбитый экран, сколы, трещины. Одна замена дисплея бесплатно.</div>
-              <div class="warranty-opt-price" style="color:var(--t2);font-size:11px;font-weight:600">Цену уточнит менеджер</div>
-            </div>
-          </div>
-          <div class="warranty-opt" id="wopt-2" onclick="selectWarranty(2,this)">
-            <div class="warranty-opt-radio"></div>
-            <div class="warranty-opt-body">
-              <div class="warranty-opt-title">Премиум · 36 месяцев 👑</div>
-              <div class="warranty-opt-desc">3 года полной защиты: разбитый экран, залитие, механические повреждения. Приоритетный ремонт. Замена при невозможности починки.</div>
-              <div class="warranty-opt-price" style="color:var(--t2);font-size:11px;font-weight:600">Цену уточнит менеджер</div>
-            </div>
-          </div>
-        </div>
+      <!-- WARRANTY BADGE -->
+      <div class="warranty-badge">
+        <div class="warranty-badge-icon">🛡️</div>
+        <div class="warranty-badge-text"><b>Гарантия 12 месяцев</b> — официальная гарантия производителя на заводской брак и неисправности</div>
       </div>
 
       <!-- ВАРИАНТЫ ЦВЕТА/ПАМЯТИ/SIM -->
@@ -2112,19 +1926,11 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
           <div class="s-old" id="sOld"></div>
           <div class="s-price" id="sPrice"></div>
         </div>
-        <div class="s-credit-hint" onclick="openCreditInfo()" style="cursor:pointer;display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(52,199,89,0.08);border:1px solid rgba(52,199,89,0.20);border-radius:12px;width:fit-content">
-          💳 В рассрочку от <b id="sMinPay" style="color:#1a7d38">1 490</b> ₽/мес
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34c759" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
         <div class="s-btns">
-    <button class="wish-btn" id="sheetWishBtn" onclick="toggleWish(sheetId)">🤍</button>
+          <button class="wish-btn" id="sheetWishBtn" onclick="toggleWish(sheetId)">🤍</button>
           <button class="s-add pulse" id="sAdd" onclick="addFromSheet()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
             В корзину
-          </button>
-          <button class="s-credit-btn pulse" onclick="installmentOrder()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-            Рассрочка 0%
           </button>
         </div>
       </div>
@@ -2141,32 +1947,53 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
     <div class="delivery-tabs">
       <div class="dtab active" id="dtab-pickup" onclick="selectDelivery('pickup')">
         <div class="dtab-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <div class="dtab-anim-wrap">
+            <span class="dtab-house" id="pickupHouseAnim">🏠</span>
+            <span class="dtab-person" id="pickupPersonAnim">🚶</span>
+          </div>
         </div>
         <div class="dtab-title">Самовывоз</div>
         <div class="dtab-sub">Москва, пл. Победы, 2к2</div>
       </div>
       <div class="dtab" id="dtab-delivery" onclick="selectDelivery('delivery')">
         <div class="dtab-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <div class="dtab-anim-wrap">
+            <span class="dtab-car" id="deliveryCarAnim">🚗</span>
+            <div class="dtab-road"><div class="dtab-road-line"></div></div>
+          </div>
         </div>
         <div class="dtab-title">Доставка</div>
         <div class="dtab-sub">Курьер · 3 часа</div>
       </div>
     </div>
     <div class="form-section show" id="form-pickup">
-      <button class="contact-phone-btn" onclick="requestTelegramContact()">📱 Заполнить из Telegram</button>
       <div class="form-field"><label>Ваше имя</label><input type="text" id="pickupName" placeholder="Иван Иванов" autocomplete="name"></div>
       <div class="form-field"><label>Номер телефона</label><input type="tel" id="pickupPhone" placeholder="+7 (999) 123-45-67" autocomplete="tel"></div>
       <div class="form-field"><label>Удобное время</label><input type="text" id="pickupTime" placeholder="Например: сегодня после 15:00"></div>
     </div>
     <div class="form-section" id="form-delivery">
-      <button class="contact-phone-btn" onclick="requestTelegramContact()">📱 Заполнить из Telegram</button>
       <div class="form-field"><label>Ваше имя</label><input type="text" id="delivName" placeholder="Иван Иванов" autocomplete="name"></div>
       <div class="form-field"><label>Номер телефона</label><input type="tel" id="delivPhone" placeholder="+7 (999) 123-45-67" autocomplete="tel"></div>
-      <div class="form-field"><label>Адрес доставки</label><input type="text" id="delivAddress" placeholder="Улица, дом, квартира" oninput="updateMapPreview()" autocomplete="street-address"></div>
-      <div class="map-preview" onclick="openAddressInMap()"><div class="map-pin-big">📍</div><div class="map-addr-text" id="mapAddrText">Введите адрес выше</div><div class="map-open-btn">Открыть в Яндекс.Картах →</div></div>
-      <div class="form-field"><label>Комментарий курьеру</label><input type="text" id="delivComment" placeholder="Домофон, этаж..."></div>
+      <div class="form-field" id="streetFieldWrap">
+        <label>Улица и дом</label>
+        <input type="text" id="delivStreet" placeholder="ул. Пушкина, д. 10" oninput="onStreetInput()" autocomplete="off">
+        <div class="addr-suggestions" id="addrSuggestions"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="form-field"><label>Квартира</label><input type="number" inputmode="numeric" pattern="[0-9]*" id="delivFlat" placeholder="42" min="1" max="9999"></div>
+        <div class="form-field"><label>Подъезд</label><input type="number" inputmode="numeric" pattern="[0-9]*" id="delivEntrance" placeholder="2" min="1" max="99"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="form-field"><label>Этаж</label><input type="number" inputmode="numeric" pattern="[0-9]*" id="delivFloor" placeholder="5" min="1" max="99"></div>
+        <div class="form-field"><label>Домофон</label><input type="text" id="delivIntercom" placeholder="Код 1234"></div>
+      </div>
+      <div class="map-preview" id="mapPreview" onclick="openAddressInMap()">
+        <div class="map-preview-inner" id="mapPreviewInner">
+          <div class="map-pin-big">📍</div>
+          <div class="map-addr-text" id="mapAddrText">Введите адрес выше</div>
+          <div class="map-open-btn" id="mapOpenBtn">Открыть в Яндекс.Картах →</div>
+        </div>
+      </div>
     </div>
     <button class="form-submit" onclick="submitOrder()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ОТПРАВИТЬ ЗАКАЗ</button>
   </div>
@@ -2222,51 +2049,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
   </div>
 </div>
 
-<!-- CREDIT INFO POPUP -->
-<div class="credit-info-overlay" id="creditInfoOverlay" onclick="maybeCloseCreditInfo(event)">
-  <div class="credit-info-sheet">
-    <div style="width:40px;height:4px;border-radius:2px;background:rgba(0,0,0,.12);margin:12px auto 0"></div>
-    <div style="padding:20px 20px 6px">
-      <div style="font-size:40px;text-align:center;margin-bottom:10px">💳</div>
-      <div style="font-family:'Unbounded',sans-serif;font-size:17px;font-weight:900;color:var(--text);text-align:center;margin-bottom:6px">Рассрочка 0%</div>
-      <div style="font-size:13px;color:var(--t2);text-align:center;margin-bottom:20px;line-height:1.5">Без переплат · Из 18 банков · Одобрение за 5 минут</div>
-
-      <div style="background:linear-gradient(135deg,rgba(52,199,89,0.12),rgba(0,200,83,0.06));border:1px solid rgba(52,199,89,0.25);border-radius:18px;padding:16px;margin-bottom:12px;text-align:center">
-        <div style="font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--t2);margin-bottom:4px">НАПРИМЕР ДЛЯ ЭТОГО ТОВАРА</div>
-        <div style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;color:#1a7d38">от <span id="ciMinPay">1 490</span> ₽/мес</div>
-        <div style="font-size:11px;color:var(--t3);margin-top:4px">при сроке 12 месяцев · ставка 0%</div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px" id="ciPlansGrid"></div>
-
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
-        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:14px">
-          <span style="font-size:20px">✅</span>
-          <div><div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--text)">Ставка 0% — без переплат</div><div style="font-size:10px;color:var(--t3);margin-top:1px">Никаких скрытых условий и комиссий</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:14px">
-          <span style="font-size:20px">⚡</span>
-          <div><div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--text)">Решение за 5 минут</div><div style="font-size:10px;color:var(--t3);margin-top:1px">Подбираем из 18 банков-партнёров</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:14px">
-          <span style="font-size:20px">📱</span>
-          <div><div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--text)">Берёшь товар сразу</div><div style="font-size:10px;color:var(--t3);margin-top:1px">Забираешь сегодня, платишь потом</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--glass2);border:1px solid var(--border);border-radius:14px">
-          <span style="font-size:20px">🔄</span>
-          <div><div style="font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;color:var(--text)">Досрочное погашение</div><div style="font-size:10px;color:var(--t3);margin-top:1px">В любой момент без штрафов</div></div>
-        </div>
-      </div>
-
-      <button onclick="closeCreditInfo();installmentOrder()" style="width:100%;padding:15px;border:none;border-radius:50px;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(52,199,89,0.4);margin-bottom:10px">
-        ОФОРМИТЬ РАССРОЧКУ →
-      </button>
-      <button onclick="closeCreditInfo()" style="width:100%;padding:13px;border:1px solid var(--border);border-radius:50px;background:transparent;color:var(--t2);font-family:'Unbounded',sans-serif;font-size:12px;font-weight:600;cursor:pointer">
-        Закрыть
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- CAT MINI GAME -->
 <canvas id="gameCanvas" style="display:none"></canvas>
@@ -2547,7 +2329,7 @@ function catOnReturn(){
 
 // Случайные подсказки кота
 const CAT_HINTS = [
-  ['😺','Можно оформить в рассрочку 0%!'],
+  ['😺','Самый широкий выбор техники в Москве!'],
   ['😸','У нас всё новое с гарантией 12 мес.'],
   ['🐱','Доставка курьером за 3 часа 🚀'],
   ['😺','Скидка по промокоду TEXNO10 💝'],
@@ -2695,67 +2477,6 @@ function selectPlan(el, months){
   el.classList.add('active');
 }
 
-function updateInstallmentPrices(price){
-  [3,6,12].forEach(m=>{
-    const el = document.getElementById('ip'+m);
-    if(el) el.textContent = Math.ceil(price/m).toLocaleString('ru-RU') + ' ₽/мес';
-  });
-  // Обновляем хинт "от X ₽/мес" (минимальный платёж = 12 мес)
-  const minPay = document.getElementById('sMinPay');
-  if(minPay) minPay.textContent = Math.ceil(price/12).toLocaleString('ru-RU');
-}
-
-// ══ GIFT MODAL ══
-let giftModalOpened = false;
-
-function installmentOrder(){
-  closeSheet();
-  const p = P.find(x=>x.id===sheetId);
-  if(p) logActivity('💳', `Открыл рассрочку: ${p.family}${p.memory!=='—'?' '+p.memory:''}`);
-  // Сбрасываем — показываем сначала условия
-  document.getElementById('installSection').style.display = 'block';
-  document.getElementById('giftsSection').style.display = 'none';
-  giftModalOpened = false;
-  document.getElementById('giftModalBox').textContent = '🎁';
-  document.getElementById('giftModalBox').className = 'gift-modal-box';
-  document.getElementById('giftModalItems').className = 'gift-modal-items';
-  // Reset item animations
-  for(let i=0;i<=6;i++){ const el=document.getElementById('gmi'+i); if(el) el.classList.remove('revealed'); }
-  const ov = document.getElementById('giftModalOverlay');
-  ov.classList.add('open');
-  ov.scrollTop = 0;
-}
-
-function showGiftsSection(){
-  document.getElementById('installSection').style.display = 'none';
-  document.getElementById('giftsSection').style.display = 'block';
-  logActivity('🎁', 'Посмотрел подарки при рассрочке');
-  // Запускаем анимацию подарков
-  if(!giftModalOpened){
-    giftModalOpened = true;
-    const box = document.getElementById('giftModalBox');
-    box.classList.add('opened');
-    setTimeout(()=>{ box.textContent='🎊'; box.style.animation='none'; }, 600);
-    launchConfetti(2500);
-    showCat('😺','Подарки при рассрочке! 🎁', 3000);
-    const items = document.getElementById('giftModalItems');
-    items.classList.add('show');
-    for(let i=0;i<=6;i++){
-      setTimeout(()=>{ document.getElementById('gmi'+i)?.classList.add('revealed'); }, 200+i*120);
-    }
-  }
-}
-
-function maybeCloseGiftModal(e){ if(e.target===document.getElementById('giftModalOverlay')) closeGiftModal(); }
-function closeGiftModal(){
-  document.getElementById('giftModalOverlay').classList.remove('open');
-}
-function confirmInstallmentWithGift(){
-  closeGiftModal();
-  showCat('😺','Сейчас оформим рассрочку + подарки! 💳', 3000);
-  showToast('Менеджер оформит рассрочку и подарки');
-  setTimeout(()=>window.open('https://t.me/TEXHOLIVE','_blank'), 500);
-}
 
 // ══ DRAWER SECTIONS ══
 function toggleDrawerSection(id, itemEl){
@@ -2946,12 +2667,6 @@ function openSheet(idx){
   const wishBtn = document.getElementById('sheetWishBtn');
   if(wishBtn){ wishBtn.textContent = wishlist.includes(p.id)?'❤️':'🤍'; wishBtn.classList.toggle('active', wishlist.includes(p.id)); }
 
-  // Сбрасываем гарантию
-  resetWarranty();
-
-  // Обновляем рассрочку
-  updateInstallmentPrices(p.price);
-
   // Рендерим варианты
   renderVariants(p);
 
@@ -3081,7 +2796,7 @@ function renderCart(){
               <div class="ci-qty-btn p" onclick="changeQty(${p.id},1)">+</div>
             </div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div class="ci-right">
             <div class="ci-price">${fmt(p.price*p.qty)}</div>
             <div class="ci-del" onclick="removeFromCart(${p.id})">✕</div>
           </div>
@@ -3128,22 +2843,161 @@ function applyPromo(){
 // ══════════════════════════════════════
 function selectDelivery(type){
   deliveryType = type;
-  document.getElementById('dtab-pickup').classList.toggle('active', type==='pickup');
-  document.getElementById('dtab-delivery').classList.toggle('active', type==='delivery');
+  // Toggle tabs — remove active first to reset animation, then re-add
+  const pickupTab = document.getElementById('dtab-pickup');
+  const delivTab = document.getElementById('dtab-delivery');
+
+  // Remove active from both to reset CSS animations
+  pickupTab.classList.remove('active');
+  delivTab.classList.remove('active');
+
+  // Force reflow so animations restart
+  void pickupTab.offsetWidth;
+  void delivTab.offsetWidth;
+
+  // Re-apply active
+  pickupTab.classList.toggle('active', type==='pickup');
+  delivTab.classList.toggle('active', type==='delivery');
+
   document.getElementById('form-pickup').classList.toggle('show', type==='pickup');
   document.getElementById('form-delivery').classList.toggle('show', type==='delivery');
   document.getElementById('orderSubtitle').textContent = type==='pickup' ? 'Самовывоз: Москва, пл. Победы, 2к2' : 'Курьер доставит в течение 3 часов';
 }
 
+// ══ ADDRESS AUTOCOMPLETE (Dadata free suggestions) ══
+const SHOP_ADDR = 'Москва, площадь Победы, 2к2';
+const SHOP_COORDS = '55.726868,37.368744'; // lat,lon магазина
+
+let suggestTimer = null;
+let lastSuggestedAddr = '';
+
+function onStreetInput(){
+  updateMapPreview();
+  const q = document.getElementById('delivStreet')?.value.trim();
+  clearTimeout(suggestTimer);
+  if(q.length < 3){ hideSuggestions(); return; }
+  suggestTimer = setTimeout(()=>fetchSuggestions(q), 320);
+}
+
+async function fetchSuggestions(q){
+  const el = document.getElementById('addrSuggestions');
+  if(!el) return;
+  // Используем бесплатный API подсказок Яндекса (geo suggest)
+  const url = `https://suggest-maps.yandex.ru/suggest-geo?search_type=tp&part=${encodeURIComponent('Москва '+q)}&lang=ru_RU&v=8&n=5&origin=jsapi2&callback=ysuggest`;
+  try{
+    // Fallback: статические московские подсказки на основе ввода
+    showLocalSuggestions(q);
+  }catch(e){ hideSuggestions(); }
+}
+
+// Локальные подсказки — распространённые улицы Москвы + введённое
+function showLocalSuggestions(q){
+  const el = document.getElementById('addrSuggestions');
+  if(!el) return;
+  const qL = q.toLowerCase();
+  const moscowStreets = [
+    'Арбат','Тверская','Садовая-Кольцевая','Ленинский проспект','Кутузовский проспект',
+    'Проспект Мира','Большая Никитская','Пречистенка','Остоженка','Покровка',
+    'Маросейка','Мясницкая','Лубянка','Охотный ряд','Страстной бульвар',
+    'Чистопрудный бульвар','Рождественский бульвар','Петровка','Неглинная',
+    'Новый Арбат','Смоленская','Комсомольский проспект','Фрунзенская набережная',
+    'Пречистенская набережная','Воробьёвы горы','Университетский проспект',
+  ];
+  const filtered = moscowStreets
+    .filter(s => s.toLowerCase().includes(qL) || qL.includes(s.toLowerCase().slice(0,4)))
+    .slice(0,4)
+    .map(s => ({ main: s, sub: 'Москва' }));
+
+  // Всегда показываем введённый адрес первым
+  const results = [
+    { main: q, sub: 'Москва · как введено', raw: true },
+    ...filtered.map(f => ({ main: f.main, sub: f.sub }))
+  ].slice(0,5);
+
+  el.innerHTML = results.map((r,i)=>`
+    <div class="addr-suggest-item" onclick="selectSuggestion('${r.main.replace(/'/g,"\\'")}')">
+      <span class="addr-suggest-pin">${r.raw?'✏️':'📍'}</span>
+      <div>
+        <div class="addr-suggest-main">${r.main}</div>
+        <div class="addr-suggest-sub">${r.sub}</div>
+      </div>
+    </div>`).join('');
+  el.classList.add('show');
+}
+
+function selectSuggestion(addr){
+  const inp = document.getElementById('delivStreet');
+  if(inp){ inp.value = addr; }
+  hideSuggestions();
+  lastSuggestedAddr = addr;
+  updateMapPreview();
+  showMapRoute(addr);
+}
+
+function hideSuggestions(){
+  const el = document.getElementById('addrSuggestions');
+  if(el) el.classList.remove('show');
+}
+
+// Close suggestions on outside click
+document.addEventListener('click', e=>{
+  if(!e.target.closest('#streetFieldWrap')) hideSuggestions();
+}, true);
+
+// Enter on street input → show route
+document.addEventListener('DOMContentLoaded', ()=>{
+  const si = document.getElementById('delivStreet');
+  if(si) si.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){
+      e.preventDefault();
+      const addr = si.value.trim();
+      hideSuggestions();
+      if(addr){ showMapRoute(addr); si.blur(); }
+    }
+  });
+});
+
 function updateMapPreview(){
-  const a = document.getElementById('delivAddress').value.trim();
-  document.getElementById('mapAddrText').textContent = a ? 'Москва, '+a : 'Введите адрес выше';
+  const a = document.getElementById('delivStreet')?.value.trim();
+  const addrText = document.getElementById('mapAddrText');
+  if(addrText) addrText.textContent = a ? 'Москва, '+a : 'Введите адрес выше';
+}
+
+function showMapRoute(addr){
+  const preview = document.getElementById('mapPreview');
+  const inner = document.getElementById('mapPreviewInner');
+  if(!preview || !addr) return;
+
+  // Формируем ссылку маршрута Яндекс.Карт
+  const from = encodeURIComponent(SHOP_ADDR);
+  const to = encodeURIComponent('Москва, ' + addr);
+  const routeUrl = `https://yandex.ru/maps/?rtext=${encodeURIComponent(SHOP_ADDR)}~${encodeURIComponent('Москва, '+addr)}&rtt=auto&z=13`;
+
+  // Меняем карту: показываем зелёный фон с маршрутным превью и кнопкой
+  if(inner){
+    inner.innerHTML = `
+      <div class="map-pin-big">📍</div>
+      <div class="map-addr-text" id="mapAddrText">Москва, ${addr}</div>
+      <button class="map-route-btn" onclick="event.stopPropagation();openRouteInMap()">🗺 Маршрут от магазина →</button>`;
+  }
+  // Сохраняем адрес для маршрута
+  preview.dataset.routeAddr = addr;
+  // Нажатие на карту — открыть маршрут
+  preview.onclick = ()=>openRouteInMap();
+}
+
+function openRouteInMap(){
+  const addr = document.getElementById('mapPreview')?.dataset.routeAddr ||
+               document.getElementById('delivStreet')?.value.trim();
+  if(!addr){ showToast('Введите адрес доставки'); return; }
+  const url = `https://yandex.ru/maps/?rtext=${encodeURIComponent(SHOP_ADDR)}~${encodeURIComponent('Москва, '+addr)}&rtt=auto&z=13`;
+  window.open(url, '_blank');
 }
 
 function openAddressInMap(){
-  const a = document.getElementById('delivAddress').value.trim();
-  if(!a){ showToast('Введите адрес'); return; }
-  window.open(`https://yandex.ru/maps/?text=${encodeURIComponent('Москва, '+a)}`, '_blank');
+  const addr = document.getElementById('delivStreet')?.value.trim();
+  if(!addr){ showToast('Введите улицу и дом'); return; }
+  openRouteInMap();
 }
 
 function openOrderModal(){
@@ -3171,10 +3025,14 @@ function submitOrder(){
   } else {
     name = document.getElementById('delivName').value.trim();
     phone = document.getElementById('delivPhone').value.trim();
-    const a = document.getElementById('delivAddress').value.trim();
-    const c = document.getElementById('delivComment').value.trim();
-    if(!a){ showToast('Введите адрес доставки'); return; }
-    extra = `\n📍 Адрес: ${a}` + (c?`\n💬 ${c}`:'');
+    const street = document.getElementById('delivStreet')?.value.trim();
+    const flat = document.getElementById('delivFlat')?.value.trim();
+    const entrance = document.getElementById('delivEntrance')?.value.trim();
+    const floor = document.getElementById('delivFloor')?.value.trim();
+    const intercom = document.getElementById('delivIntercom')?.value.trim();
+    if(!street){ showToast('Введите улицу и дом'); return; }
+    const addrParts = [street, flat?`кв. ${flat}`:'', entrance?`подъезд ${entrance}`:'', floor?`${floor} этаж`:'', intercom?`домофон ${intercom}`:''].filter(Boolean);
+    extra = `\n📍 Адрес: ${addrParts.join(', ')}`;
   }
   if(!name){ showToast('Введите ваше имя'); return; }
   if(!phone){ showToast('Введите номер телефона'); return; }
@@ -3183,12 +3041,11 @@ function submitOrder(){
   const total = sub - disc;
   const dl = deliveryType==='pickup' ? 'Самовывоз' : 'Доставка курьером';
   const num = '#'+String(++orderCount).padStart(3,'0')+'-'+Date.now().toString().slice(-4);
-  const warrantyLine = selectedWarranty > 0 ? `\n🛡 Гарантия: ${getWarrantyLabel()}` : '';
+  const warrantyLine = '';
   const msg = encodeURIComponent(
     `📦 Новый заказ ${num}\n👤 ${name}\n📞 ${phone}\n🚚 ${dl}${extra}\n\n`+
     cart.map(p=>`• ${p.family}${p.memory!=='—'?' '+p.memory:''} × ${p.qty} — ${fmt(p.price*p.qty)}`).join('\n')+
     (promoApplied?`\n🏷 Скидка: −${fmt(disc)}`:'')+
-    warrantyLine+
     `\n💰 Итого: ${fmt(total)}`
   );
   const tg = window.Telegram?.WebApp;
@@ -3264,15 +3121,14 @@ function showPage(name, isBack=false){
   else { if(pageHistory[pageHistory.length-1]!==name) pageHistory.push(name); }
 
   // Nav active — only main tabs
-  const mainTabs=['home','search','cart','profile'];
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const mainTabs=['home','search','cart','profile'];  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
   if(mainTabs.includes(name)){
     const navEl=document.getElementById('nav-'+name);
     if(navEl) navEl.classList.add('active');
   }
 
   if(name==='cart') renderCart();
-  if(name==='profile'){ updateProfile(); renderActivityLog(); }
+  if(name==='profile'){ updateProfile(); renderProfileWishlist(); }
   if(name==='admin'){ renderMarkupRows(); renderAdminList(); populatePhotoSelect(); switchAdminTab('price'); }
   if(name==='search'){
     // Сбрасываем поле и показываем пустой экран
@@ -3800,53 +3656,6 @@ function initAllPhoneMasks(){
 }
 
 // ══════════════════════════════════════
-// 🛡️ WARRANTY PANEL
-// ══════════════════════════════════════
-let selectedWarranty = 0; // 0=standard, 1=screen, 2=premium
-
-function toggleWarranty(){
-  const toggle = document.getElementById('warrantyToggle');
-  const opts = document.getElementById('warrantyOptions');
-  const isOpen = toggle.classList.contains('open');
-  toggle.classList.toggle('open', !isOpen);
-  opts.classList.toggle('open', !isOpen);
-  if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.selectionChanged();
-}
-
-function selectWarranty(idx, el){
-  selectedWarranty = idx;
-  document.querySelectorAll('.warranty-opt').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  const titles = ['Стандарт · 12 мес','Защита Экрана · 24 мес','Премиум · 36 мес'];
-  const tt = document.getElementById('warrantyToggleTitle');
-  const ts = document.getElementById('warrantyToggleSub');
-  if(tt) tt.textContent = 'Гарантия: ' + titles[idx];
-  if(ts) ts.textContent = idx === 0 ? 'Нажми, чтобы расширить защиту →' : '✓ Расширенная защита выбрана';
-  if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.impactOccurred('light');
-}
-
-function getWarrantyPrice(){
-  return [0, 2990, 5990][selectedWarranty] || 0;
-}
-
-function getWarrantyLabel(){
-  return ['12 мес (стандарт)','24 мес + защита экрана','36 мес Премиум'][selectedWarranty];
-}
-
-// При открытии товара сбрасываем гарантию
-function resetWarranty(){
-  selectedWarranty = 0;
-  document.querySelectorAll('.warranty-opt').forEach((o,i)=>o.classList.toggle('selected',i===0));
-  const toggle = document.getElementById('warrantyToggle');
-  if(toggle){
-    toggle.classList.remove('open');
-    const tt = document.getElementById('warrantyToggleTitle');
-    const ts = document.getElementById('warrantyToggleSub');
-    if(tt) tt.textContent = 'Гарантия: 12 месяцев';
-    if(ts) ts.textContent = 'Нажми, чтобы расширить защиту →';
-  }
-  const opts = document.getElementById('warrantyOptions');
-// ══════════════════════════════════════
 // 🎨 VARIANTS PICKER (цвет / память / SIM)
 // ══════════════════════════════════════
 
@@ -3948,38 +3757,6 @@ function switchVariant(idx){
   }, 120);
 }
 
-  if(opts) opts.classList.remove('open');
-}
-
-// ══════════════════════════════════════
-// 💳 CREDIT INFO POPUP
-// ══════════════════════════════════════
-function openCreditInfo(){
-  const p = P.find(x=>x.id===sheetId);
-  if(p){
-    const price = p.price;
-    document.getElementById('ciMinPay').textContent = Math.ceil(price/12).toLocaleString('ru-RU');
-    const plans = [3,6,12];
-    document.getElementById('ciPlansGrid').innerHTML = plans.map(m=>`
-      <div style="padding:10px 8px;background:var(--glass2);border:1px solid var(--border);border-radius:14px;text-align:center;box-shadow:0 2px 6px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.8)">
-        <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;color:var(--text)">${m} мес</div>
-        <div style="font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:#1a7d38;margin-top:4px">${Math.ceil(price/m).toLocaleString('ru-RU')} ₽</div>
-        <div style="font-size:9px;color:var(--t3);margin-top:2px">в месяц</div>
-      </div>`).join('');
-  }
-  document.getElementById('creditInfoOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.impactOccurred('light');
-}
-
-function closeCreditInfo(){
-  document.getElementById('creditInfoOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function maybeCloseCreditInfo(e){
-  if(e.target===document.getElementById('creditInfoOverlay')) closeCreditInfo();
-}
 
 // ══════════════════════════════════════
 // 🐱 MINI GAME — Кот-Прыгун
@@ -4178,11 +3955,19 @@ function toggleWish(id){
   // Обновляем кнопку в шторке
   const btn = document.getElementById('sheetWishBtn');
   if(btn){ btn.textContent = wishlist.includes(id) ? '❤️' : '🤍'; btn.classList.toggle('active', wishlist.includes(id)); }
+  renderProfileWishlist();
 }
 
 function updateWishNavDot(){
-  const dot = document.getElementById('wishNavDot');
-  if(dot) dot.classList.toggle('show', wishlist.length > 0);
+  // nav wishlist dot no longer in nav, but we update profile wishlist section if visible
+  renderProfileWishlist();
+}
+
+function renderProfileWishlist(){
+  const sub = document.getElementById('profileWishSub');
+  if(sub){
+    sub.textContent = wishlist.length > 0 ? `${wishlist.length} товар(ов)` : 'Пока пусто';
+  }
 }
 
 function renderWishlist(){
