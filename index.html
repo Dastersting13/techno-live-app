@@ -389,13 +389,12 @@ body::before{
 @keyframes flyToBadge{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
 
 /* NAV — LIQUID GLASS PILL */
-.nav-wrap{position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:8px 16px calc(8px + var(--sb));pointer-events:auto;background:transparent}
+.nav-wrap{position:fixed;bottom:calc(8px + var(--sb));left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto}
 .nav{
   background:rgba(235,237,242,0.95);border:1px solid var(--border);
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
   border-radius:50px;display:flex;align-items:center;justify-content:space-around;padding:8px 10px;
   box-shadow:0 4px 24px rgba(0,0,0,0.15),inset 0 1px 0 rgba(255,255,255,0.95);
-  max-width:400px;margin:0 auto;
 }
 .ni{
   flex:1;display:flex;align-items:center;justify-content:center;padding:10px 8px;cursor:pointer;
@@ -879,7 +878,7 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 /* SHEET */
 .overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;visibility:hidden;}
 .overlay.open{opacity:1;pointer-events:all;visibility:visible;}
-.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(90px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
+.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(100px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
 .overlay.open .sheet{transform:translateY(0)}
 /* Sheet image slider */
 .sheet-slider-wrap{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 4px 20px var(--shadow)}
@@ -915,9 +914,7 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 }
 .spec-i:active{background:var(--accent);color:#fff}
 .s-stock{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:50px;background:rgba(0,230,118,.11);color:var(--green);margin-bottom:14px;border:1px solid rgba(0,230,118,.18)}
-.s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px;
-  position:sticky;bottom:0;background:rgba(238,240,243,0.98);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:2}
+.s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px}
 .s-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
 .s-old{font-size:12px;color:var(--t3);text-decoration:line-through}
 .s-price{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.8px;color:var(--green)}
@@ -2425,48 +2422,59 @@ const CAT_MARKUPS = {
 
 // ══ GOOGLE APPS SCRIPT — прайс с наценкой ══
 const GSHEETS_URL = 'https://raw.githubusercontent.com/Dastersting13/techno-live-app/main/prices.json';
+const GSHEETS_CDN  = 'https://cdn.jsdelivr.net/gh/Dastersting13/techno-live-app@main/prices.json';
+const GSHEETS_CF   = 'https://texno-price.marshallodin95.workers.dev';
 
 // Загрузка прайса из GitHub
+function mapProducts(products){
+  const CAT_ICONS_MAP = {
+    iPhone:'📱', Samsung:'📱', Xiaomi:'📱', Watch:'⌚',
+    AirPods:'🎧', iPad:'📟', MacBook:'💻', Наушники:'🎧',
+    Геймпад:'🎮', Игры:'🎮', Аксессуары:'🔌'
+  };
+  return products.map((p,i) => ({
+    id: p.id||(Date.now()+i), brand:p.brand, family:p.family,
+    memory:p.memory||'—', color:p.color||'—', sim:p.sim||'—',
+    basePrice:p.price||p.basePrice||0, price:p.price||p.basePrice||0,
+    oldPrice:p.oldPrice||null, icon:CAT_ICONS_MAP[p.brand]||p.icon||'📦',
+    flag:p.flag||'🇷🇺', photo:p.photo||null, trend:!!p.trend,
+    badge:p.badge||null, rating:p.rating||4.8, reviews:p.reviews||0,
+    inStock:p.inStock!==false
+  }));
+}
+function loadCachedProducts(){
+  try{ const s=localStorage.getItem('tl_prices_cache'); if(s){const a=JSON.parse(s);if(a.length)return a;} }catch(e){}
+  return [];
+}
+async function fetchJSON(url){
+  const res = await fetch(url+'?t='+Date.now());
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const json = await res.json();
+  return Array.isArray(json)?json:(json.products||[]);
+}
 async function loadFromGSheets(callback){
-  try {
-    const res = await fetch(GSHEETS_URL + '?t=' + Date.now()); // cache bust
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const json = await res.json();
-    // Поддерживаем оба формата: массив или {products:[...]}
-    const products = Array.isArray(json) ? json : (json.products || []);
-    if(products.length > 0){
-      const CAT_ICONS_MAP = {
-        iPhone:'📱', Samsung:'📱', Xiaomi:'📱', Watch:'⌚',
-        AirPods:'🎧', iPad:'📟', MacBook:'💻', Наушники:'🎧',
-        Геймпад:'🎮', Игры:'🎮', Аксессуары:'🔌'
-      };
-      const mapped = products.map((p, i) => ({
-        id: p.id || (Date.now() + i),
-        brand:     p.brand,
-        family:    p.family,
-        memory:    p.memory || '—',
-        color:     p.color  || '—',
-        sim:       p.sim    || '—',
-        basePrice: p.price  || p.basePrice || 0,
-        price:     p.price  || p.basePrice || 0,
-        oldPrice:  p.oldPrice || null,
-        icon:      CAT_ICONS_MAP[p.brand] || p.icon || '📦',
-        flag:      p.flag   || '🇷🇺',
-        photo:     p.photo  || null,
-        trend:     !!p.trend,
-        badge:     p.badge  || null,
-        rating:    p.rating || 4.8,
-        reviews:   p.reviews || 0,
-        inStock:   p.inStock !== false
-      }));
-      saveProductsToStorage(mapped);
-      callback(mapped);
-    } else {
-      callback(loadCustomProducts());
+  // Мгновенно показываем кэш если есть
+  const cached = loadCachedProducts();
+  if(cached.length > 0) callback(cached);
+
+  // Пробуем три источника по очереди
+  let products = [];
+  const sources = [GSHEETS_URL, GSHEETS_CDN, GSHEETS_CF];
+  for(const url of sources){
+    try {
+      products = await fetchJSON(url);
+      if(products.length > 0) break;
+    } catch(e) {
+      console.warn('Source failed:', url, e.message);
     }
-  } catch(e) {
-    console.warn('GSheets load failed:', e);
-    callback(loadCustomProducts());
+  }
+
+  if(products.length > 0){
+    const mapped = mapProducts(products);
+    try{ localStorage.setItem('tl_prices_cache', JSON.stringify(mapped)); }catch(e){}
+    callback(mapped);
+  } else if(!cached.length){
+    callback([]);
   }
 }
 
@@ -4883,24 +4891,51 @@ try{
   updateOnlineStatus();
   initAdmin();
 
-  // Сразу показываем скелетон — интерфейс отзывчивый
-  P = [];
-  showSkeleton();
-  updateBadge();
+  // ── ШАГ 1: МГНОВЕННО из кеша ──
+  const cached = (() => {
+    try {
+      const s = localStorage.getItem('tl_prices_cache');
+      if(!s) return [];
+      const {data, ts} = JSON.parse(s);
+      return Array.isArray(data) ? data : [];
+    } catch(e){ return []; }
+  })();
 
-  // Грузим прайс из GitHub в фоне
-  loadFromGSheets(freshProducts => {
-    if(freshProducts.length > 0){
-      P = freshProducts;
-      loadSavedPhotos();
-    }
+  if(cached.length > 0){
+    // Кеш есть — показываем сразу, нав работает немедленно
+    P = cached;
+    loadSavedPhotos();
+    loadCartCloud(()=>{ cart = loadCart(); updateBadge(); });
     renderTrend();
     applyFilters();
-    loadCartCloud(()=>{
-      cart = loadCart();
-      updateBadge();
-    });
+  } else {
+    // Первый запуск — скелетон пока грузим
+    showSkeleton();
+  }
+
+  // ── ШАГ 2: ФОНОМ обновляем с GitHub ──
+  loadFromGSheets(freshProducts => {
+    if(freshProducts.length > 0){
+      // Сохраняем в кеш
+      try {
+        localStorage.setItem('tl_prices_cache', JSON.stringify({
+          data: freshProducts,
+          ts: Date.now()
+        }));
+      } catch(e){}
+      P = freshProducts;
+      loadSavedPhotos();
+      renderTrend();
+      applyFilters();
+    }
+    if(!cached.length){
+      // Первый запуск — теперь рендерим
+      loadCartCloud(()=>{ cart = loadCart(); updateBadge(); });
+      renderTrend();
+      applyFilters();
+    }
   });
+
 }catch(e){ console.error('Init error:',e); }
 </script>
 </body>
