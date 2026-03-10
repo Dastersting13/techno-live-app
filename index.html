@@ -880,9 +880,18 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 .s-rn{font-size:13px;color:var(--t2);font-weight:500}
 .s-rc{font-size:12px;color:var(--t3)}
 .specs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px}
-.spec{background:var(--glass2);border:1px solid var(--border);border-radius:14px;padding:10px}
+.spec{background:var(--glass2);border:1px solid var(--border);border-radius:14px;padding:10px;position:relative}
 .spec-l{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-family:'Unbounded',sans-serif;font-weight:600}
 .spec-v{font-size:12px;font-weight:600}
+.spec-i{
+  position:absolute;top:6px;right:6px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--border2);color:var(--t3);
+  font-size:8px;font-weight:800;font-family:'Unbounded',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .12s,color .12s;
+}
+.spec-i:active{background:var(--accent);color:#fff}
 .s-stock{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:50px;background:rgba(0,230,118,.11);color:var(--green);margin-bottom:14px;border:1px solid rgba(0,230,118,.18)}
 .s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px}
 .s-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
@@ -968,25 +977,49 @@ body.dark .info-tip-sheet{background:rgba(10,10,20,0.98)}
 }
 .overlay-close-btn:active{transform:scale(.9);background:var(--border)}
 
-/* Cart counter in sheet button */
-.s-add-qty{
-  display:inline-flex;align-items:center;gap:8px;
+
+/* ── SPLIT CART BUTTON ── */
+/* Состояние 1: "В корзину" — единая кнопка */
+/* Состояние 2: "В корзине" (→ корзина) + счётчик − qty + */
+.s-add{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,#1c1c1e,#3a3a3c);color:#fff;border:none;
+  padding:15px 18px;border-radius:18px;
+  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
+  cursor:pointer;transition:all .18s;
+  box-shadow:0 6px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.08)}
+.s-add:active{transform:scale(.96);opacity:.88}
+
+/* Когда товар в корзине — левая часть (клик → корзина) */
+.s-add.incart{
+  flex:none;
+  background:linear-gradient(135deg,#34c759,#00c853);
+  box-shadow:0 6px 20px rgba(52,199,89,0.4),inset 0 1px 0 rgba(255,255,255,0.2);
+  padding:15px 16px;
+  border-radius:18px 0 0 18px;
 }
-.s-add-counter{
-  display:inline-flex;align-items:center;gap:0;
-  background:rgba(255,255,255,0.2);border-radius:20px;padding:2px;
-  margin-left:4px;
+.s-add.incart:active{transform:scale(.96);opacity:.9}
+
+/* Правая часть — счётчик */
+.s-qty-wrap{
+  display:none;align-items:stretch;
+  background:linear-gradient(135deg,#28b34e,#00a844);
+  border-radius:0 18px 18px 0;
+  box-shadow:0 6px 20px rgba(52,199,89,0.4),inset 0 1px 0 rgba(255,255,255,0.15);
+  overflow:hidden;border-left:1px solid rgba(255,255,255,0.15);
 }
-.s-add-minus,.s-add-plus{
-  width:22px;height:22px;border-radius:50%;
-  background:rgba(255,255,255,0.25);
+.s-qty-wrap.show{display:flex}
+.s-qty-btn{
+  width:36px;height:100%;border:none;background:transparent;color:#fff;
+  font-size:18px;font-weight:300;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:14px;font-weight:700;
-  transition:background .12s;
-  border:none;color:inherit;
+  transition:background .12s;font-family:system-ui,sans-serif;
 }
-.s-add-minus:active,.s-add-plus:active{background:rgba(255,255,255,0.45)}
-.s-add-qty-n{min-width:20px;text-align:center;font-size:13px;font-weight:700}
+.s-qty-btn:active{background:rgba(0,0,0,0.15)}
+.s-qty-n{
+  min-width:26px;text-align:center;
+  font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;
+  color:#fff;display:flex;align-items:center;justify-content:center;
+}
 
 /* VARIANTS PICKER (цвет / память / SIM) */
 .variants-section{margin-bottom:14px}
@@ -1994,22 +2027,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
       <div class="specs" id="sSpecs"></div>
       <div class="s-stock"><svg width="8" height="8" viewBox="0 0 8 8" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="4" cy="4" r="4" fill="#34c759"/></svg>В наличии</div>
 
-      <!-- INFO BADGES -->
-      <div class="info-badges-row" id="infoBadgesRow">
-        <div class="info-badge" onclick="showInfoTip('warranty')">
-          <div class="info-badge-i">i</div>
-          <span>🛡 Гарантия · 12 мес</span>
-        </div>
-        <div class="info-badge" onclick="showInfoTip('condition')">
-          <div class="info-badge-i">i</div>
-          <span>✅ Состояние</span>
-        </div>
-        <div class="info-badge" onclick="showInfoTip('delivery')">
-          <div class="info-badge-i">i</div>
-          <span>🚚 Доставка · 3 часа</span>
-        </div>
-      </div>
-
       <!-- ВАРИАНТЫ ЦВЕТА/ПАМЯТИ/SIM -->
       <div id="variantsSection"></div>
       <div class="s-bot">
@@ -2017,12 +2034,17 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
           <div class="s-old" id="sOld"></div>
           <div class="s-price" id="sPrice"></div>
         </div>
-        <div class="s-btns">
+        <div class="s-btns" id="sBtns">
           <button class="wish-btn" id="sheetWishBtn" onclick="toggleWish(sheetId)">🤍</button>
           <button class="s-add" id="sAdd" onclick="addFromSheet()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
             В корзину
           </button>
+          <div class="s-qty-wrap" id="sQtyWrap">
+            <button class="s-qty-btn" onclick="sheetChangeQty(-1)">−</button>
+            <div class="s-qty-n" id="sQtyN">1</div>
+            <button class="s-qty-btn" onclick="sheetChangeQty(1)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -2796,21 +2818,23 @@ function openSheet(idx){
   document.getElementById('sRating').textContent = p.rating.toFixed(1);
   document.getElementById('sReviews').textContent = `· ${p.reviews} отзывов`;
   const specs = [
-    p.memory!=='—' ? ['Память',p.memory] : null,
-    ['Цвет',p.color],
-    p.sim!=='—' ? ['SIM',p.sim] : null,
-    ['Гарантия','12 мес.'],
-    ['Состояние','Новый'],
-    ['Доставка','3 часа']
+    p.memory!=='—' ? ['Память',p.memory,null] : null,
+    ['Цвет',p.color,null],
+    p.sim!=='—' ? ['SIM',p.sim,'sim'] : null,
+    ['Гарантия','12 мес.','warranty'],
+    ['Состояние','Новый','condition'],
+    ['Доставка','3 часа','delivery']
   ].filter(Boolean);
-  document.getElementById('sSpecs').innerHTML = specs.map(([l,v])=>`<div class="spec"><div class="spec-l">${l}</div><div class="spec-v">${v}</div></div>`).join('');
+  document.getElementById('sSpecs').innerHTML = specs.map(([l,v,tip])=>{
+    const iBtnArg = tip === 'sim' ? `'sim','${v.replace(/'/g,"\\'")}'` : `'${tip}'`;
+    const iBtn = tip ? `<div class="spec-i" onclick="event.stopPropagation();showInfoTip(${iBtnArg})">i</div>` : '';
+    return `<div class="spec">${iBtn}<div class="spec-l">${l}</div><div class="spec-v">${v}</div></div>`;
+  }).join('');
   document.getElementById('sOld').textContent = p.oldPrice ? fmt(p.oldPrice) : '';
   document.getElementById('sPrice').textContent = fmt(p.price);
   const on = cart.some(c=>c.id===p.id);
   const qty = cart.find(c=>c.id===p.id)?.qty || 0;
-  const btn = document.getElementById('sAdd');
-  updateSheetCartBtn(btn, on, qty);
-  btn.classList.remove('pulse');
+  updateSheetCartBtn(on, qty);
 
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2841,23 +2865,27 @@ function closeSheet(){
   document.getElementById('sAdd')?.classList.remove('pulse');
 }
 
-function updateSheetCartBtn(btn, inCart, qty){
+function updateSheetCartBtn(inCart, qty){
+  const btn = document.getElementById('sAdd');
+  const qtyWrap = document.getElementById('sQtyWrap');
+  const qtyN = document.getElementById('sQtyN');
   if(!btn) return;
+
   if(inCart && qty > 0){
-    btn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      В корзине
-      <span class="s-add-counter" onclick="event.stopPropagation()">
-        <span class="s-add-minus" onclick="sheetChangeQty(-1)">−</span>
-        <span class="s-add-qty-n" id="sAddQtyN">${qty}</span>
-        <span class="s-add-plus" onclick="sheetChangeQty(1)">+</span>
-      </span>`;
-    btn.style.background = 'linear-gradient(135deg,#34c759,#00c853)';
-    btn.onclick = null; // disable click on btn itself when in cart
+    // Левая часть — «В корзине», клик → идём в корзину
+    btn.className = 's-add incart';
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> В корзине`;
+    btn.onclick = () => { closeSheet(); showPage('cart'); };
+    // Правая часть — счётчик
+    if(qtyWrap) qtyWrap.classList.add('show');
+    if(qtyN) qtyN.textContent = qty;
   } else {
+    // Единая кнопка «В корзину»
+    btn.className = 's-add';
     btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> В корзину`;
-    btn.style.background = '';
     btn.onclick = addFromSheet;
+    if(qtyWrap) qtyWrap.classList.remove('show');
+    if(qtyN) qtyN.textContent = '1';
   }
 }
 
@@ -2869,14 +2897,11 @@ function sheetChangeQty(d){
   if(ci.qty <= 0){
     cart = cart.filter(c=>c.id!==sheetId);
     saveCart(); updateBadge(); renderCart(); applyFilters(); renderTrend(); updateProfile();
-    const btn = document.getElementById('sAdd');
-    updateSheetCartBtn(btn, false, 0);
-    btn.classList.add('pulse');
+    updateSheetCartBtn(false, 0);
     catOnRemove();
   } else {
     saveCart(); updateBadge(); renderCart(); applyFilters(); updateProfile();
-    const btn = document.getElementById('sAdd');
-    updateSheetCartBtn(btn, true, ci.qty);
+    updateSheetCartBtn(true, ci.qty);
   }
 }
 
@@ -2884,9 +2909,8 @@ function addFromSheet(){
   if(!sheetId) return;
   if(addToCart(sheetId)){
     const ci = cart.find(c=>c.id===sheetId);
-    const btn = document.getElementById('sAdd');
-    updateSheetCartBtn(btn, true, ci?.qty||1);
-    animateToCart(btn);
+    animateToCart(document.getElementById('sAdd'));
+    updateSheetCartBtn(true, ci?.qty||1);
   }
 }
 
@@ -3890,21 +3914,6 @@ function renderVariants(p){
   const sec = document.getElementById('variantsSection');
   if(!sec) return;
   const v = getVariants(p);
-
-  // Update dynamic info badges (SIM)
-  const badgesRow = document.getElementById('infoBadgesRow');
-  if(badgesRow){
-    const simBadge = document.getElementById('infoBadgeSim');
-    if(simBadge) simBadge.remove();
-    if(p.sim && p.sim !== '—'){
-      const sb = document.createElement('div');
-      sb.className = 'info-badge';
-      sb.id = 'infoBadgeSim';
-      sb.setAttribute('onclick', `showInfoTip('sim','${p.sim.replace(/'/g,"\\'")}')`);
-      sb.innerHTML = `<div class="info-badge-i">i</div><span>📱 ${p.sim}</span>`;
-      badgesRow.appendChild(sb);
-    }
-  }
 
   if(!v){ sec.innerHTML = ''; return; }
 
