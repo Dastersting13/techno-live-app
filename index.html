@@ -143,16 +143,73 @@ body::before{
   box-shadow:0 4px 16px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,0.15)}
 .chip:active{transform:scale(.91)}
 
-/* PRICE */
-.price-filter{padding:0 16px 14px;position:relative;z-index:1}
-.price-row{display:flex;gap:8px;align-items:center}
-.price-row input{flex:1;background:var(--glass2);border:1px solid var(--border);border-radius:50px;
-  padding:9px 16px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border-color .2s;
-  box-shadow:0 2px 8px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-.price-row input:focus{border-color:var(--accent)}
-.price-row input::placeholder{color:var(--t3)}
-.price-sep{color:var(--t3);font-size:14px;flex-shrink:0}
+/* ── УМНЫЕ ФИЛЬТРЫ ПОИСКА ── */
+.filter-panel{
+  margin:0 16px 12px;
+  background:var(--glass2);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;max-height:0;opacity:0;
+  transition:max-height .32s cubic-bezier(.4,0,.2,1),opacity .25s,margin .25s;
+}
+.filter-panel.open{max-height:320px;opacity:1}
+.filter-panel-inner{padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.filter-row{display:flex;flex-direction:column;gap:8px}
+.filter-label{font-size:10px;font-weight:700;font-family:'Unbounded',sans-serif;color:var(--t3);letter-spacing:.5px}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px}
+.f-chip{padding:5px 12px;border-radius:50px;font-size:12px;font-weight:600;
+  border:1px solid var(--border);background:var(--glass);color:var(--t2);
+  cursor:pointer;transition:all .18s;white-space:nowrap}
+.f-chip.active{background:rgba(28,28,30,.88);border-color:transparent;color:#fff}
+.f-chip:active{transform:scale(.9)}
+.price-range-wrap{display:flex;align-items:center;gap:10px}
+.price-range-wrap input[type=range]{
+  flex:1;-webkit-appearance:none;height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--val,50%),var(--border) var(--val,50%));
+  outline:none;
+}
+.price-range-wrap input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2);cursor:pointer;border:2px solid var(--accent)
+}
+.price-range-val{font-size:12px;font-weight:600;color:var(--t2);min-width:64px;text-align:right}
+.filter-toggle{
+  display:flex;align-items:center;gap:8px;padding:8px 16px 0;cursor:pointer;
+}
+.filter-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:50px;
+  background:var(--glass);border:1px solid var(--border);
+  font-size:11px;font-weight:700;font-family:'Unbounded',sans-serif;color:var(--t2);
+  transition:all .18s;box-shadow:0 2px 8px var(--shadow)
+}
+.filter-toggle-btn.has-filters{background:rgba(10,132,255,.12);border-color:rgba(10,132,255,.3);color:#0a84ff}
+.filter-count{
+  background:#0a84ff;color:#fff;border-radius:50%;
+  width:16px;height:16px;font-size:9px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.filter-reset{font-size:12px;color:var(--t3);cursor:pointer;margin-left:auto;padding:4px 8px}
+
+/* ── БЫСТРЫЙ ПРОСМОТР ФОТО НА КАРТОЧКЕ ── */
+.p-img{position:relative;overflow:hidden;border-radius:16px 16px 0 0;aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;background:var(--glass2)}
+.card-photo-dots{
+  position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+  display:flex;gap:4px;z-index:2;
+}
+.card-photo-dot{width:4px;height:4px;border-radius:50%;background:rgba(0,0,0,.25);transition:all .2s}
+.card-photo-dot.active{background:rgba(0,0,0,.7);width:8px;border-radius:2px}
+.p-img img{width:100%;height:100%;object-fit:contain;transition:opacity .2s}
+
+/* ── КНОПКА ЧАТ С МЕНЕДЖЕРОМ ── */
+.ask-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;margin-top:10px;padding:12px;border-radius:16px;
+  background:rgba(10,132,255,.10);border:1px solid rgba(10,132,255,.22);
+  color:#0a84ff;font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .18s;
+}
+.ask-btn:active{transform:scale(.97);background:rgba(10,132,255,.18)}
+.ask-btn svg{flex-shrink:0}
 
 /* SEC */
 .sec{display:flex;align-items:center;justify-content:space-between;padding:4px 18px 12px;position:relative;z-index:1}
@@ -883,7 +940,7 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 /* SHEET */
 .overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;visibility:hidden;}
 .overlay.open{opacity:1;pointer-events:all;visibility:visible;}
-.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(24px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:92dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
+.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(80px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:92dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
 .overlay.open .sheet{transform:translateY(0)}
 /* Sheet image slider */
 .sheet-slider-wrap{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 4px 20px var(--shadow)}
@@ -1552,9 +1609,51 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
   <div class="search-wrap" style="padding-top:20px">
     <div class="search-box">
       <span style="opacity:.45;display:flex;align-items:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-      <input type="text" placeholder="Поиск модели..." id="searchInput2" oninput="applySearch2()">
+      <input type="text" placeholder="Поиск модели, цвета, памяти..." id="searchInput2" oninput="applySearch2()">
+      <div id="filterToggleBtn" class="filter-toggle-btn" onclick="toggleFilterPanel()" style="flex-shrink:0;margin-right:-4px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Фильтры
+        <span id="filterCountBadge" style="display:none" class="filter-count">0</span>
+      </div>
     </div>
   </div>
+
+  <!-- ПАНЕЛЬ ФИЛЬТРОВ -->
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-panel-inner">
+      <div class="filter-row">
+        <div class="filter-label">Бюджет</div>
+        <div class="price-range-wrap">
+          <span style="font-size:12px;color:var(--t3);min-width:52px" id="priceMinLabel">0 ₽</span>
+          <input type="range" id="priceRangeMin" min="0" max="500000" step="1000" value="0" oninput="onPriceRange()" style="--val:0%">
+          <input type="range" id="priceRangeMax" min="0" max="500000" step="1000" value="500000" oninput="onPriceRange()" style="--val:100%">
+          <span style="font-size:12px;color:var(--t3);min-width:64px;text-align:right" id="priceMaxLabel">500 000 ₽</span>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Память</div>
+        <div class="filter-chips" id="memoryFilterChips">
+          <div class="f-chip active" data-mem="all" onclick="setMemFilter('all',this)">Любая</div>
+          <div class="f-chip" data-mem="64GB" onclick="setMemFilter('64GB',this)">64GB</div>
+          <div class="f-chip" data-mem="128GB" onclick="setMemFilter('128GB',this)">128GB</div>
+          <div class="f-chip" data-mem="256GB" onclick="setMemFilter('256GB',this)">256GB</div>
+          <div class="f-chip" data-mem="512GB" onclick="setMemFilter('512GB',this)">512GB</div>
+          <div class="f-chip" data-mem="1TB" onclick="setMemFilter('1TB',this)">1TB</div>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Наличие</div>
+        <div class="filter-chips">
+          <div class="f-chip active" data-stock="all" onclick="setStockFilter('all',this)">Все</div>
+          <div class="f-chip" data-stock="in" onclick="setStockFilter('in',this)">✓ В наличии</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <div onclick="resetAllFilters()" style="font-size:12px;color:var(--t3);cursor:pointer;padding:4px 0">Сбросить всё</div>
+      </div>
+    </div>
+  </div>
+
   <div class="chips" id="searchChips">
     <div class="chip active" onclick="setSearchFilter('all',this)">Все</div>
     <div class="chip" onclick="setSearchFilter('smartphones',this)">Смартфоны</div>
@@ -2136,6 +2235,10 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
             <div class="s-qty-n" id="sQtyN">1</div>
             <button class="s-qty-btn" onclick="sheetChangeQty(1)">+</button>
           </div>
+        </div>
+        <div class="ask-btn" onclick="askManager()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Спросить менеджера
         </div>
       </div>
     </div>
@@ -2978,6 +3081,13 @@ function applyFilters(){
     el.style.opacity = '1';
     el.style.transform = 'translateY(0)';
   });
+  // Инициализируем свайп фото на карточках
+  setTimeout(()=>{
+    el.querySelectorAll('.p-card').forEach(card=>{
+      const idx = parseInt(card.getAttribute('onclick')?.match(/\d+/)?.[0]);
+      if(!isNaN(idx) && P[idx]) initCardPhotoSwipe(card, P[idx]);
+    });
+  }, 100);
 }
 
 function filterAndGo(f){
@@ -3058,7 +3168,6 @@ function openSheet(idx){
   updateSheetCartBtn(on, qty);
 
   document.getElementById('overlay').classList.add('open');
-  document.querySelector('.nav-wrap')?.classList.add('hidden');
   document.body.style.overflow = 'hidden';
   logActivity('👁', `Просмотрел: ${p.family}${p.memory!=='—'?' '+p.memory:''} — ${fmt(p.price)}`);
 
@@ -3082,7 +3191,6 @@ function openSheet(idx){
 function maybeClose(e){ if(e.target===document.getElementById('overlay')) closeSheet(); }
 function closeSheet(){
   document.getElementById('overlay').classList.remove('open');
-  document.querySelector('.nav-wrap')?.classList.remove('hidden');
   document.body.style.overflow='';
   clearTimeout(pulseTimer);
   document.getElementById('sAdd')?.classList.remove('pulse');
@@ -4164,25 +4272,90 @@ function matchProduct(p, q){
   return fields.some(f=>f.includes(q)) || fieldsEn.some(f=>f.includes(qEn));
 }
 
+// ── УМНЫЕ ФИЛЬТРЫ ──
+let filterPanelOpen = false;
+let filterMem = 'all';
+let filterStock = 'all';
+let filterPriceMin = 0;
+let filterPriceMax = 500000;
+
+function toggleFilterPanel(){
+  filterPanelOpen = !filterPanelOpen;
+  document.getElementById('filterPanel').classList.toggle('open', filterPanelOpen);
+  updateFilterBadge();
+}
+
+function setMemFilter(val, el){
+  filterMem = val;
+  document.querySelectorAll('#memoryFilterChips .f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  applySearch2(); updateFilterBadge();
+}
+
+function setStockFilter(val, el){
+  filterStock = val;
+  el.closest('.filter-chips').querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  applySearch2(); updateFilterBadge();
+}
+
+function onPriceRange(){
+  const minEl = document.getElementById('priceRangeMin');
+  const maxEl = document.getElementById('priceRangeMax');
+  filterPriceMin = parseInt(minEl.value);
+  filterPriceMax = parseInt(maxEl.value);
+  if(filterPriceMin > filterPriceMax){ const t=filterPriceMin; filterPriceMin=filterPriceMax; filterPriceMax=t; }
+  document.getElementById('priceMinLabel').textContent = fmt(filterPriceMin);
+  document.getElementById('priceMaxLabel').textContent = filterPriceMax >= 500000 ? '∞' : fmt(filterPriceMax);
+  const pct = ((filterPriceMax - 0) / 500000 * 100).toFixed(1);
+  maxEl.style.setProperty('--val', pct+'%');
+  applySearch2(); updateFilterBadge();
+}
+
+function updateFilterBadge(){
+  let count = 0;
+  if(filterMem !== 'all') count++;
+  if(filterStock !== 'all') count++;
+  if(filterPriceMin > 0 || filterPriceMax < 500000) count++;
+  const badge = document.getElementById('filterCountBadge');
+  const btn = document.getElementById('filterToggleBtn');
+  if(badge){ badge.textContent = count; badge.style.display = count > 0 ? 'flex' : 'none'; }
+  if(btn) btn.classList.toggle('has-filters', count > 0);
+}
+
+function resetAllFilters(){
+  filterMem = 'all'; filterStock = 'all'; filterPriceMin = 0; filterPriceMax = 500000;
+  document.querySelectorAll('#memoryFilterChips .f-chip').forEach((c,i)=>c.classList.toggle('active',i===0));
+  document.querySelectorAll('#filterPanel .f-chip[data-stock]').forEach((c,i)=>c.classList.toggle('active',i===0));
+  const minEl = document.getElementById('priceRangeMin');
+  const maxEl = document.getElementById('priceRangeMax');
+  if(minEl) minEl.value = 0;
+  if(maxEl) maxEl.value = 500000;
+  document.getElementById('priceMinLabel').textContent = '0 ₽';
+  document.getElementById('priceMaxLabel').textContent = '∞';
+  updateFilterBadge(); applySearch2();
+}
+
 function applySearch2(){
   const q = (document.getElementById('searchInput2')?.value||'').trim().toLowerCase();
   const el = document.getElementById('searchGrid');
   if(!el) return;
 
-  // Пустой запрос + фильтр "Все" → пустой экран с подсказкой
-  if(!q && searchFilter2 === 'all'){
+  if(!q && searchFilter2 === 'all' && filterMem==='all' && filterStock==='all' && filterPriceMin===0 && filterPriceMax>=500000){
     el.innerHTML = `<div style="grid-column:span 2;text-align:center;padding:60px 20px;color:var(--t3)">
       <div style="font-size:40px;margin-bottom:12px">🔍</div>
       <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:var(--t2);margin-bottom:6px">Начни поиск</div>
-      <div style="font-size:12px;line-height:1.6">Введи название модели,<br>бренд или цвет</div>
+      <div style="font-size:12px;line-height:1.6">Введи название или настрой фильтры</div>
     </div>`;
     return;
   }
 
   let list = filterByCategory(P, searchFilter2);
   if(q) list = list.filter(p => matchProduct(p, q));
-
-  // Сортировка
+  if(filterMem !== 'all') list = list.filter(p => p.memory === filterMem);
+  if(filterStock === 'in') list = list.filter(p => p.inStock);
+  if(filterPriceMin > 0) list = list.filter(p => p.price >= filterPriceMin);
+  if(filterPriceMax < 500000) list = list.filter(p => p.price <= filterPriceMax);
   if(searchSort === 'instock') list = list.filter(p=>p.inStock);
   else if(searchSort === 'cheap') list = [...list].sort((a,b)=>a.price-b.price);
   else if(searchSort === 'expensive') list = [...list].sort((a,b)=>b.price-a.price);
@@ -4190,7 +4363,8 @@ function applySearch2(){
   if(!list.length){ el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено 😔</div>`; return; }
   el.innerHTML = list.map((p,i)=>{
     const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
-    return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})" style="animation:fadeUp .3s ${i*.04}s both ease">
+    const delay = i < 12 ? `animation-delay:${i*0.04}s` : '';
+    return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${P.indexOf(p)})" style="${delay}">
       <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
       <div class="p-body">
         <div class="p-name">${p.family}</div>
@@ -4204,6 +4378,48 @@ function applySearch2(){
       </div>
     </div>`;
   }).join('');
+}
+
+// ── СВАЙП ФОТО НА КАРТОЧКЕ ──
+function initCardPhotoSwipe(cardEl, p){
+  const siblings = P.filter(x => x.family === p.family && x.photo);
+  if(siblings.length < 2) return;
+  const imgEl = cardEl.querySelector('.p-img img');
+  if(!imgEl) return;
+  const photos = [...new Set(siblings.map(x=>x.photo))];
+  if(photos.length < 2) return;
+
+  // Добавляем точки
+  let dotsHtml = `<div class="card-photo-dots">` + photos.map((_,i)=>`<div class="card-photo-dot${i===0?' active':''}"></div>`).join('') + `</div>`;
+  cardEl.querySelector('.p-img').insertAdjacentHTML('beforeend', dotsHtml);
+
+  let idx = 0;
+  let tsx = 0;
+  const dots = () => cardEl.querySelectorAll('.card-photo-dot');
+
+  cardEl.querySelector('.p-img').addEventListener('touchstart', e=>{
+    tsx = e.touches[0].clientX;
+  }, {passive:true});
+  cardEl.querySelector('.p-img').addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - tsx;
+    if(Math.abs(dx) < 20) return;
+    e.stopPropagation();
+    if(dx < 0 && idx < photos.length-1) idx++;
+    else if(dx > 0 && idx > 0) idx--;
+    imgEl.style.opacity='0';
+    setTimeout(()=>{ imgEl.src = photos[idx]; imgEl.style.opacity='1'; },120);
+    dots().forEach((d,i)=>d.classList.toggle('active',i===idx));
+  });
+}
+
+// ── ЧАТ С МЕНЕДЖЕРОМ ──
+function askManager(){
+  const p = P.find(x=>x.id===sheetId);
+  if(!p) return;
+  const parts = [p.family, p.memory!=='—'?p.memory:'', p.color].filter(Boolean);
+  const text = encodeURIComponent(`Здравствуйте! Интересует ${parts.join(' ')} — ${fmt(p.price)}`);
+  window.open(`https://t.me/TEXHOLIVE?text=${text}`, '_blank');
+  if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.selectionChanged();
 }
 
 
@@ -4844,7 +5060,6 @@ function openDrawer(){
   dr.classList.add('open');
   ov.classList.add('open');
   document.body.style.overflow='hidden';
-  document.querySelector('.nav-wrap')?.classList.add('hidden');
   // Swipe down to close — re-attach fresh each open
   let startY=0, curY=0, dragging=false;
   function onStart(e){ startY=e.touches[0].clientY; dragging=true; curY=0; dr.style.transition='none'; }
@@ -4867,7 +5082,6 @@ function closeDrawer(){
   dr.classList.remove('open');
   document.getElementById('drawerOverlay').classList.remove('open');
   document.body.style.overflow='';
-  document.querySelector('.nav-wrap')?.classList.remove('hidden');
 }
 
 // ══ AVATAR EMOJI PICKER ══
