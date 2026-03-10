@@ -629,7 +629,7 @@ body::before{
   width:100%;max-width:480px;
   background:rgba(240,242,245,0.97);
   border:1px solid rgba(255,255,255,.9);border-radius:28px 28px 0 0;
-  padding-bottom:calc(24px + var(--sb));
+  padding-bottom:calc(80px + var(--sb));
   backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);
   box-shadow:0 -8px 40px rgba(0,0,0,0.16),inset 0 1px 0 white;
   transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
@@ -713,6 +713,18 @@ body::before{
   font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
   transition:opacity .15s,transform .15s;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
 .checkout-btn:active{opacity:.85;transform:scale(.98)}
+.checkout-btn:disabled{background:rgba(120,120,128,0.35);box-shadow:none;cursor:not-allowed;transform:none}
+.orders-closed-banner{
+  margin:0 16px 12px;padding:14px 16px;border-radius:18px;
+  background:rgba(255,59,48,0.08);border:1px solid rgba(255,59,48,0.2);
+  display:flex;align-items:center;gap:12px;
+}
+.orders-closed-banner .ocb-icon{font-size:22px;flex-shrink:0}
+.orders-closed-banner .ocb-text strong{
+  display:block;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
+  color:#ff3b30;margin-bottom:3px;
+}
+.orders-closed-banner .ocb-text span{font-size:11px;color:var(--t3)}
 
 /* ORDER MODAL */
 .order-overlay{position:fixed;inset:0;z-index:400;background:rgba(150,155,165,0.45);
@@ -2591,18 +2603,20 @@ async function loadFromGSheets(callback){
 
   // 2. Фоновое обновление с сервера (без блокировки UI)
   const sources = [GSHEETS_CF, GSHEETS_URL, GSHEETS_CDN];
+  let loaded = false;
   for(const url of sources){
     try {
       const products = await fetchJSON(url);
-      if(products.length > 0){
+      if(products && products.length > 0){
         const mapped = mapProducts(products);
         try{ localStorage.setItem('tl_prices_cache', JSON.stringify(mapped)); }catch(e){}
-        checkPriceDrops(mapped); // проверяем снижение цен для избранного
+        checkPriceDrops(mapped);
         callback(mapped);
+        loaded = true;
         break;
       }
     } catch(e) {
-      console.warn('Source failed:', url, e.message);
+      // source unavailable, try next
     }
   }
 }
@@ -3359,7 +3373,18 @@ function renderCart(){
       <div class="tot-r"><span>Доставка</span><span style="color:#1a7d38">Уточнит менеджер</span></div>
       <div class="tot-r big"><span>Итого</span><span class="v">${fmt(total)}</span></div>
     </div>
+    ${isOrdersClosed() ? `
+    <div class="orders-closed-banner">
+      <div class="ocb-icon">🌙</div>
+      <div class="ocb-text">
+        <strong>Приём заказов закрыт</strong>
+        <span>Работаем с 11:00 до 18:00 · Откроем завтра в 11:00</span>
+      </div>
+    </div>
+    <button class="checkout-btn" disabled>🌙 ЗАКАЗЫ ДО 18:00</button>
+    ` : `
     <button class="checkout-btn" onclick="openOrderModal()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ОФОРМИТЬ ЗАКАЗ</button>
+    `}
     <div style="height:12px"></div>`;
 }
 
@@ -3541,7 +3566,22 @@ function openAddressInMap(){
   openRouteInMap();
 }
 
+// ══════════════════════════════════════
+// 🕐 ЧАСЫ РАБОТЫ (приём заказов до 18:00)
+// ══════════════════════════════════════
+function isOrdersClosed(){
+  const now = new Date();
+  const h = now.getHours();
+  // Закрыто: до 11:00 и после 18:00
+  return h < 11 || h >= 18;
+}
+
 function openOrderModal(){
+  if(isOrdersClosed()){
+    showToast('🌙 Приём заказов до 18:00. Откроем завтра в 11:00');
+    if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+    return;
+  }
   const tg = window.Telegram?.WebApp;
   if(tg?.initDataUnsafe?.user){
     const u = tg.initDataUnsafe.user;
@@ -3630,6 +3670,12 @@ function closeStatus(){ document.getElementById('statusOverlay').classList.remov
 let pageHistory = ['home'];
 
 function showPage(name, isBack=false){
+  // Закрываем шторку и дравер при любом переходе
+  const overlay = document.getElementById('overlay');
+  if(overlay?.classList.contains('open')) closeSheet();
+  const drawer = document.getElementById('drawer');
+  if(drawer?.classList.contains('open')) closeDrawer();
+
   const currentId = pageHistory[pageHistory.length-1];
   if(currentId === name) return;
   const currentEl = document.getElementById('page-'+currentId);
@@ -5038,6 +5084,8 @@ function checkOwnerAutoUnlock(){
 
 
 function openDrawer(){
+  const overlay = document.getElementById('overlay');
+  if(overlay?.classList.contains('open')) closeSheet();
   const dr = document.getElementById('drawer');
   const ov = document.getElementById('drawerOverlay');
   dr.classList.add('open');
