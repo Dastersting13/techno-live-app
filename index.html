@@ -389,7 +389,7 @@ body::before{
 @keyframes flyToBadge{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(.2)}}
 
 /* NAV — LIQUID GLASS PILL */
-.nav-wrap{position:fixed;bottom:calc(14px + var(--sb));left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto}
+.nav-wrap{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9999;width:calc(100% - 32px);max-width:400px;pointer-events:auto}
 .nav{
   background:rgba(235,237,242,0.95);border:1px solid var(--border);
   backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
@@ -2635,6 +2635,11 @@ function startCatHints(){ /* отключено — кот только по д�
 // ══════════════════════════════════════
 // ⬛ SKELETON LOADING
 // ══════════════════════════════════════
+function hideSkeleton(){
+  const el = document.getElementById('grid');
+  if(el && el.querySelector('.skel-card')) el.innerHTML = '';
+}
+
 function showSkeleton(){
   const el = document.getElementById('grid');
   el.innerHTML = Array(6).fill(0).map(()=>`
@@ -4778,11 +4783,6 @@ setTimeout(()=>{
     checkOwnerAutoUnlock();
   }
 }, 150);
-
-// Показываем skeleton сразу
-try{ showSkeleton(); }catch(e){ console.warn('skeleton',e); }
-
-// Avatar и имя восстанавливаются в loadTelegramUser()
 
 // Инициализация
 try{
