@@ -590,22 +590,22 @@ body::before{
 .go-btn:active{opacity:.8}
 .cart-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .ci{background:var(--glass2);border:1px solid var(--border);
-  border-radius:20px;padding:12px;display:flex;align-items:stretch;gap:10px;
+  border-radius:20px;padding:12px;display:flex;align-items:flex-start;gap:10px;
   box-shadow:0 2px 12px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.9);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-.ci-img{width:54px;height:54px;border-radius:14px;flex-shrink:0;background:var(--glass3);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;align-self:flex-start}
+.ci-img{width:56px;height:56px;border-radius:14px;flex-shrink:0;background:var(--glass3);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
 .ci-img img{width:100%;height:100%;object-fit:cover}
-.ci-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
-.ci-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ci-sub{font-size:11px;color:var(--t3)}
-.ci-qty-row{display:flex;align-items:center;gap:8px;margin-top:6px}
-.ci-qty-btn{width:22px;height:22px;border-radius:7px;border:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ci-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.ci-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-sub{font-size:11px;color:var(--t3);margin-bottom:6px}
+.ci-qty-row{display:flex;align-items:center;gap:8px}
+.ci-qty-btn{width:24px;height:24px;border-radius:7px;border:none;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ci-qty-btn.m{background:rgba(255,59,48,.13);color:#c0281f}
 .ci-qty-btn.p{background:rgba(28,28,30,.08);color:var(--text)}
-.ci-qty-n{font-size:13px;font-weight:700;min-width:16px;text-align:center}
-.ci-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:6px;flex-shrink:0}
+.ci-qty-n{font-size:13px;font-weight:700;min-width:20px;text-align:center}
+.ci-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;flex-shrink:0;min-width:70px}
 .ci-price{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:800;color:#1a7d38;text-align:right;white-space:nowrap}
-.ci-del{width:26px;height:26px;border-radius:8px;flex-shrink:0;background:rgba(255,59,48,.10);border:1px solid rgba(255,59,48,.20);color:#c0281f;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
+.ci-del{width:28px;height:28px;border-radius:8px;flex-shrink:0;background:rgba(255,59,48,.10);border:1px solid rgba(255,59,48,.20);color:#c0281f;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
 .ci-del:active{background:var(--red);color:#fff}
 .promo-wrap{margin:0 16px 14px}
 .promo-row{display:flex;gap:8px}
@@ -894,18 +894,11 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 .spec-i:active{background:var(--accent);color:#fff}
 .s-stock{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:50px;background:rgba(0,230,118,.11);color:var(--green);margin-bottom:14px;border:1px solid rgba(0,230,118,.18)}
 .s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px}
-.s-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.s-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
 .s-old{font-size:12px;color:var(--t3);text-decoration:line-through}
 .s-price{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.8px;color:var(--green)}
 .s-note{display:none}
-.s-btns{display:flex;gap:10px;}
-.s-add{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
-  background:linear-gradient(135deg,#1c1c1e,#3a3a3c);color:#fff;border:none;
-  padding:15px 18px;border-radius:18px;
-  font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
-  cursor:pointer;transition:all .18s;
-  box-shadow:0 6px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.08)}
-.s-add:active{transform:scale(.96);opacity:.88}
+.s-btns{display:flex;gap:8px;align-items:center}
 
 /* WARRANTY BADGE */
 .warranty-badge{
@@ -979,44 +972,41 @@ body.dark .info-tip-sheet{background:rgba(10,10,20,0.98)}
 
 
 /* ── SPLIT CART BUTTON ── */
-/* Состояние 1: "В корзину" — единая кнопка */
-/* Состояние 2: "В корзине" (→ корзина) + счётчик − qty + */
 .s-add{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
   background:linear-gradient(135deg,#1c1c1e,#3a3a3c);color:#fff;border:none;
-  padding:15px 18px;border-radius:18px;
+  padding:0 18px;height:50px;border-radius:18px;
   font-family:'Unbounded',sans-serif;font-size:11px;font-weight:800;
   cursor:pointer;transition:all .18s;
   box-shadow:0 6px 20px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.08)}
-.s-add:active{transform:scale(.96);opacity:.88}
+.s-add:active{transform:scale(.97);opacity:.88}
 
-/* Когда товар в корзине — левая часть (клик → корзина) */
+/* Когда товар в корзине — левая часть */
 .s-add.incart{
-  flex:none;
+  flex:1;
   background:linear-gradient(135deg,#34c759,#00c853);
-  box-shadow:0 6px 20px rgba(52,199,89,0.4),inset 0 1px 0 rgba(255,255,255,0.2);
-  padding:15px 16px;
+  box-shadow:0 6px 20px rgba(52,199,89,0.35),inset 0 1px 0 rgba(255,255,255,0.2);
   border-radius:18px 0 0 18px;
 }
-.s-add.incart:active{transform:scale(.96);opacity:.9}
+.s-add.incart:active{opacity:.88}
 
 /* Правая часть — счётчик */
 .s-qty-wrap{
-  display:none;align-items:stretch;
+  display:none;align-items:stretch;height:50px;
   background:linear-gradient(135deg,#28b34e,#00a844);
   border-radius:0 18px 18px 0;
-  box-shadow:0 6px 20px rgba(52,199,89,0.4),inset 0 1px 0 rgba(255,255,255,0.15);
-  overflow:hidden;border-left:1px solid rgba(255,255,255,0.15);
+  box-shadow:0 6px 20px rgba(52,199,89,0.35),inset 0 1px 0 rgba(255,255,255,0.15);
+  overflow:hidden;border-left:1px solid rgba(255,255,255,0.18);flex-shrink:0;
 }
 .s-qty-wrap.show{display:flex}
 .s-qty-btn{
-  width:36px;height:100%;border:none;background:transparent;color:#fff;
-  font-size:18px;font-weight:300;cursor:pointer;
+  width:38px;height:50px;border:none;background:transparent;color:#fff;
+  font-size:20px;font-weight:300;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:background .12s;font-family:system-ui,sans-serif;
+  transition:background .1s;font-family:system-ui,sans-serif;
 }
-.s-qty-btn:active{background:rgba(0,0,0,0.15)}
+.s-qty-btn:active{background:rgba(0,0,0,0.18)}
 .s-qty-n{
-  min-width:26px;text-align:center;
+  min-width:28px;text-align:center;
   font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;
   color:#fff;display:flex;align-items:center;justify-content:center;
 }
@@ -1057,10 +1047,11 @@ body.dark .var-chip.active .var-color-dot{border-color:rgba(8,8,16,0.4);}
 .game-start-btn{background:linear-gradient(135deg,#34c759,#00c853);color:#fff;border:none;border-radius:50px;padding:12px 28px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(52,199,89,0.4)}
 
 /* WISHLIST BUTTON */
+.s-btns{display:flex;gap:8px;align-items:stretch}
 .wish-btn{
-  width:46px;height:46px;border-radius:18px;flex-shrink:0;
+  width:50px;height:50px;min-width:50px;border-radius:16px;flex-shrink:0;
   background:var(--glass2);border:1.5px solid var(--border2);
-  display:flex;align-items:center;justify-content:center;font-size:19px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
   cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1);
   box-shadow:0 4px 12px var(--shadow),inset 0 1px 0 rgba(255,255,255,0.95);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
@@ -1068,9 +1059,9 @@ body.dark .var-chip.active .var-color-dot{border-color:rgba(8,8,16,0.4);}
 .wish-btn.active{
   background:linear-gradient(135deg,rgba(255,59,48,.14),rgba(255,100,80,.08));
   border-color:rgba(255,59,48,.45);
-  box-shadow:0 4px 16px rgba(255,59,48,.18),inset 0 1px 0 rgba(255,255,255,0.9);
+  box-shadow:0 4px 16px rgba(255,59,48,.22),inset 0 1px 0 rgba(255,255,255,0.9);
 }
-.wish-btn:active{transform:scale(.82);}
+.wish-btn:active{transform:scale(.82)}
 
 /* WISHLIST PAGE */
 .wishlist-empty{text-align:center;padding:60px 20px;color:var(--t3)}
@@ -1613,8 +1604,8 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
     <div class="stat-card"><div class="stat-n" id="statOrders">0</div><div class="stat-l">Заказов</div></div>
     <div class="stat-card"><div class="stat-n" id="statCart">0</div><div class="stat-l">В корзине</div></div>
     <div class="stat-card" onclick="openMiniGame()" style="cursor:pointer;position:relative;overflow:hidden">
-      <div class="stat-n" style="font-size:24px">🐱</div>
-      <div class="stat-l">Играть</div>
+      <div class="stat-n" style="font-size:24px">📱</div>
+      <div class="stat-l">Поймай</div>
       <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(52,199,89,0.06),rgba(0,200,83,0.03));pointer-events:none;border-radius:20px"></div>
     </div>
   </div>
@@ -1673,10 +1664,12 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
   <!-- ═══ ВКЛАДКА: ПРАЙС ═══ -->
   <div id="admtab-price" style="padding:0 16px 14px">
 
-    <!-- Загрузка прайс-листа -->
-    <div class="admin-section-title">Загрузить прайс-лист</div>
+    <!-- AI Парсер прайс-листа -->
+    <div class="admin-section-title">🤖 AI-парсер прайса</div>
     <div class="admin-card">
-      <div class="admin-note" style="margin-bottom:12px">Загружай Excel (.xlsx) или CSV файл. Колонки: <b style="color:var(--text)">Название · Категория · Память · Цвет · SIM · Цена · Старая цена · Флаг · Бейдж · В наличии · Тренд</b></div>
+      <div class="admin-note" style="margin-bottom:12px">
+        Загружай <b style="color:var(--text)">любой Excel или CSV</b> от любого поставщика — ИИ сам разберёт структуру, найдёт названия, цены, память, цвет и всё остальное. Колонки могут называться как угодно.
+      </div>
 
       <!-- Зона загрузки -->
       <div class="price-drop-zone" id="priceDropZone" onclick="document.getElementById('priceFileInput').click()">
@@ -1685,53 +1678,136 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         </div>
         <div class="price-drop-title">Нажми или перетащи файл</div>
-        <div class="price-drop-sub">Excel (.xlsx) или CSV</div>
+        <div class="price-drop-sub">Excel (.xlsx) или CSV · любая структура</div>
       </div>
 
-      <!-- Превью загруженных данных -->
+      <!-- AI статус -->
+      <div id="aiParseStatus" style="display:none;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(120,80,255,0.08);border:1px solid rgba(120,80,255,0.2);border-radius:14px">
+          <div id="aiParseSpinner" style="width:18px;height:18px;border:2.5px solid rgba(120,80,255,0.3);border-top-color:#7c50f2;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0"></div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--text)" id="aiParseStatusText">Анализирую структуру файла...</div>
+            <div style="font-size:11px;color:var(--t3);margin-top:2px" id="aiParseStatusSub">ИИ разбирает колонки</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Превью -->
       <div id="pricePreview" style="display:none;margin-top:14px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div style="font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700">Найдено товаров: <span id="priceCount" style="color:var(--green)">0</span></div>
           <div style="font-size:11px;color:var(--t3)" id="priceFileName"></div>
         </div>
+        <div id="aiParseReport" style="display:none;margin-bottom:10px;padding:10px 12px;background:rgba(120,80,255,0.07);border:1px solid rgba(120,80,255,0.18);border-radius:12px;font-size:11px;color:var(--t2);line-height:1.6"></div>
         <div id="pricePreviewList" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
         <div style="display:flex;gap:8px;margin-top:12px">
           <button onclick="importPriceList()" style="flex:1;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;border:none;border-radius:50px;padding:13px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(52,199,89,0.3)">✓ ЗАГРУЗИТЬ В КАТАЛОГ</button>
-          <button onclick="document.getElementById('pricePreview').style.display='none';priceRows=[]" style="background:var(--glass2);color:var(--t2);border:1px solid var(--border);border-radius:50px;padding:13px 16px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:600;cursor:pointer">✕</button>
+          <button onclick="document.getElementById('pricePreview').style.display='none';document.getElementById('aiParseStatus').style.display='none';priceRows=[]" style="background:var(--glass2);color:var(--t2);border:1px solid var(--border);border-radius:50px;padding:13px 16px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:600;cursor:pointer">✕</button>
         </div>
       </div>
     </div>
 
-    <!-- Шаблон для скачивания -->
+    <!-- Шаблон -->
     <div class="admin-section-title" style="margin-top:16px">Шаблон прайса</div>
     <div class="admin-card">
-      <div class="admin-note">Скачай шаблон, заполни и загрузи обратно</div>
+      <div class="admin-note">Скачай шаблон, заполни и загрузи обратно. Колонка <b style="color:var(--text)">Фото</b> — ссылка с Google Drive</div>
       <button onclick="downloadPriceTemplate()" style="width:100%;background:var(--glass2);color:var(--text);border:1px solid var(--border);border-radius:50px;padding:13px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:inline;vertical-align:-2px;margin-right:6px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         СКАЧАТЬ ШАБЛОН CSV
       </button>
     </div>
 
-    <!-- Загрузка фото к товарам -->
-    <div class="admin-section-title" style="margin-top:16px">Фото товаров</div>
+    <!-- Фото через Google Drive -->
+    <div class="admin-section-title" style="margin-top:16px">📸 Фото через Google Drive</div>
     <div class="admin-card">
-      <div class="admin-note">Выбери товар и загрузи фото. Хранится прямо в браузере (base64)</div>
-      <select id="photoProductSelect" class="admin-input" style="width:100%;margin-bottom:10px" onchange="updatePhotoPreview()">
-        <option value="">— выбери товар —</option>
-      </select>
-      <div id="currentPhotoWrap" style="display:none;margin-bottom:10px;text-align:center">
-        <img id="currentPhotoImg" style="width:100px;height:100px;object-fit:cover;border-radius:16px;border:1px solid var(--border)">
-        <div style="font-size:10px;color:var(--t3);margin-top:4px">Текущее фото</div>
+      <div class="admin-note" style="margin-bottom:12px">
+        Загружай фото на <b style="color:var(--text)">Google Диск</b> → открой доступ «для всех у кого есть ссылка» → вставь ссылку сюда или в колонку «Фото» прайса
       </div>
-      <div class="price-drop-zone" style="padding:16px" onclick="document.getElementById('photoFileInput').click()">
-        <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
-        <div class="price-drop-icon" style="margin-bottom:6px">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <!-- Инструкция -->
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--glass3);border-radius:12px">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(120,80,255,0.15);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:800;color:#7c50f2;flex-shrink:0">1</div>
+          <div style="font-size:11px;color:var(--t2)">Загрузи фото на <b style="color:var(--text)">drive.google.com</b></div>
         </div>
-        <div class="price-drop-title" style="font-size:12px">Нажми чтобы выбрать фото</div>
-        <div class="price-drop-sub">JPG, PNG · до 2MB</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--glass3);border-radius:12px">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(120,80,255,0.15);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:800;color:#7c50f2;flex-shrink:0">2</div>
+          <div style="font-size:11px;color:var(--t2)">Нажми «Поделиться» → «Все у кого есть ссылка»</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--glass3);border-radius:12px">
+          <div style="width:22px;height:22px;border-radius:50%;background:rgba(120,80,255,0.15);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:800;color:#7c50f2;flex-shrink:0">3</div>
+          <div style="font-size:11px;color:var(--t2)">Скопируй ссылку и вставь ниже — мы превратим её в прямую</div>
+        </div>
       </div>
-      <div id="photoUploadResult" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.25);border-radius:12px;font-size:12px;color:#1a7d38;font-weight:600"></div>
+
+    <!-- Фото товаров -->
+    <div class="admin-section-title" style="margin-top:16px">📸 Фото товаров</div>
+    <div class="admin-card">
+
+      <!-- Вкладки режима -->
+      <div style="display:flex;gap:6px;margin-bottom:14px">
+        <div id="photoTab-single" onclick="switchPhotoTab('single')"
+          style="flex:1;padding:9px;text-align:center;border-radius:12px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;background:rgba(28,28,30,0.88);color:#fff;transition:all .15s">
+          По одному
+        </div>
+        <div id="photoTab-bulk" onclick="switchPhotoTab('bulk')"
+          style="flex:1;padding:9px;text-align:center;border-radius:12px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;background:var(--glass2);color:var(--t2);border:1px solid var(--border);transition:all .15s">
+          Вся папка
+        </div>
+      </div>
+
+      <!-- РЕЖИМ: По одному -->
+      <div id="photoMode-single">
+        <div class="admin-note" style="margin-bottom:10px">Выбери товар → вставь ссылку с Google Drive</div>
+        <select id="photoProductSelect" class="admin-input" style="width:100%;margin-bottom:10px" onchange="updatePhotoPreview()">
+          <option value="">— выбери товар —</option>
+        </select>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input id="gdriveLinkInput" class="admin-input" style="flex:1;font-size:11px" placeholder="Ссылка с Google Drive..." oninput="previewGdriveLink()">
+          <button onclick="applyGdrivePhoto()" style="padding:10px 14px;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;border:none;border-radius:12px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0">ОК</button>
+        </div>
+        <div id="gdrivePreview" style="display:none;margin-bottom:10px;text-align:center">
+          <img id="gdrivePreviewImg" style="width:90px;height:90px;object-fit:cover;border-radius:14px;border:1px solid var(--border)" onerror="this.parentElement.innerHTML='<div style=\'font-size:11px;color:#c0281f;padding:8px\'>❌ Проверь ссылку и доступ</div>'">
+          <div style="font-size:10px;color:var(--t3);margin-top:4px">Предпросмотр</div>
+        </div>
+        <div id="photoUploadResult" style="display:none;padding:10px 12px;background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.25);border-radius:12px;font-size:12px;color:#1a7d38;font-weight:600"></div>
+      </div>
+
+      <!-- РЕЖИМ: Вся папка -->
+      <div id="photoMode-bulk" style="display:none">
+        <div class="admin-note" style="margin-bottom:12px">
+          Назови файлы как модели в каталоге и загрузи всю папку — система сама сопоставит:
+        </div>
+        <!-- Примеры названий -->
+        <div style="background:var(--glass3);border-radius:12px;padding:10px 12px;margin-bottom:12px">
+          <div style="font-size:10px;color:var(--t3);font-family:'Unbounded',sans-serif;font-weight:700;margin-bottom:6px">ПРИМЕРЫ НАЗВАНИЙ ФАЙЛОВ</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.9">
+            📄 iPhone 17 Pro Max.jpg<br>
+            📄 Samsung Galaxy S25 Ultra.jpg<br>
+            📄 AirPods Pro 2.jpg<br>
+            📄 MacBook Air M3.png
+          </div>
+        </div>
+        <!-- Зона загрузки -->
+        <div class="price-drop-zone" style="padding:20px" onclick="document.getElementById('bulkPhotoInput').click()">
+          <input type="file" id="bulkPhotoInput" accept="image/*" multiple style="display:none" onchange="handleBulkPhotos(this)">
+          <div class="price-drop-icon" style="margin-bottom:8px">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="price-drop-title">Выбрать все фото сразу</div>
+          <div class="price-drop-sub">Выдели все файлы в папке и нажми «Открыть»</div>
+        </div>
+        <!-- Результат сопоставления -->
+        <div id="bulkMatchResult" style="display:none;margin-top:12px">
+          <div style="font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;margin-bottom:8px">
+            Результат: <span id="bulkMatchCount" style="color:var(--green)">0</span> совпадений
+          </div>
+          <div id="bulkMatchList" style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto"></div>
+          <button onclick="applyBulkPhotos()" id="bulkApplyBtn" style="width:100%;margin-top:12px;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;border:none;border-radius:50px;padding:13px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(52,199,89,0.3)">
+            ✓ ПРИМЕНИТЬ ФОТО
+          </button>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -1891,39 +1967,6 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 <div class="ptr-indicator" id="ptrIndicator">
   <div class="ptr-spinner"></div>
   <span id="ptrText">Обновление...</span>
-</div>
-
-<!-- ADMIN PIN OVERLAY -->
-<div class="admin-pin-overlay" id="adminPinOverlay" onclick="maybeCloseAdminPin(event)">
-  <div class="admin-pin-sheet">
-    <div style="width:40px;height:4px;border-radius:2px;background:rgba(0,0,0,.12);margin:12px auto 0"></div>
-    <div style="text-align:center;padding:20px 20px 0">
-      <div style="font-size:36px;margin-bottom:8px">🔐</div>
-      <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;color:var(--text);margin-bottom:4px">Код доступа</div>
-      <div style="font-size:12px;color:var(--t3)">Введи PIN для входа в панель</div>
-    </div>
-    <div class="pin-dots">
-      <div class="pin-dot" id="pd0"></div>
-      <div class="pin-dot" id="pd1"></div>
-      <div class="pin-dot" id="pd2"></div>
-      <div class="pin-dot" id="pd3"></div>
-    </div>
-    <div class="pin-err" id="pinErr"></div>
-    <div class="pin-grid">
-      <div class="pin-key" onclick="pinPress('1')">1</div>
-      <div class="pin-key" onclick="pinPress('2')">2</div>
-      <div class="pin-key" onclick="pinPress('3')">3</div>
-      <div class="pin-key" onclick="pinPress('4')">4</div>
-      <div class="pin-key" onclick="pinPress('5')">5</div>
-      <div class="pin-key" onclick="pinPress('6')">6</div>
-      <div class="pin-key" onclick="pinPress('7')">7</div>
-      <div class="pin-key" onclick="pinPress('8')">8</div>
-      <div class="pin-key" onclick="pinPress('9')">9</div>
-      <div class="pin-key" style="opacity:0;pointer-events:none"></div>
-      <div class="pin-key" onclick="pinPress('0')">0</div>
-      <div class="pin-key del" onclick="pinBackspace()">⌫</div>
-    </div>
-  </div>
 </div>
 
 <!-- NAV PILL -->
@@ -2143,20 +2186,20 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 <div style="position:fixed;inset:0;z-index:750;background:rgba(0,0,0,0.6);backdrop-filter:blur(12px);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .28s" id="gameOverlay" onclick="maybeCloseGame(event)">
   <div style="width:100%;max-width:480px;background:rgba(8,8,20,0.98);border-radius:28px 28px 0 0;border-top:1px solid rgba(255,255,255,0.08);padding:0 0 calc(28px + var(--sb));transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)" id="gameSheet">
     <div style="width:40px;height:4px;border-radius:2px;background:rgba(255,255,255,.15);margin:12px auto 0"></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px">
-      <div style="font-family:'Unbounded',sans-serif;font-size:16px;font-weight:900;color:#fff">🐱 Кот-Прыгун</div>
-      <div style="font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.5)">Рекорд: <span id="gameRecord">0</span></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px">
+      <div style="font-family:'Unbounded',sans-serif;font-size:15px;font-weight:900;color:#fff">📱 Apple Catcher</div>
+      <div style="font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5)">Рекорд: <span id="gameRecord">0</span></div>
     </div>
     <div class="game-canvas-wrap">
-      <canvas id="gameCanvas" width="400" height="160"></canvas>
+      <canvas id="gameCanvas" width="400" height="220"></canvas>
       <div class="game-score-display">Счёт: <span id="gameScore">0</span></div>
       <div class="game-ui" id="gameUI">
-        <h3>🐱 Кот-Прыгун</h3>
-        <p>Нажимай чтобы прыгать</p>
+        <h3>📱 Apple Catcher</h3>
+        <p>Лови технику — избегай бомбы!</p>
         <button class="game-start-btn" onclick="startGame()">ИГРАТЬ</button>
       </div>
     </div>
-    <div style="padding:14px 20px 0;display:flex;gap:8px">
+    <div style="padding:12px 20px 0;display:flex;gap:8px">
       <button onclick="startGame()" style="flex:1;padding:12px;background:linear-gradient(135deg,#34c759,#00c853);color:#fff;border:none;border-radius:50px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer">ЗАНОВО</button>
       <button onclick="closeGame()" style="flex:1;padding:12px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);border-radius:50px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;cursor:pointer">ЗАКРЫТЬ</button>
     </div>
@@ -2282,37 +2325,6 @@ function closeConfirm(){
   document.getElementById('confirmOverlay').classList.remove('open');
 }
 
-// ══ ADMIN ACCESS — SECURE ══
-// OWNER_TG_ID убран из клиентского кода — используем PIN + CloudStorage
-let adminUnlocked = false;
-
-function unlockAdmin(isOwner=false){
-  adminUnlocked = true;
-  document.getElementById('nav-admin').style.display = 'flex';
-  if(isOwner){
-    showToast('👑 Добро пожаловать, владелец!');
-    showPage('admin');
-    saveAdminSession(); // Сохраняем сессию в CloudStorage
-  }
-}
-
-
-// Старый метод checkAdminPassword заменён на openAdminPin() (см. выше)
-// Оставляем как алиас для совместимости
-function checkAdminPassword(){
-  openAdminPin();
-}
-
-function initAdmin(){
-  let tapCount = 0, tapTimer;
-  document.querySelector('.logo').addEventListener('click', ()=>{
-    tapCount++;
-    clearTimeout(tapTimer);
-    tapTimer = setTimeout(()=>tapCount=0, 1500);
-    if(tapCount >= 5){ tapCount=0; checkAdminPassword(); }
-  });
-}
-
 // ══ CATEGORIES ══
 const MARKUP_CATS = ['iPhone','Samsung','MacBook','iPad','Watch','AirPods'];
 const CAT_ICONS = {iPhone:'📱',Samsung:'📱',MacBook:'💻',iPad:'📟',Watch:'⌚',AirPods:'🎧'};
@@ -2320,32 +2332,123 @@ const DEFAULT_MARKUPS = {iPhone:4000,Samsung:4000,MacBook:4000,iPad:4000,Watch:0
 
 function loadMarkups(){ try{const s=localStorage.getItem('tl_markups');return s?JSON.parse(s):{...DEFAULT_MARKUPS}}catch(e){return{...DEFAULT_MARKUPS}} }
 function saveMarkupsToStorage(m){ try{localStorage.setItem('tl_markups',JSON.stringify(m))}catch(e){} }
+
+// ── Каталог: сохраняем в CloudStorage (виден всем) + localStorage (кеш) ──
 function loadCustomProducts(){ try{const s=localStorage.getItem('tl_products');return s?JSON.parse(s):[]}catch(e){return[]} }
-function saveProductsToStorage(arr){ try{localStorage.setItem('tl_products',JSON.stringify(arr))}catch(e){} }
+
+function saveProductsToStorage(arr){
+  try{ localStorage.setItem('tl_products', JSON.stringify(arr)); }catch(e){}
+  // Синхронизируем в CloudStorage чтобы все клиенты видели обновлённый каталог
+  const tg = window.Telegram?.WebApp;
+  if(tg?.CloudStorage){
+    const chunks = chunkProductsForCloud(arr);
+    chunks.forEach((chunk, i) => {
+      tg.CloudStorage.setItem('tl_products_'+i, JSON.stringify(chunk));
+    });
+    tg.CloudStorage.setItem('tl_products_chunks', String(chunks.length));
+  }
+}
+
+function chunkProductsForCloud(arr){
+  // CloudStorage лимит ~4KB на ключ, делим на части по 20 товаров
+  const size = 20;
+  const chunks = [];
+  for(let i=0; i<arr.length; i+=size) chunks.push(arr.slice(i,i+size));
+  return chunks.length ? chunks : [[]];
+}
+
+function loadProductsFromCloud(callback){
+  const tg = window.Telegram?.WebApp;
+  if(!tg?.CloudStorage){ callback(loadCustomProducts()); return; }
+  tg.CloudStorage.getItem('tl_products_chunks', (err, val) => {
+    if(err || !val){ callback(loadCustomProducts()); return; }
+    const n = parseInt(val) || 0;
+    if(n === 0){ callback([]); return; }
+    const keys = Array.from({length:n}, (_,i)=>'tl_products_'+i);
+    tg.CloudStorage.getItems(keys, (err2, items) => {
+      if(err2){ callback(loadCustomProducts()); return; }
+      try{
+        const all = keys.flatMap(k => JSON.parse(items[k]||'[]'));
+        // Обновляем локальный кеш
+        try{ localStorage.setItem('tl_products', JSON.stringify(all)); }catch(e){}
+        callback(all);
+      }catch(e){ callback(loadCustomProducts()); }
+    });
+  });
+}
 
 let markups = loadMarkups();
 
-// ══ BASE PRODUCTS ══
-const BASE_PRODUCTS = [
-  {id:1,brand:'iPhone',family:'iPhone 17 Pro Max',memory:'256GB',color:'Black Titanium',sim:'eSim',basePrice:115000,oldPrice:124000,icon:'📱',flag:'🇷🇺',photo:null,trend:true,badge:'fire',rating:5.0,reviews:64,inStock:true},
-  {id:2,brand:'iPhone',family:'iPhone 17 Pro Max',memory:'512GB',color:'Desert Titanium',sim:'1Sim+eSim',basePrice:129000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:true,badge:'hit',rating:4.9,reviews:41,inStock:true},
-  {id:3,brand:'iPhone',family:'iPhone 17 Pro',memory:'256GB',color:'White Titanium',sim:'eSim',basePrice:98000,oldPrice:105000,icon:'📱',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.8,reviews:29,inStock:true},
-  {id:4,brand:'iPhone',family:'iPhone 17 Air',memory:'256GB',color:'Starlight',sim:'eSim',basePrice:89000,oldPrice:null,icon:'📱',flag:'🇷🇺',photo:null,trend:true,badge:'new',rating:5.0,reviews:12,inStock:true},
-  {id:5,brand:'iPhone',family:'iPhone 17',memory:'256GB',color:'Black',sim:'eSim',basePrice:73500,oldPrice:78000,icon:'📱',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.7,reviews:55,inStock:true},
-  {id:6,brand:'iPhone',family:'iPhone 16 Pro Max',memory:'256GB',color:'Desert Titanium',sim:'eSim',basePrice:99000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:false,badge:null,rating:4.9,reviews:87,inStock:true},
-  {id:7,brand:'Samsung',family:'Galaxy S25 Ultra',memory:'512GB',color:'Titanium Black',sim:'2Sim',basePrice:96500,oldPrice:108000,icon:'📱',flag:'🇨🇱',photo:null,trend:true,badge:'hit',rating:4.8,reviews:33,inStock:true},
-  {id:8,brand:'Samsung',family:'Galaxy S25+',memory:'256GB',color:'Icy Blue',sim:'2Sim',basePrice:74000,oldPrice:null,icon:'📱',flag:'🇨🇱',photo:null,trend:false,badge:null,rating:4.6,reviews:19,inStock:true},
-  {id:9,brand:'AirPods',family:'AirPods Pro 2',memory:'—',color:'White',sim:'—',basePrice:18100,oldPrice:21000,icon:'🎧',flag:'🇷🇺',photo:null,trend:true,badge:'fire',rating:5.0,reviews:102,inStock:true},
-  {id:10,brand:'AirPods',family:'AirPods Max',memory:'—',color:'Midnight',sim:'—',basePrice:45800,oldPrice:null,icon:'🎧',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.9,reviews:27,inStock:true},
-  {id:11,brand:'MacBook',family:'MacBook Air M3',memory:'256GB',color:'Midnight',sim:'—',basePrice:89000,oldPrice:95000,icon:'💻',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:5.0,reviews:44,inStock:true},
-  {id:12,brand:'MacBook',family:'MacBook Pro M4',memory:'512GB',color:'Silver',sim:'—',basePrice:145000,oldPrice:null,icon:'💻',flag:'🇷🇺',photo:null,trend:true,badge:'new',rating:5.0,reviews:8,inStock:true},
-  {id:13,brand:'Watch',family:'Apple Watch S10',memory:'—',color:'Silver Alu',sim:'—',basePrice:32000,oldPrice:36000,icon:'⌚',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.8,reviews:31,inStock:true},
-  {id:14,brand:'iPad',family:'iPad Air M2',memory:'256GB',color:'Blue',sim:'Wi-Fi',basePrice:68000,oldPrice:null,icon:'📟',flag:'🇷🇺',photo:null,trend:false,badge:null,rating:4.9,reviews:16,inStock:true},
-];
+// ══ НАЦЕНКИ ПО КАТЕГОРИЯМ (₽) ══
+const CAT_MARKUPS = {
+  'iPhone':    4000,
+  'Samsung':   4000,
+  'Xiaomi':    4000,
+  'Watch':     3000,
+  'AirPods':   2000,
+  'iPad':      4000,
+  'MacBook':   4000,
+  'Наушники':  2000,
+  'Геймпад':   3000,
+  'Игры':      2000,
+  'Аксессуары': 0,  // индивидуальная наценка уже в таблице
+};
+
+// ══ GOOGLE APPS SCRIPT — прайс с наценкой ══
+const GSHEETS_URL = 'https://raw.githubusercontent.com/Dastersting13/techno-live-app/main/prices.json';
+
+// Загрузка прайса из GitHub
+async function loadFromGSheets(callback){
+  try {
+    const res = await fetch(GSHEETS_URL + '?t=' + Date.now()); // cache bust
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const json = await res.json();
+    // Поддерживаем оба формата: массив или {products:[...]}
+    const products = Array.isArray(json) ? json : (json.products || []);
+    if(products.length > 0){
+      const CAT_ICONS_MAP = {
+        iPhone:'📱', Samsung:'📱', Xiaomi:'📱', Watch:'⌚',
+        AirPods:'🎧', iPad:'📟', MacBook:'💻', Наушники:'🎧',
+        Геймпад:'🎮', Игры:'🎮', Аксессуары:'🔌'
+      };
+      const mapped = products.map((p, i) => ({
+        id: p.id || (Date.now() + i),
+        brand:     p.brand,
+        family:    p.family,
+        memory:    p.memory || '—',
+        color:     p.color  || '—',
+        sim:       p.sim    || '—',
+        basePrice: p.price  || p.basePrice || 0,
+        price:     p.price  || p.basePrice || 0,
+        oldPrice:  p.oldPrice || null,
+        icon:      CAT_ICONS_MAP[p.brand] || p.icon || '📦',
+        flag:      p.flag   || '🇷🇺',
+        photo:     p.photo  || null,
+        trend:     !!p.trend,
+        badge:     p.badge  || null,
+        rating:    p.rating || 4.8,
+        reviews:   p.reviews || 0,
+        inStock:   p.inStock !== false
+      }));
+      saveProductsToStorage(mapped);
+      callback(mapped);
+    } else {
+      callback(loadCustomProducts());
+    }
+  } catch(e) {
+    console.warn('GSheets load failed:', e);
+    callback(loadCustomProducts());
+  }
+}
+
+// ══ BASE PRODUCTS (демо, пока не загрузился прайс) ══
+const BASE_PRODUCTS = [];
 
 function buildProducts(){
   const custom = loadCustomProducts();
-  return [...BASE_PRODUCTS, ...custom].map(p=>({...p, price: p.basePrice + (markups[p.brand]||0)}));
+  return custom.length > 0
+    ? custom  // уже с наценкой из parseGSheetsCSV
+    : BASE_PRODUCTS;
 }
 let P = buildProducts();
 
@@ -2847,11 +2950,11 @@ function openSheet(idx){
   // Рендерим варианты
   renderVariants(p);
 
-  // Пульсация кнопки через 4 секунды просмотра
+  // Пульсация кнопки через 5 секунд просмотра
   clearTimeout(pulseTimer);
   pulseTimer = setTimeout(()=>{
     if(!cart.some(c=>c.id===p.id)){
-      btn.classList.add('pulse');
+      document.getElementById('sAdd')?.classList.add('pulse');
       showCat('😸','Долго смотришь — может купить? 😄', 3000);
     }
   }, 5000);
@@ -3556,30 +3659,148 @@ let priceRows = [];
 function handlePriceFile(input){
   const file = input.files[0]; if(!file) return;
   document.getElementById('priceFileName').textContent = file.name;
+  document.getElementById('pricePreview').style.display = 'none';
+  document.getElementById('aiParseStatus').style.display = 'block';
+  document.getElementById('aiParseStatusText').textContent = 'Читаю файл...';
+  document.getElementById('aiParseStatusSub').textContent = 'Подготовка данных';
+  document.getElementById('aiParseSpinner').style.display = 'block';
+
   const ext = file.name.split('.').pop().toLowerCase();
   if(ext === 'csv'){
     const reader = new FileReader();
-    reader.onload = e => parsePriceCSV(e.target.result);
+    reader.onload = e => aiParsePriceData(e.target.result, 'csv');
     reader.readAsText(file, 'utf-8');
   } else if(ext === 'xlsx' || ext === 'xls'){
-    // Используем SheetJS через CDN
     if(typeof XLSX === 'undefined'){
       const s = document.createElement('script');
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
       s.onload = () => {
         const reader = new FileReader();
-        reader.onload = e => parsePriceXLSX(e.target.result);
+        reader.onload = e => {
+          const wb = XLSX.read(e.target.result, {type:'array'});
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          const csv = XLSX.utils.sheet_to_csv(ws);
+          aiParsePriceData(csv, 'xlsx');
+        };
         reader.readAsArrayBuffer(file);
       };
       document.head.appendChild(s);
     } else {
       const reader = new FileReader();
-      reader.onload = e => parsePriceXLSX(e.target.result);
+      reader.onload = e => {
+        const wb = XLSX.read(e.target.result, {type:'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const csv = XLSX.utils.sheet_to_csv(ws);
+        aiParsePriceData(csv, 'xlsx');
+      };
       reader.readAsArrayBuffer(file);
     }
   } else {
+    document.getElementById('aiParseStatus').style.display = 'none';
     showToast('Поддерживаются .xlsx и .csv');
   }
+}
+
+async function aiParsePriceData(csvText, format){
+  document.getElementById('aiParseStatusText').textContent = '🤖 ИИ анализирует структуру...';
+  document.getElementById('aiParseStatusSub').textContent = 'Определяю колонки и данные';
+
+  // Берём первые 40 строк для анализа
+  const lines = csvText.split('\n').filter(l => l.trim()).slice(0, 40);
+  const preview = lines.join('\n');
+
+  const prompt = `Ты парсер прайс-листов для магазина техники Apple/Samsung.
+
+Вот данные из файла (первые строки):
+\`\`\`
+${preview}
+\`\`\`
+
+Твоя задача — разобрать КАЖДУЮ строку товара и вернуть JSON массив.
+Для каждого товара определи:
+- family: полное название модели (например "iPhone 16 Pro Max", "MacBook Air M3")
+- brand: бренд (iPhone/Samsung/MacBook/iPad/AirPods/Watch/Аксессуары)
+- memory: объём памяти (например "256GB", "512GB") или "—" если нет
+- color: цвет на английском (например "Black Titanium", "Starlight") или "—"  
+- sim: тип SIM (eSim / 1Sim+eSim / 2Sim / Nano SIM) или "—"
+- basePrice: цена числом в рублях (только цифры)
+- oldPrice: старая цена числом или null
+- flag: флаг страны эмодзи (🇷🇺 Россия, 🇨🇳 Китай, 🇨🇱 Чили, 🇦🇪 ОАЭ) или "🇷🇺" по умолчанию
+- badge: "fire"/"new"/"hit" или null
+- inStock: true/false
+- photo: URL фото если есть в данных, иначе null
+
+Верни ТОЛЬКО валидный JSON массив без пояснений:
+[{"family":"...","brand":"...","memory":"...","color":"...","sim":"...","basePrice":0,"oldPrice":null,"flag":"🇷🇺","badge":null,"inStock":true,"photo":null}]`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || '';
+
+    // Извлекаем JSON
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    if(!jsonMatch) throw new Error('JSON не найден в ответе');
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    if(!Array.isArray(parsed) || parsed.length === 0) throw new Error('Пустой результат');
+
+    // Конвертируем в наш формат
+    priceRows = parsed.map(item => ({
+      family:    String(item.family || '').trim(),
+      brand:     normalizeBrand(String(item.brand || 'iPhone')),
+      memory:    String(item.memory || '—').trim(),
+      color:     String(item.color || '—').trim(),
+      sim:       String(item.sim || '—').trim(),
+      basePrice: parseInt(item.basePrice) || 0,
+      oldPrice:  item.oldPrice ? parseInt(item.oldPrice) : null,
+      flag:      item.flag || '🇷🇺',
+      badge:     normalizeBadge(item.badge || ''),
+      inStock:   item.inStock !== false,
+      trend:     false,
+      photo:     normalizePhotoUrl(item.photo),
+    })).filter(r => r.family && r.basePrice > 0);
+
+    // Показываем отчёт
+    document.getElementById('aiParseSpinner').style.display = 'none';
+    document.getElementById('aiParseStatusText').textContent = `✅ Готово — найдено ${priceRows.length} товаров`;
+    document.getElementById('aiParseStatusSub').textContent = 'ИИ успешно разобрал структуру файла';
+
+    const withPhoto = priceRows.filter(r => r.photo).length;
+    if(withPhoto > 0){
+      document.getElementById('aiParseReport').style.display = 'block';
+      document.getElementById('aiParseReport').innerHTML = `📸 Найдено фото у ${withPhoto} товаров · Остальные будут с иконкой`;
+    }
+
+    showPricePreview();
+
+  } catch(err) {
+    console.error('AI parse error:', err);
+    // Fallback на обычный парсер
+    document.getElementById('aiParseStatusText').textContent = '⚠️ ИИ недоступен — использую стандартный парсер';
+    document.getElementById('aiParseStatusSub').textContent = 'Колонки должны иметь понятные названия';
+    document.getElementById('aiParseSpinner').style.display = 'none';
+    parsePriceCSV(csvText);
+  }
+}
+
+// Конвертируем ссылку Google Drive в прямую
+function normalizePhotoUrl(url){
+  if(!url || url === 'null') return null;
+  url = String(url).trim();
+  if(!url.startsWith('http')) return null;
+  // Google Drive share link → direct link
+  const gdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if(gdMatch) return `https://drive.google.com/uc?export=view&id=${gdMatch[1]}`;
+  return url;
 }
 
 function parsePriceCSV(text){
@@ -3595,46 +3816,57 @@ function parsePriceCSV(text){
   showPricePreview();
 }
 
-function parsePriceXLSX(buffer){
-  try{
-    const wb = XLSX.read(buffer, {type:'array'});
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const data = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-    if(data.length < 2){ showToast('Файл пустой'); return; }
-    const headers = data[0].map(h=>String(h).trim().toLowerCase());
-    priceRows = [];
-    for(let i=1;i<data.length;i++){
-      const cols = data[i].map(c=>String(c).trim());
-      if(!cols[0]) continue;
-      priceRows.push(mapPriceRow(headers, cols));
-    }
-    showPricePreview();
-  }catch(e){ showToast('Ошибка чтения файла'); console.error(e); }
+// ── Google Drive фото в админке ──
+function previewGdriveLink(){
+  const input = document.getElementById('gdriveLinkInput').value.trim();
+  const url = normalizePhotoUrl(input);
+  const wrap = document.getElementById('gdrivePreview');
+  const img = document.getElementById('gdrivePreviewImg');
+  if(url){
+    img.src = url;
+    wrap.style.display = 'block';
+  } else {
+    wrap.style.display = 'none';
+  }
 }
 
-function mapPriceRow(headers, cols){
-  const get = (...keys) => {
-    for(const k of keys){
-      const idx = headers.findIndex(h=>h.includes(k));
-      if(idx>=0 && cols[idx]) return cols[idx];
-    }
-    return '';
-  };
-  const brand = get('категор','бренд','brand','category') || 'iPhone';
-  return {
-    family:  get('назван','name','модель','family','товар') || cols[0],
-    brand:   normalizeBrand(brand),
-    memory:  get('памят','memory','gb','хранил') || '—',
-    color:   get('цвет','color','colour') || '—',
-    sim:     get('sim','сим') || '—',
-    basePrice: parseInt(get('цена','price','стоим','закуп').replace(/\D/g,''))||0,
-    oldPrice:  parseInt(get('стар','old','до').replace(/\D/g,''))||null,
-    flag:    get('флаг','flag','страна') || '🇷🇺',
-    badge:   normalizeBadge(get('бейдж','badge','метка')),
-    inStock: !get('налич','stock','остат').match(/нет|0|false|out/i),
-    trend:   !!get('тренд','trend','хит').match(/да|yes|1|true/i),
-  };
+function applyGdrivePhoto(){
+  const sel = document.getElementById('photoProductSelect');
+  const id = parseInt(sel.value);
+  if(!id){ showToast('Выбери товар'); return; }
+  const input = document.getElementById('gdriveLinkInput').value.trim();
+  const url = normalizePhotoUrl(input);
+  if(!url){ showToast('Вставь ссылку с Google Drive'); return; }
+
+  const p = P.find(x => x.id === id);
+  if(!p){ showToast('Товар не найден'); return; }
+  p.photo = url;
+  saveProducts();
+
+  const res = document.getElementById('photoUploadResult');
+  res.style.display = 'block';
+  res.textContent = `✅ Фото добавлено к "${p.family}"`;
+  document.getElementById('gdriveLinkInput').value = '';
+  document.getElementById('gdrivePreview').style.display = 'none';
+  applyFilters(); renderTrend();
+  setTimeout(() => res.style.display = 'none', 3000);
 }
+
+function updatePhotoPreview(){
+  const sel = document.getElementById('photoProductSelect');
+  const id = parseInt(sel.value);
+  if(!id) return;
+  const p = P.find(x => x.id === id);
+  if(p?.photo){
+    document.getElementById('gdrivePreviewImg').src = p.photo;
+    document.getElementById('gdrivePreview').style.display = 'block';
+    document.getElementById('gdriveLinkInput').value = p.photo;
+  } else {
+    document.getElementById('gdrivePreview').style.display = 'none';
+    document.getElementById('gdriveLinkInput').value = '';
+  }
+}
+
 
 function normalizeBrand(s){
   s = s.trim();
@@ -3978,15 +4210,19 @@ function switchVariant(idx){
 // ══════════════════════════════════════
 // 🐱 MINI GAME — Кот-Прыгун
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+// 📱 MINI GAME — Apple Catcher
+// ══════════════════════════════════════
 let gameRunning = false, gameOver = false, gameRAF;
-let catY, catVY, obstacles, gScore, gSpeed, gFrame;
-const GRAVITY = 0.6, JUMP = -11, CAT_X = 50, CAT_SIZE = 28;
+let catcherX, catcherW, items, gScore, gSpeed, gFrame, gLives;
+const CATCHER_H = 14, ITEM_SIZE = 28;
+const APPLE_ITEMS = ['📱','💻','⌚','🎧','📷','🖥','⌨️','🖱'];
+const BOMB = '💣';
 
 function openMiniGame(){
   const ov = document.getElementById('gameOverlay');
   const sh = document.getElementById('gameSheet');
-  // Load record
-  const rec = localStorage.getItem('cat_record')||'0';
+  const rec = localStorage.getItem('apple_record')||'0';
   document.getElementById('gameRecord').textContent = rec;
   ov.style.opacity='0'; ov.style.pointerEvents='all'; ov.style.visibility='visible';
   sh.style.transform='translateY(100%)';
@@ -3997,7 +4233,7 @@ function openMiniGame(){
   document.body.style.overflow='hidden';
   document.getElementById('gameUI').classList.remove('hidden');
   gameRunning=false; gameOver=false;
-  logActivity('🐱','Запустил мини-игру Кот-Прыгун');
+  logActivity('📱','Запустил мини-игру Apple Catcher');
 }
 
 function closeGame(){
@@ -4016,81 +4252,134 @@ function startGame(){
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-  canvas.height = 160 * window.devicePixelRatio;
+  canvas.height = 220 * window.devicePixelRatio;
   ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = canvas.offsetWidth, H = 160;
-  const GROUND = H - 30;
+  const W = canvas.offsetWidth, H = 220;
+  const GROUND = H - 24;
 
   document.getElementById('gameUI').classList.add('hidden');
-  catY = GROUND - CAT_SIZE; catVY = 0;
-  obstacles = []; gScore = 0; gSpeed = 4; gFrame = 0;
+
+  // State
+  catcherX = W/2; catcherW = 70;
+  items = []; gScore = 0; gSpeed = 2.2; gFrame = 0; gLives = 3;
   gameRunning = true; gameOver = false;
 
-  function jump(){
-    if(gameOver){ startGame(); return; }
-    if(catY >= GROUND - CAT_SIZE - 2){ catVY = JUMP; if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.impactOccurred('light'); }
+  // Touch/mouse move for catcher
+  function moveCatcher(clientX){
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    catcherX = Math.max(catcherW/2, Math.min(W - catcherW/2, (clientX - rect.left) * scaleX));
   }
-  canvas.onclick = jump;
-  document.getElementById('gameSheet').ontouchstart = (e)=>{ e.preventDefault(); jump(); };
+  canvas.onmousemove = e => moveCatcher(e.clientX);
+  canvas.ontouchmove = e => { e.preventDefault(); moveCatcher(e.touches[0].clientX); };
+  canvas.ontouchstart = e => { e.preventDefault(); moveCatcher(e.touches[0].clientX); };
+  canvas.onclick = e => { if(gameOver){ startGame(); } };
+
+  function spawnItem(){
+    const isBomb = Math.random() < 0.22 + gScore*0.002;
+    items.push({
+      x: 20 + Math.random()*(W-40),
+      y: -ITEM_SIZE,
+      emoji: isBomb ? BOMB : APPLE_ITEMS[Math.floor(Math.random()*APPLE_ITEMS.length)],
+      bomb: isBomb,
+      speed: gSpeed + Math.random()*1.2,
+      rot: (Math.random()-0.5)*0.3,
+    });
+  }
+
+  function drawHeart(ctx, x, y, size, filled){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.font = size+'px serif';
+    ctx.textAlign = 'center';
+    ctx.globalAlpha = filled ? 1 : 0.25;
+    ctx.fillText('❤️', 0, 0);
+    ctx.restore();
+  }
 
   function loop(){
     if(!gameRunning) return;
     ctx.clearRect(0,0,W,H);
 
-    // Sky gradient
-    const sky = ctx.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0,'#050510'); sky.addColorStop(1,'#0a0820');
-    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    // Background
+    const bg = ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#0a0015'); bg.addColorStop(1,'#1a0035');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
-    // Stars
-    if(gFrame%3===0){
-      ctx.fillStyle='rgba(255,255,255,0.6)';
-      for(let i=0;i<2;i++){ ctx.beginPath(); ctx.arc(Math.random()*W,Math.random()*GROUND*0.7,Math.random()*1.2,0,Math.PI*2); ctx.fill(); }
-    }
+    // Subtle grid
+    ctx.strokeStyle='rgba(120,80,255,0.07)'; ctx.lineWidth=1;
+    for(let x=0;x<W;x+=30){ ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
+    for(let y=0;y<H;y+=30){ ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
 
-    // Ground
-    ctx.fillStyle='rgba(88,50,200,0.4)'; ctx.fillRect(0,GROUND,W,4);
-    ctx.fillStyle='rgba(120,80,255,0.15)'; ctx.fillRect(0,GROUND+4,W,H-GROUND-4);
+    // Ground line
+    ctx.strokeStyle='rgba(120,80,255,0.3)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(0,GROUND); ctx.lineTo(W,GROUND); ctx.stroke();
 
-    // Physics
-    catVY += GRAVITY; catY += catVY;
-    if(catY > GROUND - CAT_SIZE){ catY = GROUND - CAT_SIZE; catVY = 0; }
-
-    // Cat (pixel art style with emoji)
-    ctx.font = `${CAT_SIZE}px serif`;
-    ctx.textAlign = 'left';
-    ctx.fillText(catVY < -2 ? '😸' : '😺', CAT_X - CAT_SIZE/2, catY + CAT_SIZE);
-
-    // Obstacles
+    // Spawn items
     gFrame++;
-    if(gFrame % Math.max(60, 110 - Math.floor(gScore/5)) === 0){
-      const h = 24 + Math.random()*20;
-      obstacles.push({x:W, h, w:18});
-    }
-    obstacles = obstacles.filter(o=>{
-      o.x -= gSpeed;
-      // Draw obstacle (cactus-like)
-      const grad = ctx.createLinearGradient(o.x,GROUND-o.h,o.x+o.w,GROUND);
-      grad.addColorStop(0,'#bf5af2'); grad.addColorStop(1,'#6a0dad');
-      ctx.fillStyle=grad;
-      ctx.beginPath();
-      ctx.roundRect(o.x, GROUND-o.h, o.w, o.h, [6,6,3,3]);
-      ctx.fill();
-      ctx.fillStyle='rgba(255,255,255,0.1)'; ctx.fillRect(o.x+4, GROUND-o.h+4, 4, o.h-8);
+    const spawnRate = Math.max(38, 80 - Math.floor(gScore/3));
+    if(gFrame % spawnRate === 0) spawnItem();
 
-      // Collision
-      const catL=CAT_X-2, catR=CAT_X+CAT_SIZE-4, catT=catY+4, catB=catY+CAT_SIZE;
-      const obsL=o.x+2, obsR=o.x+o.w-2, obsT=GROUND-o.h, obsB=GROUND;
-      if(catR>obsL && catL<obsR && catB>obsT && catT<obsB){ endGame(ctx,W,H); return false; }
-      return o.x > -o.w;
+    // Update & draw items
+    items = items.filter(item => {
+      item.y += item.speed;
+      ctx.save();
+      ctx.translate(item.x, item.y);
+      ctx.font = ITEM_SIZE+'px serif';
+      ctx.textAlign='center';
+      ctx.fillText(item.emoji, 0, ITEM_SIZE/2);
+      ctx.restore();
+
+      // Catch check
+      if(item.y + ITEM_SIZE/2 >= GROUND - CATCHER_H &&
+         item.y + ITEM_SIZE/2 <= GROUND + 10 &&
+         Math.abs(item.x - catcherX) < catcherW/2 + 8){
+        if(item.bomb){
+          gLives--;
+          if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('warning');
+          if(gLives <= 0){ endCatcherGame(ctx,W,H); return false; }
+          // Flash effect
+          ctx.fillStyle='rgba(255,59,48,0.25)'; ctx.fillRect(0,0,W,H);
+        } else {
+          gScore++;
+          gSpeed = 2.2 + gScore*0.04;
+          if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.impactOccurred('light');
+          document.getElementById('gameScore').textContent = gScore;
+        }
+        return false;
+      }
+      // Miss — fell through ground
+      if(item.y > GROUND + 10){
+        if(!item.bomb){
+          gLives--;
+          if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+          if(gLives <= 0){ endCatcherGame(ctx,W,H); return false; }
+        }
+        return false;
+      }
+      return true;
     });
 
-    // Score
-    if(!gameOver){ gScore++; gSpeed = 4 + gScore/60; }
-    document.getElementById('gameScore').textContent = Math.floor(gScore/5);
+    // Catcher (rounded basket)
+    const grd = ctx.createLinearGradient(catcherX-catcherW/2, GROUND-CATCHER_H, catcherX+catcherW/2, GROUND);
+    grd.addColorStop(0,'#bf5af2'); grd.addColorStop(1,'#6a0dad');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.roundRect(catcherX - catcherW/2, GROUND - CATCHER_H, catcherW, CATCHER_H, 8);
+    ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5;
+    ctx.stroke();
+    // Apple logo on catcher
+    ctx.font='10px serif'; ctx.textAlign='center';
+    ctx.fillText('', catcherX, GROUND-2);
+
+    // Lives
+    for(let i=0;i<3;i++) drawHeart(ctx, 14+i*22, 18, 14, i < gLives);
+
+    // Score on canvas
     ctx.fillStyle='rgba(255,255,255,0.7)';
     ctx.font='bold 11px Unbounded,sans-serif'; ctx.textAlign='right';
-    ctx.fillText(Math.floor(gScore/5), W-10, 22);
+    ctx.fillText(gScore, W-10, 20);
 
     if(!gameOver) gameRAF = requestAnimationFrame(loop);
   }
@@ -4098,27 +4387,24 @@ function startGame(){
   loop();
 }
 
-function endGame(ctx,W,H){
+function endCatcherGame(ctx,W,H){
   gameOver=true; gameRunning=false;
-  const score = Math.floor(gScore/5);
-  const record = parseInt(localStorage.getItem('cat_record')||'0');
-  if(score > record){ localStorage.setItem('cat_record', score); document.getElementById('gameRecord').textContent=score; }
+  const score = gScore;
+  const record = parseInt(localStorage.getItem('apple_record')||'0');
+  if(score > record){ localStorage.setItem('apple_record', score); document.getElementById('gameRecord').textContent=score; }
   if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('error');
 
-  // Game over screen
-  ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,0.72)'; ctx.fillRect(0,0,W,220);
   ctx.textAlign='center';
-  ctx.font='36px serif'; ctx.fillText('😿',W/2,H/2-20);
+  ctx.font='38px serif'; ctx.fillText(score > record ? '🏆' : '😢', W/2, 80);
   ctx.fillStyle='#fff'; ctx.font='bold 13px Unbounded,sans-serif';
-  ctx.fillText('ИГРА ОКОНЧЕНА',W/2,H/2+10);
+  ctx.fillText('ИГРА ОКОНЧЕНА', W/2, 112);
   ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='11px Inter,sans-serif';
-  ctx.fillText(`Счёт: ${score} · Рекорд: ${Math.max(score,record)}`,W/2,H/2+28);
-  ctx.fillStyle='rgba(52,199,89,0.7)'; ctx.font='10px Unbounded,sans-serif';
-  ctx.fillText('Нажми чтобы заново',W/2,H/2+50);
-
-  const canvas = document.getElementById('gameCanvas');
-  canvas.onclick = ()=>startGame();
+  ctx.fillText(`Поймал: ${score} · Рекорд: ${Math.max(score,record)}`, W/2, 133);
+  ctx.fillStyle='rgba(120,80,255,0.8)'; ctx.font='10px Unbounded,sans-serif';
+  ctx.fillText('Нажми чтобы заново', W/2, 160);
 }
+
 
 // ══════════════════════════════════════
 // 🔙 FIX: категории → назад в drawer
@@ -4279,74 +4565,67 @@ window.addEventListener('offline', updateOnlineStatus);
 })();
 
 // ══════════════════════════════════════
-// 🔐 ADMIN PIN (вместо открытого OWNER_TG_ID)
+// 🔐 ADMIN ACCESS — только по Telegram ID
 // ══════════════════════════════════════
-// PIN хранится захешированным — меняй ADMIN_PIN_HASH под себя
-// Это SHA-256 от твоего PIN кода. Например, PIN "1234" → замени хеш своим.
-// Сгенерировать: https://emn178.github.io/online-tools/sha256.html
-const ADMIN_PIN_HASH = '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4'; // 1234 — СМЕНИ!
+// Пароля нет. Войти может только владелец бота.
+// ID нигде не отображается пользователям — проверка идёт на стороне клиента
+// через подписанные данные Telegram initData.
+const OWNER_IDS = [8533261646]; // твой Telegram ID
 
-let pinBuffer = '';
+let adminUnlocked = false;
 
-async function sha256(str){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+function checkOwnerAccess(){
+  const tg = window.Telegram?.WebApp;
+  if(!tg) return false;
+  const uid = tg.initDataUnsafe?.user?.id;
+  return OWNER_IDS.includes(uid);
+}
+
+function unlockAdmin(showPage_=true){
+  adminUnlocked = true;
+  document.getElementById('nav-admin').style.display = 'flex';
+  if(showPage_){
+    showToast('👑 Добро пожаловать, владелец!');
+    showPage('admin');
+  }
 }
 
 function openAdminPin(){
-  pinBuffer = '';
-  updatePinDots();
-  document.getElementById('pinErr').textContent = '';
-  document.getElementById('adminPinOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.impactOccurred('light');
-}
-
-function maybeCloseAdminPin(e){
-  if(e.target === document.getElementById('adminPinOverlay')) closeAdminPin();
-}
-
-function closeAdminPin(){
-  document.getElementById('adminPinOverlay').classList.remove('open');
-  document.body.style.overflow = '';
-  pinBuffer = '';
-  updatePinDots();
-}
-
-function pinPress(digit){
-  if(pinBuffer.length >= 4) return;
-  pinBuffer += digit;
-  updatePinDots();
-  if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.selectionChanged();
-  if(pinBuffer.length === 4) setTimeout(checkPin, 120);
-}
-
-function pinBackspace(){
-  pinBuffer = pinBuffer.slice(0,-1);
-  updatePinDots();
-}
-
-function updatePinDots(){
-  for(let i=0;i<4;i++){
-    const d = document.getElementById('pd'+i);
-    if(d) d.classList.toggle('filled', i < pinBuffer.length);
-  }
-}
-
-async function checkPin(){
-  const hash = await sha256(pinBuffer);
-  if(hash === ADMIN_PIN_HASH){
-    closeAdminPin();
+  // Больше нет PIN — проверяем Telegram ID
+  if(checkOwnerAccess()){
     unlockAdmin(true);
-    showCat('🔑','Добро пожаловать, администратор! 👑', 3000);
-    if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+    if(window.Telegram?.WebApp?.HapticFeedback)
+      Telegram.WebApp.HapticFeedback.notificationOccurred('success');
   } else {
-    document.getElementById('pinErr').textContent = '❌ Неверный код';
-    pinBuffer = '';
-    updatePinDots();
-    if(window.Telegram?.WebApp?.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('error');
-    setTimeout(()=>{ document.getElementById('pinErr').textContent=''; }, 1500);
+    showToast('⛔ Доступ только для владельца');
+    if(window.Telegram?.WebApp?.HapticFeedback)
+      Telegram.WebApp.HapticFeedback.notificationOccurred('error');
   }
+}
+
+// Алиасы для совместимости
+function checkAdminPassword(){ openAdminPin(); }
+function maybeCloseAdminPin(){}
+function closeAdminPin(){}
+function pinPress(){}
+function pinBackspace(){}
+function updatePinDots(){}
+async function checkPin(){}
+function saveAdminSession(){}
+
+function initAdmin(){
+  // Автовход если это владелец
+  if(checkOwnerAccess()){
+    unlockAdmin(false);
+  }
+  // 5 тапов по логотипу — для владельца
+  let tapCount = 0, tapTimer;
+  document.querySelector('.logo')?.addEventListener('click', ()=>{
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(()=>tapCount=0, 1500);
+    if(tapCount >= 5){ tapCount=0; openAdminPin(); }
+  });
 }
 
 // ══════════════════════════════════════
@@ -4413,16 +4692,8 @@ function loadCartCloud(cb){
 // ══════════════════════════════════════
 // Теперь автовход только через CloudStorage-флаг (для владельца телефона)
 function checkOwnerAutoUnlock(){
-  const tg = window.Telegram?.WebApp;
-  if(!tg?.CloudStorage) return;
-  tg.CloudStorage.getItem('tl_admin_session', (err, val) => {
-    if(!err && val === 'granted') unlockAdmin(false);
-  });
-}
-
-function saveAdminSession(){
-  const tg = window.Telegram?.WebApp;
-  if(tg?.CloudStorage) tg.CloudStorage.setItem('tl_admin_session', 'granted');
+  // Просто проверяем Telegram ID — никаких сессий в CloudStorage не нужно
+  if(checkOwnerAccess()) unlockAdmin(false);
 }
 
 
@@ -4523,18 +4794,26 @@ try{ showSkeleton(); }catch(e){ console.warn('skeleton',e); }
 try{
   initDarkMode();
   loadSavedPhotos();
-  // Лог сессии
   logActivity('🚀', 'Открыл магазин ТЕХНО·LIVE');
   initBanner();
   loadTelegramUser();
-  renderTrend();
   loadWishlist();
   updateOnlineStatus();
-  // Мержим корзину с CloudStorage
-  loadCartCloud(()=>{
-    setTimeout(()=>{ try{ applyFilters(); }catch(e){ console.warn('applyFilters',e); } }, 500);
-  });
   initAdmin();
+  // Сначала показываем кеш, потом подгружаем свежий прайс из Google Sheets
+  P = buildProducts();
+  renderTrend();
+  applyFilters();
+  loadFromGSheets(freshProducts => {
+    if(freshProducts.length > 0){
+      P = freshProducts;
+      renderTrend();
+      applyFilters();
+    }
+    loadCartCloud(()=>{
+      setTimeout(()=>{ try{ applyFilters(); }catch(e){ console.warn(e); } }, 300);
+    });
+  });
 }catch(e){ console.error('Init error:',e); }
 </script>
 </body>
