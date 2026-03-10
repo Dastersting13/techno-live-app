@@ -510,14 +510,35 @@ body::before{
   transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .25s;
   opacity:0;padding-left:52px;
 }
-.drawer-sub-list.open{max-height:300px;opacity:1}
+.drawer-sub-list.open{max-height:600px;opacity:1}
 .drawer-sub-item{
   padding:11px 12px;font-size:14px;font-weight:500;color:var(--t2);
   border-radius:12px;cursor:pointer;transition:background .15s;
+  display:flex;align-items:center;justify-content:space-between;
 }
 .drawer-sub-item:active{background:rgba(0,0,0,0.06)}
+/* 3-й уровень — модели */
+.drawer-sub-sub-list{
+  overflow:hidden;max-height:0;opacity:0;
+  transition:max-height .28s cubic-bezier(.4,0,.2,1),opacity .22s;
+  padding-left:14px;
+}
+.drawer-sub-sub-list.open{max-height:400px;opacity:1}
+.drawer-sub-sub-item{
+  padding:9px 12px;font-size:13px;font-weight:400;color:var(--t3);
+  border-radius:10px;cursor:pointer;transition:background .15s;
+}
+.drawer-sub-sub-item:active{background:rgba(0,0,0,0.06)}
+.drawer-sub-chev{transition:transform .25s cubic-bezier(.4,0,.2,1);opacity:0.4}
+.drawer-sub-item.open .drawer-sub-chev{transform:rotate(90deg)}
 .drawer-expandable .drawer-chev{transition:transform .28s cubic-bezier(.4,0,.2,1)}
 .drawer-expandable.open .drawer-chev{transform:rotate(90deg)}
+/* Недоступные варианты — зачёркнуты */
+.var-chip.disabled{
+  opacity:0.35;cursor:not-allowed;
+  text-decoration:line-through;
+  pointer-events:none;
+}
 
 
 .drawer-item{
@@ -639,7 +660,7 @@ body::before{
 .order-overlay.open{opacity:1;pointer-events:all;visibility:visible;}
 .order-sheet{width:100%;background:rgba(235,237,240,0.95);
   border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);
-  padding:16px 18px calc(30px + var(--sb));transform:translateY(100%);
+  padding:16px 18px calc(90px + var(--sb));transform:translateY(100%);
   transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;
   box-shadow:0 -8px 40px var(--shadow2);backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%)}
 .order-overlay.open .order-sheet{transform:translateY(0)}
@@ -858,7 +879,7 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 /* SHEET */
 .overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,20,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;visibility:hidden;}
 .overlay.open{opacity:1;pointer-events:all;visibility:visible;}
-.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(24px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
+.sheet{width:100%;background:rgba(238,240,243,0.96);border-radius:30px 30px 0 0;border-top:1px solid rgba(255,255,255,0.95);padding-bottom:calc(90px + var(--sb));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:91dvh;overflow-y:auto;box-shadow:0 -8px 40px var(--shadow2)}
 .overlay.open .sheet{transform:translateY(0)}
 /* Sheet image slider */
 .sheet-slider-wrap{width:calc(100% - 32px);margin:16px 16px 0;aspect-ratio:4/3;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 4px 20px var(--shadow)}
@@ -894,7 +915,9 @@ body.dark .map-open-btn{color:#4caf50;background:rgba(0,0,0,0.5);}
 }
 .spec-i:active{background:var(--accent);color:#fff}
 .s-stock{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:50px;background:rgba(0,230,118,.11);color:var(--green);margin-bottom:14px;border:1px solid rgba(0,230,118,.18)}
-.s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px}
+.s-bot{padding:14px 18px 18px;border-top:1px solid var(--border);margin:0 -18px;
+  position:sticky;bottom:0;background:rgba(238,240,243,0.98);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:2}
 .s-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
 .s-old{font-size:12px;color:var(--t3);text-decoration:line-through}
 .s-price{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:900;letter-spacing:-.8px;color:var(--green)}
@@ -2019,7 +2042,17 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
       <svg class="drawer-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
     <div class="drawer-sub-list" id="drawerApple">
-      <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-iphone')">iPhone</div>
+      <!-- iPhone → раскрывается до моделей -->
+      <div class="drawer-sub-item" id="dsub-iphone" onclick="toggleDrawerSubSection('drawerIphoneModels','dsub-iphone')">
+        iPhone
+        <svg class="drawer-sub-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="12" height="12"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="drawer-sub-sub-list" id="drawerIphoneModels">
+        <div class="drawer-sub-sub-item" onclick="closeDrawer();filterModelAndGo('iPhone 17')">iPhone 17</div>
+        <div class="drawer-sub-sub-item" onclick="closeDrawer();filterModelAndGo('iPhone 16 Pro')">iPhone 16 Pro</div>
+        <div class="drawer-sub-sub-item" onclick="closeDrawer();filterModelAndGo('iPhone 16')">iPhone 16</div>
+        <div class="drawer-sub-sub-item" onclick="closeDrawer();showPage('cat-iphone')">Все iPhone →</div>
+      </div>
       <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-macbook')">MacBook</div>
       <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-ipad')">iPad</div>
       <div class="drawer-sub-item" onclick="closeDrawer();showPage('cat-watch')">Apple Watch</div>
@@ -2765,11 +2798,57 @@ function toggleDrawerSection(id, itemEl){
   // Close all first
   document.querySelectorAll('.drawer-sub-list').forEach(s=>s.classList.remove('open'));
   document.querySelectorAll('.drawer-expandable').forEach(i=>i.classList.remove('open'));
+  // Close sub-sub too
+  document.querySelectorAll('.drawer-sub-sub-list').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.drawer-sub-item').forEach(i=>i.classList.remove('open'));
   // Open this one if it was closed
   if(!isOpen){
     sub.classList.add('open');
     itemEl.classList.add('open');
   }
+}
+
+function toggleDrawerSubSection(id, itemId){
+  const sub = document.getElementById(id);
+  const item = document.getElementById(itemId);
+  if(!sub) return;
+  const isOpen = sub.classList.contains('open');
+  // Close all sub-sub
+  document.querySelectorAll('.drawer-sub-sub-list').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.drawer-sub-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen){
+    sub.classList.add('open');
+    if(item) item.classList.add('open');
+  }
+}
+
+// Фильтр по модели — открывает cat-iphone и фильтрует по названию
+function filterModelAndGo(modelName){
+  showPage('cat-iphone');
+  // Рендерим только нужные модели
+  setTimeout(()=>{
+    const el = document.getElementById('grid-iphone');
+    if(!el) return;
+    const list = P.filter(p => p.brand === 'iPhone' && p.family.includes(modelName));
+    if(!list.length) return;
+    el.innerHTML = list.map((p,i) => {
+      const ci = cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
+      return `<div class="p-card${on?' on':''}" onclick="openSheet(${P.indexOf(p)})">
+        <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${p.badge==='fire'?'🔥 Хит':p.badge==='new'?'НОВИНКА':'ТОП'}</div>`:''}
+        </div><div class="p-body">
+        <div class="p-name">${p.family}</div>
+        <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
+        <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="currentColor"/></svg> В наличии`:'Нет в наличии'}</div>
+        <div class="p-rating"><span class="p-stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span><span class="p-rn">(${p.reviews})</span></div>
+        <div class="p-foot"><div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
+        ${on?`<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${p.id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${p.id},1)">+</div></div>`
+           :`<div class="p-add" onclick="event.stopPropagation();quickAdd(${p.id},this)">+</div>`}
+        </div></div></div>`;
+    }).join('');
+    // Обновляем заголовок
+    const titleEl = document.querySelector('#page-cat-iphone .cat-page-title');
+    if(titleEl) titleEl.innerHTML = `<span>📱</span>${modelName}`;
+  }, 50);
 }
 
 // ══════════════════════════════════════
@@ -4147,7 +4226,6 @@ function renderVariants(p){
   const sec = document.getElementById('variantsSection');
   if(!sec) return;
   const v = getVariants(p);
-
   if(!v){ sec.innerHTML = ''; return; }
 
   let html = '<div class="variants-section">';
@@ -4156,10 +4234,13 @@ function renderVariants(p){
   if(v.memories.length > 1){
     html += `<div class="variants-label">Память</div><div class="variants-row">`;
     v.memories.forEach(mem=>{
-      const sibling = v.siblings.find(x=>x.memory===mem && x.color===p.color) || v.siblings.find(x=>x.memory===mem);
+      const exact = v.siblings.find(x=>x.memory===mem && x.color===p.color);
+      const any   = v.siblings.find(x=>x.memory===mem);
+      const avail = !!exact; // точная комбинация память+цвет существует
+      const target = exact || any;
       const active = p.memory === mem;
-      const idx = P.indexOf(sibling);
-      html += `<div class="var-chip${active?' active':''}" onclick="switchVariant(${idx})">${mem}</div>`;
+      const idx = P.indexOf(target);
+      html += `<div class="var-chip${active?' active':''}${!avail?' disabled':''}" onclick="switchVariant(${idx})">${mem}</div>`;
     });
     html += '</div><div style="height:10px"></div>';
   }
@@ -4168,12 +4249,15 @@ function renderVariants(p){
   if(v.colors.length > 1){
     html += `<div class="variants-label">Цвет</div><div class="variants-row">`;
     v.colors.forEach(col=>{
-      const sibling = v.siblings.find(x=>x.color===col && x.memory===p.memory) || v.siblings.find(x=>x.color===col);
+      const exact = v.siblings.find(x=>x.color===col && x.memory===p.memory);
+      const any   = v.siblings.find(x=>x.color===col);
+      const avail = !!exact; // точная комбинация цвет+память существует
+      const target = exact || any;
       const active = p.color === col;
-      const idx = P.indexOf(sibling);
+      const idx = P.indexOf(target);
       const dot = colorForName(col);
       const dotHtml = dot ? `<span class="var-color-dot" style="background:${dot}"></span>` : '';
-      html += `<div class="var-chip${active?' active':''}" onclick="switchVariant(${idx})">${dotHtml}${col}</div>`;
+      html += `<div class="var-chip${active?' active':''}${!avail?' disabled':''}" onclick="switchVariant(${idx})">${dotHtml}${col}</div>`;
     });
     html += '</div><div style="height:10px"></div>';
   }
@@ -4182,10 +4266,13 @@ function renderVariants(p){
   if(v.sims.length > 1){
     html += `<div class="variants-label">SIM</div><div class="variants-row">`;
     v.sims.forEach(sim=>{
-      const sibling = v.siblings.find(x=>x.sim===sim && x.memory===p.memory) || v.siblings.find(x=>x.sim===sim);
+      const exact = v.siblings.find(x=>x.sim===sim && x.memory===p.memory && x.color===p.color);
+      const any   = v.siblings.find(x=>x.sim===sim);
+      const avail = !!exact;
+      const target = exact || any;
       const active = p.sim === sim;
-      const idx = P.indexOf(sibling);
-      html += `<div class="var-chip${active?' active':''}" onclick="switchVariant(${idx})">${sim}</div>`;
+      const idx = P.indexOf(target);
+      html += `<div class="var-chip${active?' active':''}${!avail?' disabled':''}" onclick="switchVariant(${idx})">${sim}</div>`;
     });
     html += '</div>';
   }
