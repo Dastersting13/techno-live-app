@@ -390,7 +390,7 @@ body::before{
 .t-price{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:800;color:#1a7d38}
 
 /* GRID */
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 16px 20px;position:relative;z-index:1}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 10px 20px;position:relative;z-index:1}
 .p-card{
   background:var(--glass2);
   border:1px solid var(--border);border-radius:24px;overflow:hidden;cursor:pointer;
@@ -414,11 +414,11 @@ body::before{
 .p-bdg.fire{background:rgba(255,159,10,.18);color:#a05800;border:1px solid rgba(255,159,10,.38)}
 .p-bdg.new{background:rgba(52,199,89,.18);color:#1a7d38;border:1px solid rgba(52,199,89,.38)}
 .p-bdg.hit{background:rgba(255,255,255,.7);color:var(--t2);border:1px solid rgba(255,255,255,.9)}
-.p-body{padding:11px 12px 13px;position:relative;z-index:1}
+.p-body{padding:8px 10px 10px;position:relative;z-index:1}
 .p-name{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;line-height:1.3;margin-bottom:3px;color:var(--text);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.p-meta{font-size:10px;color:var(--t3);margin-bottom:5px}
-.p-stock{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;margin-bottom:5px;padding:2px 8px;border-radius:50px}
+.p-meta{font-size:10px;color:var(--t3);margin-bottom:4px}
+.p-stock{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:600;margin-bottom:4px;padding:2px 6px;border-radius:50px}
 .p-stock.in{background:rgba(52,199,89,.15);color:#1a7d38}
 .p-stock.out{background:rgba(255,59,48,.15);color:#c0281f}
 .p-rating{display:flex;align-items:center;gap:3px;margin-bottom:7px}
@@ -3088,13 +3088,13 @@ function updateCatalogHeading(list){
 function renderCard(p, i=0){
   const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
   const delay = i < 12 ? `animation-delay:${i*0.04}s` : '';
-  return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${P.indexOf(p)})" style="${delay}">
-    <div class="p-img">${img(p)}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
+  const pidx = P.indexOf(p);
+  return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${pidx})" style="${delay}">
+    <div class="p-img" id="cimg_${p.id}" data-pidx="${pidx}">${img(p)}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}<div class="card-photo-dots" id="cdots_${p.id}"></div></div>
     <div class="p-body">
       <div class="p-name">${p.family}</div>
       <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
       <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#34c759'/></svg> В наличии`:`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#ff3b30'/></svg> Нет`}</div>
-      <div class="p-rating"><span class="p-stars">${'★'.repeat(Math.round(p.rating))}</span><span class="p-rn">(${p.reviews})</span></div>
       <div class="p-foot">
         <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
         ${on?`<div class="p-qty" onclick="event.stopPropagation()"><div class="qty-btn qty-minus" onclick="changeQty(${p.id},-1)">−</div><div class="qty-n">${qty}</div><div class="qty-btn qty-plus" onclick="changeQty(${p.id},1)">+</div></div>`:`<div class="p-add" onclick="event.stopPropagation();quickAdd(${p.id},this)">+</div>`}
@@ -3107,6 +3107,46 @@ function renderGrid(list){
   const el = document.getElementById('grid');
   if(!list.length){ el.innerHTML=`<div style="grid-column:span 2;text-align:center;padding:40px 0;color:var(--t3);font-size:14px">Ничего не найдено</div>`; return; }
   el.innerHTML = list.map((p,i) => renderCard(p,i)).join('');
+  // Загружаем фото и добавляем свайп на карточки
+  list.forEach(p => initCardSwipe(p));
+}
+
+function initCardSwipe(p){
+  const imgEl = document.getElementById('cimg_'+p.id);
+  const dotsEl = document.getElementById('cdots_'+p.id);
+  if(!imgEl) return;
+  
+  getProductPhotos(p).then(photos => {
+    if(photos.length < 2) return; // не нужен свайп если 1 фото
+    
+    let cur = 0;
+    // Рендерим точки
+    dotsEl.innerHTML = photos.map((_,i) => 
+      `<div class="card-photo-dot${i===0?' active':''}"></div>`).join('');
+    
+    // Показываем первое фото
+    const imgTag = imgEl.querySelector('img');
+    if(imgTag) imgTag.src = photos[0];
+    
+    function goTo(i){
+      cur = Math.max(0, Math.min(i, photos.length-1));
+      const t = imgEl.querySelector('img');
+      if(t){ t.style.opacity='0'; setTimeout(()=>{ t.src=photos[cur]; t.style.opacity='1'; },120); }
+      dotsEl.querySelectorAll('.card-photo-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
+    }
+    
+    // Свайп
+    let tx=0, moved=false;
+    imgEl.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; moved=false; }, {passive:true});
+    imgEl.addEventListener('touchmove', e=>{ if(Math.abs(e.touches[0].clientX-tx)>10) moved=true; }, {passive:true});
+    imgEl.addEventListener('touchend', e=>{
+      const dx=e.changedTouches[0].clientX-tx;
+      if(Math.abs(dx)>40){ 
+        e.stopPropagation();
+        dx<0 ? goTo(cur+1) : goTo(cur-1); 
+      }
+    });
+  });
 }
 
 const APPLE_BRANDS = ['iPhone','MacBook','iPad','Watch','AirPods'];
@@ -3203,25 +3243,36 @@ async function getProductPhotos(p){
 
 function renderSlider(track, dotsEl, wrap, slides, icon){
   const slideCount = slides.length || 1;
+  // Фиксируем ширину каждого слайда через CSS
   track.style.width = (slideCount * 100) + '%';
   track.style.transform = 'translateX(0)';
   track.innerHTML = slides.length
-    ? slides.map(src => `<div class="sheet-slide"><img src="${src}" loading="lazy" onerror="this.style.display='none'"></div>`).join('')
-    : `<div class="sheet-slide"><span style="font-size:90px">${icon}</span></div>`;
+    ? slides.map(src => `<div class="sheet-slide" style="width:${100/slideCount}%"><img src="${src}" loading="lazy"></div>`).join('')
+    : `<div class="sheet-slide" style="width:100%"><span style="font-size:90px">${icon}</span></div>`;
   dotsEl.innerHTML = slideCount > 1
     ? Array.from({length:slideCount},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
     : '';
-  let slideIdx = 0;
+  let cur = 0;
   function goSlide(i){
-    slideIdx = Math.max(0,Math.min(i,slideCount-1));
-    track.style.transform = `translateX(-${slideIdx*(100/slideCount)}%)`;
-    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===slideIdx));
+    cur = Math.max(0,Math.min(i,slideCount-1));
+    track.style.transform = `translateX(-${cur*(100/slideCount)}%)`;
+    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
   }
-  let tsx=0;
-  wrap.ontouchstart = e => { tsx=e.touches[0].clientX; };
+  // Touch
+  let tsx=0, tsy=0, dragging=false;
+  wrap.ontouchstart = e => { tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; dragging=true; };
   wrap.ontouchend = e => {
+    if(!dragging) return; dragging=false;
     const dx=e.changedTouches[0].clientX-tsx;
-    if(Math.abs(dx)>35){ dx<0?goSlide(slideIdx+1):goSlide(slideIdx-1); }
+    if(Math.abs(dx)>40){ dx<0?goSlide(cur+1):goSlide(cur-1); }
+  };
+  // Click arrows on left/right edge
+  wrap.onclick = e => {
+    if(slideCount<2) return;
+    const rect=wrap.getBoundingClientRect();
+    const x=e.clientX-rect.left;
+    if(x < rect.width*0.25) goSlide(cur-1);
+    else if(x > rect.width*0.75) goSlide(cur+1);
   };
   return goSlide;
 }
