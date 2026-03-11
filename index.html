@@ -3222,6 +3222,9 @@ const _photoCache = {};
 function buildSlider(wrap, track, dotsEl, photos, icon){
   const n = photos.length;
 
+  // Убираем старые слушатели через data-атрибут
+  if(wrap._sliderCleanup) wrap._sliderCleanup();
+
   if(n === 0){
     track.style.width = '100%';
     track.style.transform = 'translateX(0)';
@@ -3230,7 +3233,6 @@ function buildSlider(wrap, track, dotsEl, photos, icon){
     return;
   }
 
-  // Точно как баннер: трек = n*100%, каждый слайд = 100%/n от трека = 100% от враппера
   track.style.width = (n * 100) + '%';
   track.style.transform = 'translateX(0)';
   track.style.transition = 'none';
@@ -3240,7 +3242,6 @@ function buildSlider(wrap, track, dotsEl, photos, icon){
     </div>`
   ).join('');
 
-  // Точки
   dotsEl.innerHTML = n > 1
     ? Array.from({length:n},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
     : '';
@@ -3249,17 +3250,33 @@ function buildSlider(wrap, track, dotsEl, photos, icon){
   function go(i){
     cur = Math.max(0, Math.min(i, n-1));
     track.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1)';
-    // Перемещаем трек: 1 слайд = 100/n % от трека
-    track.style.transform = `translateX(-${cur * (100/n)}%)`;
-    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j) => d.classList.toggle('active', j===cur));
+    track.style.transform = `translateX(-${cur*(100/n)}%)`;
+    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
   }
 
-  let sx = 0;
-  wrap.ontouchstart = e => { sx = e.touches[0].clientX; };
-  wrap.ontouchend   = e => {
-    const dx = e.changedTouches[0].clientX - sx;
-    if(dx < -40) go(cur + 1);
-    else if(dx > 40) go(cur - 1);
+  // touch-action:pan-y — браузер не перехватывает горизонтальный свайп
+  wrap.style.touchAction = 'pan-y';
+
+  let sx=0, sy=0, locked=false;
+  function onStart(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; locked=false; }
+  function onMove(e){
+    if(locked) return;
+    const dx=Math.abs(e.touches[0].clientX-sx), dy=Math.abs(e.touches[0].clientY-sy);
+    if(dx>dy && dx>5){ locked=true; e.preventDefault(); }
+  }
+  function onEnd(e){
+    const dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>40){ dx<0?go(cur+1):go(cur-1); }
+  }
+
+  wrap.addEventListener('touchstart', onStart, {passive:true});
+  wrap.addEventListener('touchmove',  onMove,  {passive:false});
+  wrap.addEventListener('touchend',   onEnd,   {passive:true});
+
+  wrap._sliderCleanup = ()=>{
+    wrap.removeEventListener('touchstart', onStart);
+    wrap.removeEventListener('touchmove',  onMove);
+    wrap.removeEventListener('touchend',   onEnd);
   };
 }
 
