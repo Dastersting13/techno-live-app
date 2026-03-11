@@ -2733,9 +2733,17 @@ function getSupabasePhoto(p){
 
 function img(p, big=false){
   const src = p.photo || getSupabasePhoto(p);
-  return src
-    ? `<img src="${src}" alt="${p.family}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><span style="display:none;font-size:${big?'90':'54'}px;align-items:center;justify-content:center">${p.icon}</span>`
-    : `<span style="font-size:${big?'90':'54'}px">${p.icon}</span>`;
+  const icon = p.icon;
+  const sz = big?'90':'54';
+  if(!src) return `<span style="font-size:${sz}px">${icon}</span>`;
+  // При ошибке пробуем .jpg, потом .png, потом эмодзи
+  const errHandler = `
+    var t=this,s=t.src,base=s.replace(/\.(webp|jpg|png)$/,'');
+    if(s.endsWith('.webp')){t.src=base+'.jpg';}
+    else if(s.endsWith('.jpg')){t.src=base+'.png';}
+    else{t.style.display='none';t.nextSibling.style.display='flex';}
+  `.replace(/\s+/g,' ').trim();
+  return `<img src="${src}" alt="${p.family}" loading="lazy" onerror="${errHandler}"><span style="display:none;font-size:${sz}px;align-items:center;justify-content:center">${icon}</span>`;
 }
 
 // ══════════════════════════════════════
@@ -3215,19 +3223,19 @@ function buildSlider(wrap, track, dotsEl, photos, icon){
   const n = photos.length;
 
   if(n === 0){
-    track.style.cssText = 'display:flex;height:100%;width:100%;transform:translateX(0);transition:none';
-    track.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:90px">${icon}</div>`;
+    track.style.width = '100%';
+    track.style.transform = 'translateX(0)';
+    track.innerHTML = `<div style="flex:0 0 100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:90px">${icon}</div>`;
     dotsEl.innerHTML = '';
     return;
   }
 
-  // Берём реальную ширину контейнера в пикселях
-  const W = wrap.offsetWidth || wrap.getBoundingClientRect().width || 300;
-
-  // Каждый слайд ровно W px шириной, трек = N*W px
-  track.style.cssText = `display:flex;height:100%;width:${n*W}px;transform:translateX(0);transition:transform 0.45s cubic-bezier(.32,.72,0,1)`;
+  // Точно как баннер: трек = n*100%, каждый слайд = 100%/n от трека = 100% от враппера
+  track.style.width = (n * 100) + '%';
+  track.style.transform = 'translateX(0)';
+  track.style.transition = 'none';
   track.innerHTML = photos.map(src =>
-    `<div style="width:${W}px;flex-shrink:0;height:100%;background:#f5f5f7;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+    `<div style="flex:0 0 ${100/n}%;height:100%;background:#f5f5f7;display:flex;align-items:center;justify-content:center;overflow:hidden;">
       <img src="${src}" style="width:100%;height:100%;object-fit:contain;padding:12px" loading="lazy">
     </div>`
   ).join('');
@@ -3240,7 +3248,9 @@ function buildSlider(wrap, track, dotsEl, photos, icon){
   let cur = 0;
   function go(i){
     cur = Math.max(0, Math.min(i, n-1));
-    track.style.transform = `translateX(-${cur * W}px)`;
+    track.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1)';
+    // Перемещаем трек: 1 слайд = 100/n % от трека
+    track.style.transform = `translateX(-${cur * (100/n)}%)`;
     dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j) => d.classList.toggle('active', j===cur));
   }
 
@@ -3302,14 +3312,9 @@ function openSheet(idx){
   const dotsEl = document.getElementById('sSliderDots');
   const wrap   = document.getElementById('sSliderWrap');
 
-  // Показываем одно фото сразу
-  const first = p.photo || getSupabasePhoto(p);
-  buildSlider(wrap, track, dotsEl, first ? [first] : [], p.icon);
-
-  // Подгружаем все фото из Supabase
-  getProductPhotos(p).then(photos => {
-    if(photos.length > 0) buildSlider(wrap, track, dotsEl, photos, p.icon);
-  });
+  // Слайдер инициализируем ПОСЛЕ открытия overlay (чтобы offsetWidth был корректным)
+  const _first = p.photo || getSupabasePhoto(p);
+  const _icon = p.icon;
 
 
   document.getElementById('sCat').textContent = p.brand;
@@ -3337,6 +3342,14 @@ function openSheet(idx){
 
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  // Теперь wrap виден — offsetWidth работает корректно
+  requestAnimationFrame(() => {
+    buildSlider(wrap, track, dotsEl, _first ? [_first] : [], _icon);
+    getProductPhotos(p).then(photos => {
+      if(photos.length > 0) buildSlider(wrap, track, dotsEl, photos, _icon);
+    });
+  });
   logActivity('👁', `Просмотрел: ${p.family}${p.memory!=='—'?' '+p.memory:''} — ${fmt(p.price)}`);
 
   // Обновляем кнопку вишлиста
