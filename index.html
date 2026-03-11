@@ -3211,90 +3211,109 @@ let pulseTimer = null;
 // Кэш фото: { "iphone-16/white": ["url1","url2",...] }
 const _photoCache = {};
 
+function buildSlider(wrap, track, dotsEl, photos, icon){
+  const n = photos.length;
+  
+  if(n === 0){
+    track.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:90px">${icon}</div>`;
+    track.style.transform = 'translateX(0)';
+    dotsEl.innerHTML = '';
+    return;
+  }
+
+  // Рендер слайдов — каждый 100% ширины контейнера, выкладываем в ряд
+  track.style.transition = 'none';
+  track.innerHTML = photos.map(src =>
+    `<div style="flex:0 0 100%;width:100%;height:100%;background:#f5f5f7;display:flex;align-items:center;justify-content:center;overflow:hidden">
+      <img src="${src}" style="width:100%;height:100%;object-fit:contain;padding:10px" loading="lazy">
+    </div>`
+  ).join('');
+  track.style.width = (n * 100) + '%';
+
+  // Точки
+  const mkDots = (cur) => {
+    dotsEl.innerHTML = n > 1
+      ? Array.from({length:n},(_,i)=>`<div class="sheet-slide-dot${i===cur?' active':''}"></div>`).join('')
+      : '';
+  };
+
+  let cur = 0;
+  const go = (i) => {
+    cur = Math.max(0, Math.min(i, n-1));
+    track.style.transition = 'transform 0.35s cubic-bezier(.32,.72,0,1)';
+    // Каждый слайд = 100/n % от ширины трека
+    track.style.transform = `translateX(-${cur * (100/n)}%)`;
+    mkDots(cur);
+  };
+  go(0);
+
+  // Свайп
+  let x0 = 0;
+  wrap.ontouchstart = e => { x0 = e.touches[0].clientX; };
+  wrap.ontouchend   = e => {
+    const dx = e.changedTouches[0].clientX - x0;
+    if(dx < -40) go(cur + 1);
+    else if(dx > 40) go(cur - 1);
+  };
+}
+
+function probeImage(url){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>resolve(true);
+    img.onerror=()=>resolve(false);
+    img.src=url;
+  });
+}
+
 async function getProductPhotos(p){
   const folder = FAMILY_FOLDER[p.family];
   if(!folder) return [];
   const colorSlug = getColorSlug(p.color);
-  const cacheKey = `${folder}/${colorSlug}`;
+  const cacheKey = folder+'/'+colorSlug;
   if(_photoCache[cacheKey] !== undefined) return _photoCache[cacheKey];
 
-  try {
-    const res = await fetch('https://clbtbkxgfgeuupilhgiw.supabase.co/storage/v1/object/list/Photos', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsYnRia3hnZmdldXVwaWxoZ2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMzU5NDIsImV4cCI6MjA4ODcxMTk0Mn0.LwdVggHTVyaOlgJ-jEyY2yh5niGzr95b0Vh2_xVu8mA'},
-      body: JSON.stringify({prefix: folder+'/', limit:100})
-    });
-    const files = await res.json();
-    if(!Array.isArray(files)){ _photoCache[cacheKey]=[]; return []; }
-    // Фильтруем по цвету: white.webp, white-2.webp, white-3.webp ...
-    const matched = files
-      .filter(f => f.name && (f.name === colorSlug+'.webp' || f.name === colorSlug+'.jpg' || f.name === colorSlug+'.png' || f.name.match(new RegExp(`^${colorSlug}-\\d+\\.(webp|jpg|png)$`))))
-      .sort((a,b) => {
-        // white.webp первый, потом white-2, white-3...
-        const numA = a.name.match(/-(\d+)\./)?.[1] ?? '0';
-        const numB = b.name.match(/-(\d+)\./)?.[1] ?? '0';
-        return parseInt(numA)-parseInt(numB);
-      })
-      .map(f => `${SUPA_BASE}/${folder}/${f.name}`);
-    _photoCache[cacheKey] = matched;
-    return matched;
-  } catch(e){ _photoCache[cacheKey]=[]; return []; }
+  const base = SUPA_BASE+'/'+folder+'/'+colorSlug;
+  const urls = [];
+
+  // Найдём расширение базового фото
+  let baseUrl = null;
+  for(const ext of ['webp','jpg','png']){
+    const u = base+'.'+ext;
+    if(await probeImage(u)){ baseUrl=u; break; }
+  }
+  if(!baseUrl){ _photoCache[cacheKey]=[]; return []; }
+  urls.push(baseUrl);
+  const ext = baseUrl.split('.').pop();
+
+  // Пробуем -2, -3 ... до первой дырки
+  for(let n=2; n<=8; n++){
+    const u = base+'-'+n+'.'+ext;
+    if(await probeImage(u)) urls.push(u);
+    else break;
+  }
+
+  _photoCache[cacheKey]=urls;
+  return urls;
 }
 
-function renderSlider(track, dotsEl, wrap, slides, icon){
-  const slideCount = slides.length || 1;
-  // Фиксируем ширину каждого слайда через CSS
-  track.style.width = (slideCount * 100) + '%';
-  track.style.transform = 'translateX(0)';
-  track.innerHTML = slides.length
-    ? slides.map(src => `<div class="sheet-slide" style="width:${100/slideCount}%"><img src="${src}" loading="lazy"></div>`).join('')
-    : `<div class="sheet-slide" style="width:100%"><span style="font-size:90px">${icon}</span></div>`;
-  dotsEl.innerHTML = slideCount > 1
-    ? Array.from({length:slideCount},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
-    : '';
-  let cur = 0;
-  function goSlide(i){
-    cur = Math.max(0,Math.min(i,slideCount-1));
-    track.style.transform = `translateX(-${cur*(100/slideCount)}%)`;
-    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
-  }
-  // Touch
-  let tsx=0, tsy=0, dragging=false;
-  wrap.ontouchstart = e => { tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; dragging=true; };
-  wrap.ontouchend = e => {
-    if(!dragging) return; dragging=false;
-    const dx=e.changedTouches[0].clientX-tsx;
-    if(Math.abs(dx)>40){ dx<0?goSlide(cur+1):goSlide(cur-1); }
-  };
-  // Click arrows on left/right edge
-  wrap.onclick = e => {
-    if(slideCount<2) return;
-    const rect=wrap.getBoundingClientRect();
-    const x=e.clientX-rect.left;
-    if(x < rect.width*0.25) goSlide(cur-1);
-    else if(x > rect.width*0.75) goSlide(cur+1);
-  };
-  return goSlide;
-}
 
 function openSheet(idx){
   const p = P[idx]; if(!p) return; sheetId = p.id;
 
-  // ── Слайдер изображений ──
   const track = document.getElementById('sSliderTrack');
   const dotsEl = document.getElementById('sSliderDots');
-  const wrap = document.getElementById('sSliderWrap');
+  const wrap   = document.getElementById('sSliderWrap');
 
-  // Сначала показываем одно фото пока грузим список
-  const firstPhoto = p.photo || getSupabasePhoto(p);
-  renderSlider(track, dotsEl, wrap, firstPhoto ? [firstPhoto] : [], p.icon);
+  // Показываем одно фото сразу
+  const first = p.photo || getSupabasePhoto(p);
+  buildSlider(wrap, track, dotsEl, first ? [first] : [], p.icon);
 
-  // Асинхронно грузим все фото из Supabase и обновляем галерею
+  // Подгружаем все фото и обновляем
   getProductPhotos(p).then(photos => {
-    if(photos.length > 0){
-      renderSlider(track, dotsEl, wrap, photos, p.icon);
-    }
+    if(photos.length > 0) buildSlider(wrap, track, dotsEl, photos, p.icon);
   });
+
 
   document.getElementById('sCat').textContent = p.brand;
   document.getElementById('sName').textContent = p.family;
