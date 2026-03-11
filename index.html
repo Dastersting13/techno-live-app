@@ -2660,9 +2660,82 @@ function loadCart(){ try{ const s=localStorage.getItem('tl_cart'); return s?JSON
 
 let cart=loadCart(), filter='all', sheetId=null, orderCount=0, deliveryType='pickup', promoApplied=null;
 const fmt = n => n.toLocaleString('ru-RU') + ' ₽';
+const SUPA_BASE = 'https://clbtbkxgfgeuupilhgiw.supabase.co/storage/v1/object/public/Photos';
+
+const FAMILY_FOLDER = {
+  'iPhone SE 3':'iphone-se-3','iPhone 16E':'iphone-16e','iPhone 16':'iphone-16',
+  'iPhone 16 Plus':'iphone-16-plus','iPhone 16 Pro':'iphone-16-pro','iPhone 16 Pro Max':'iphone-16-pro-max',
+  'iPhone 17':'iphone-17','iPhone 17 Air':'iphone-17-air','iPhone 17 Pro':'iphone-17-pro','iPhone 17 Pro Max':'iphone-17-pro-max',
+  'Galaxy S25 Ultra':'samsung-s25-ultra','Galaxy S26':'samsung-s26','Galaxy S26+':'samsung-s26-plus','Galaxy S26 Ultra':'samsung-s26-ultra',
+  'Galaxy Z Flip 6':'samsung-z-flip6','Galaxy Z Flip 7':'samsung-z-flip7','Galaxy Z Fold 7':'samsung-z-fold7',
+  'Galaxy A17':'samsung-a17','Galaxy A36':'samsung-a36','Galaxy A56':'samsung-a56',
+  'Xiaomi Note 15 Pro':'xiaomi-note-15-pro','Xiaomi Note 15 Pro 5G':'xiaomi-note-15-pro-5g',
+  'POCO X7':'poco-x7','POCO X7 Pro':'poco-x7-pro','POCO M7':'poco-m7',
+  'POCO M8 5G':'poco-m8','POCO M8 Pro 5G':'poco-m8-pro','POCO C85':'poco-c85',
+  'POCO Pad':'poco-pad','POCO Pad X1':'poco-pad-x1','POCO Pad M1':'poco-pad-m1',
+  'AirPods 4':'airpods-4','AirPods 4 ANC':'airpods-4-anc',
+  'AirPods Pro 2 USB-C':'airpods-pro-2','AirPods Pro 3':'airpods-pro-3',
+  'AirPods Max USB-C':'airpods-max',
+  'Apple Watch SE2 40mm':'apple-watch-se2','Apple Watch SE2 44mm':'apple-watch-se2',
+  'Apple Watch SE3 40mm':'apple-watch-se3','Apple Watch SE3 44mm':'apple-watch-se3',
+  'Apple Watch S10 42mm':'apple-watch-s10','Apple Watch S10 46mm':'apple-watch-s10',
+  'Apple Watch S11 42mm':'apple-watch-s11','Apple Watch S11 46mm':'apple-watch-s11',
+  'Apple Watch Ultra 2':'apple-watch-ultra2','Apple Watch Ultra 3':'apple-watch-ultra3',
+  'iPad 11':'ipad-11','iPad Air 11 M3':'ipad-air-11','iPad Air 13 M3':'ipad-air-13',
+  'iPad Pro 11 M4':'ipad-pro-11-m4','iPad Pro 11 M5':'ipad-pro-11-m5',
+  'iPad Pro 13 M4':'ipad-pro-13-m4','iPad Pro 13 M5':'ipad-pro-13-m5',
+  'MacBook Air 13 M4':'macbook-air-13','MacBook Air 15 M4':'macbook-air-15',
+  'MacBook Pro 14':'macbook-pro-14','Mac Mini M4':'mac-mini','Mac Studio M2 Max':'mac-studio',
+  'Sony WH-1000XM5':'sony-wh-1000xm5','Sony WH-1000XM6':'sony-wh-1000xm6','Sony WF-1000XM5':'sony-wf-1000xm5',
+  'Sony DualSense':'dualsense',
+  'Nintendo Switch Lite':'nintendo-switch-lite','Nintendo Switch OLED':'nintendo-switch-oled',
+  'Nintendo Switch Extended Battery':'nintendo-switch-battery',
+  'GoPro Hero 13':'gopro-13','Insta360 X5':'insta360-x5',
+};
+
+const COLOR_SLUG = {
+  // Universal
+  'Black':'black','White':'white','Silver':'silver','Gray':'gray','Grey':'gray',
+  'Blue':'blue','Red':'red','Green':'green','Pink':'pink','Purple':'purple',
+  'Yellow':'yellow','Orange':'orange','Gold':'gold','Coral':'coral',
+  // iPhone specific
+  'Teal':'teal','Ultramarine':'ultramarine','Sage':'sage',
+  'Black Titanium':'black-titanium','White Titanium':'white-titanium',
+  'Natural Titanium':'natural-titanium','Desert Titanium':'desert-titanium',
+  // Samsung
+  'Titanium Black':'titanium-black','Titanium Gray':'titanium-gray',
+  'Titanium Silverblue':'titanium-silverblue','Titanium Whitesilver':'titanium-whitesilver',
+  'Sky Blue':'sky-blue','Cobalt Violet':'cobalt-violet',
+  // Watch
+  'Midnight':'midnight','Starlight':'starlight','Rose Gold':'rose-gold',
+  'Jet Black':'jet-black','Space Gray':'silver',
+  // MacBook
+  'Sky Blue':'sky-blue',
+  // Neon
+  'Neon':'neon','Neon Blue/Red':'neon',
+};
+
+function getColorSlug(color){
+  // Прямое совпадение
+  if(COLOR_SLUG[color]) return COLOR_SLUG[color];
+  // Берём первое слово из составного цвета (напр. "Jet Black / SL" → "jet-black")
+  const first = color.split('/')[0].trim();
+  if(COLOR_SLUG[first]) return COLOR_SLUG[first];
+  // Транслитерация в kebab-case
+  return first.toLowerCase().replace(/\s+/g,'-');
+}
+
+function getSupabasePhoto(p){
+  const folder = FAMILY_FOLDER[p.family];
+  if(!folder) return null;
+  const colorSlug = getColorSlug(p.color);
+  return `${SUPA_BASE}/${folder}/${colorSlug}.webp`;
+}
+
 function img(p, big=false){
-  return p.photo
-    ? `<img src="${p.photo}" alt="${p.family}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='block'"><span style="display:none;font-size:${big?'90':'54'}px">${p.icon}</span>`
+  const src = p.photo || getSupabasePhoto(p);
+  return src
+    ? `<img src="${src}" alt="${p.family}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><span style="display:none;font-size:${big?'90':'54'}px;align-items:center;justify-content:center">${p.icon}</span>`
     : `<span style="font-size:${big?'90':'54'}px">${p.icon}</span>`;
 }
 
@@ -3096,6 +3169,64 @@ function filterAndGo(f){
 // 📋 PRODUCT SHEET
 // ══════════════════════════════════════
 let pulseTimer = null;
+// Кэш фото: { "iphone-16/white": ["url1","url2",...] }
+const _photoCache = {};
+
+async function getProductPhotos(p){
+  const folder = FAMILY_FOLDER[p.family];
+  if(!folder) return [];
+  const colorSlug = getColorSlug(p.color);
+  const cacheKey = `${folder}/${colorSlug}`;
+  if(_photoCache[cacheKey] !== undefined) return _photoCache[cacheKey];
+
+  try {
+    const res = await fetch(`${SUPA_BASE.replace('/object/public','')}/list/Photos`.replace('storage/v1/object/public','storage/v1'), {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsYnRia3hnZmdldXVwaWxoZ2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMzU5NDIsImV4cCI6MjA4ODcxMTk0Mn0.LwdVggHTVyaOlgJ-jEyY2yh5niGzr95b0Vh2_xVu8mA'},
+      body: JSON.stringify({prefix: folder+'/', limit:100})
+    });
+    const files = await res.json();
+    if(!Array.isArray(files)){ _photoCache[cacheKey]=[]; return []; }
+    // Фильтруем по цвету: white.webp, white-2.webp, white-3.webp ...
+    const matched = files
+      .filter(f => f.name && (f.name === colorSlug+'.webp' || f.name === colorSlug+'.jpg' || f.name === colorSlug+'.png' || f.name.match(new RegExp(`^${colorSlug}-\\d+\\.(webp|jpg|png)$`))))
+      .sort((a,b) => {
+        // white.webp первый, потом white-2, white-3...
+        const numA = a.name.match(/-(\d+)\./)?.[1]||'1';
+        const numB = b.name.match(/-(\d+)\./)?.[1]||'1';
+        return parseInt(numA)-parseInt(numB);
+      })
+      .map(f => `${SUPA_BASE}/${folder}/${f.name}`);
+    _photoCache[cacheKey] = matched;
+    return matched;
+  } catch(e){ _photoCache[cacheKey]=[]; return []; }
+}
+
+function renderSlider(track, dotsEl, wrap, slides, icon){
+  const slideCount = slides.length || 1;
+  track.style.width = (slideCount * 100) + '%';
+  track.style.transform = 'translateX(0)';
+  track.innerHTML = slides.length
+    ? slides.map(src => `<div class="sheet-slide"><img src="${src}" loading="lazy" onerror="this.style.display='none'"></div>`).join('')
+    : `<div class="sheet-slide"><span style="font-size:90px">${icon}</span></div>`;
+  dotsEl.innerHTML = slideCount > 1
+    ? Array.from({length:slideCount},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
+    : '';
+  let slideIdx = 0;
+  function goSlide(i){
+    slideIdx = Math.max(0,Math.min(i,slideCount-1));
+    track.style.transform = `translateX(-${slideIdx*(100/slideCount)}%)`;
+    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===slideIdx));
+  }
+  let tsx=0;
+  wrap.ontouchstart = e => { tsx=e.touches[0].clientX; };
+  wrap.ontouchend = e => {
+    const dx=e.changedTouches[0].clientX-tsx;
+    if(Math.abs(dx)>35){ dx<0?goSlide(slideIdx+1):goSlide(slideIdx-1); }
+  };
+  return goSlide;
+}
+
 function openSheet(idx){
   const p = P[idx]; if(!p) return; sheetId = p.id;
 
@@ -3104,36 +3235,29 @@ function openSheet(idx){
   const dotsEl = document.getElementById('sSliderDots');
   const wrap = document.getElementById('sSliderWrap');
 
-  // Набор слайдов: основное фото + эмодзи как заглушка
-  const slides = p.photo ? [p.photo] : [];
-  const slideCount = slides.length || 1;
+  // Сначала показываем одно фото / эмодзи пока грузим список
+  const firstPhoto = p.photo || getSupabasePhoto(p);
+  renderSlider(track, dotsEl, wrap, firstPhoto ? [firstPhoto] : [], p.icon);
 
-  track.style.width = (slideCount * 100) + '%';
-  track.style.transform = 'translateX(0)';
-  track.innerHTML = slides.length
-    ? slides.map(src => `<div class="sheet-slide"><img src="${src}" alt="${p.family}" loading="lazy"></div>`).join('')
-    : `<div class="sheet-slide"><span style="font-size:90px">${p.icon}</span></div>`;
+  // Асинхронно грузим все фото из Supabase и обновляем галерею
+  getProductPhotos(p).then(photos => {
+    if(photos.length > 1){
+      renderSlider(track, dotsEl, wrap, photos, p.icon);
+    } else if(photos.length === 1 && !firstPhoto){
+      renderSlider(track, dotsEl, wrap, photos, p.icon);
+    }
+  });
 
-  // Точки навигации (только если >1 слайда)
-  dotsEl.innerHTML = slideCount > 1
-    ? Array.from({length:slideCount},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
-    : '';
-
+  // Свайп (уже настроен в renderSlider, но нужен fallback для случая без фото)
   let slideIdx = 0;
-  function goSlide(i){
-    slideIdx = i;
-    track.style.transform = `translateX(-${i * (100/slideCount)}%)`;
-    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
-  }
-
-  // Свайп по слайдеру
+  const slideCount = 1;
   let tsx = 0;
   wrap.ontouchstart = e => { tsx = e.touches[0].clientX; };
   wrap.ontouchend = e => {
     const dx = e.changedTouches[0].clientX - tsx;
     if(Math.abs(dx) > 35){
-      if(dx < 0 && slideIdx < slideCount-1) goSlide(slideIdx+1);
-      else if(dx > 0 && slideIdx > 0) goSlide(slideIdx-1);
+      if(dx < 0 && slideIdx < slideCount-1) slideIdx++;
+      else if(dx > 0 && slideIdx > 0) slideIdx--;
     }
   };
 
