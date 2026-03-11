@@ -403,6 +403,31 @@ body::before{
   background:linear-gradient(135deg,rgba(255,255,255,0.5) 0%,transparent 45%);pointer-events:none;z-index:0}
 .p-card.on{border-color:rgba(52,199,89,0.50);box-shadow:0 4px 24px rgba(52,199,89,0.15),inset 0 1px 0 rgba(255,255,255,0.9)}
 .p-card:active{transform:scale(.95)}
+
+/* STICKY BUY BAR */
+.sheet-sticky-bar{
+  position:sticky;bottom:0;left:0;right:0;
+  background:rgba(238,240,243,0.96);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  padding:10px 16px calc(10px + var(--sb));
+  display:flex;align-items:center;gap:12px;
+  z-index:10;margin-top:12px;
+}
+.sheet-sticky-price{
+  font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;
+  color:var(--green);letter-spacing:-.5px;white-space:nowrap;
+}
+.sheet-sticky-old{font-size:11px;color:var(--t3);text-decoration:line-through;margin-bottom:1px}
+
+
+/* SKELETON */
+.skel{background:var(--border2);border-radius:8px;animation:skelPulse 1.4s ease-in-out infinite}
+.skel-card{background:var(--card);border-radius:24px;overflow:hidden;border:1px solid var(--border)}
+.skel-img{aspect-ratio:1;background:var(--border2);animation:skelPulse 1.4s ease-in-out infinite}
+.skel-body{padding:8px 10px 10px}
+@keyframes skelPulse{0%,100%{opacity:1}50%{opacity:.4}}
+
 .p-img{width:100%;aspect-ratio:1;
   background:#f5f5f7;
   display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
@@ -2261,6 +2286,17 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
         </div>
       </div>
     </div>
+    <!-- STICKY PRICE BAR -->
+    <div class="sheet-sticky-bar" id="stickyBar">
+      <div style="flex:1;min-width:0">
+        <div class="sheet-sticky-old" id="stickyOld"></div>
+        <div class="sheet-sticky-price" id="stickyPrice">0 ₽</div>
+      </div>
+      <button class="s-add" id="stickyAdd" onclick="addFromSheet()" style="flex:2;max-width:200px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        В корзину
+      </button>
+    </div>
   </div>
 </div>
 
@@ -2726,6 +2762,7 @@ function getColorSlug(color){
   return first.toLowerCase().replace(/\s+/g,'-');
 }
 
+
 function getSupabasePhoto(p){
   const folder = FAMILY_FOLDER[p.family];
   if(!folder) return null;
@@ -2894,16 +2931,7 @@ function hideSkeleton(){
 }
 
 function showSkeleton(){
-  const el = document.getElementById('grid');
-  el.innerHTML = Array(6).fill(0).map(()=>`
-    <div class="skel-card">
-      <div class="skel skel-img"></div>
-      <div class="skel-body">
-        <div class="skel skel-line h14 w80"></div>
-        <div class="skel skel-line w60"></div>
-        <div class="skel skel-line w40"></div>
-      </div>
-    </div>`).join('');
+  renderSkeleton(6);
 }
 
 // ══════════════════════════════════════
@@ -3104,7 +3132,7 @@ function renderCard(p, i=0){
     <div class="p-body">
       <div class="p-name">${p.family}</div>
       <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
-      <div class="p-country">${p.flag} ${({'🇺🇸':'США · eSim','🇮🇳':'Индия · Sim+eSim','🇨🇳':'Китай · 2Sim','🇭🇰':'Гонконг · 2Sim','🇦🇪':'ОАЭ · eSim','🇬🇧':'Англия','🇪🇺':'Европа','🇷🇺':'Россия','🇰🇿':'Казахстан','🇯🇵':'Япония','🇲🇾':'Малайзия','🇿🇦':'ЮАР','🇦🇲':'Армения'})[p.flag]||p.sim}</div>
+      <div class="p-country">${p.flag} ${({'🇺🇸':'США','🇮🇳':'Индия','🇨🇳':'Китай','🇭🇰':'Гонконг','🇦🇪':'ОАЭ','🇬🇧':'Англия','🇪🇺':'Европа','🇷🇺':'Россия','🇰🇿':'Казахстан','🇯🇵':'Япония','🇲🇾':'Малайзия','🇿🇦':'ЮАР','🇦🇲':'Армения'})[p.flag]||p.flag}${p.sim!=='—'?' · '+p.sim:''}</div>
       <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#34c759'/></svg> В наличии`:`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#ff3b30'/></svg> Нет`}</div>
       <div class="p-foot">
         <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
@@ -3112,6 +3140,20 @@ function renderCard(p, i=0){
       </div>
     </div>
   </div>`;
+}
+
+function renderSkeleton(count=6){
+  const el = document.getElementById('grid');
+  el.innerHTML = Array.from({length:count}, ()=>`
+    <div class="skel-card">
+      <div class="skel-img"></div>
+      <div class="skel-body">
+        <div class="skel" style="height:12px;width:80%;margin-bottom:6px"></div>
+        <div class="skel" style="height:10px;width:55%;margin-bottom:8px"></div>
+        <div class="skel" style="height:10px;width:40%;margin-bottom:10px;border-radius:20px"></div>
+        <div class="skel" style="height:14px;width:60%"></div>
+      </div>
+    </div>`).join('');
 }
 
 function renderGrid(list){
@@ -3227,14 +3269,15 @@ function buildSlider(photos, icon){
   const iconEl = document.getElementById('sSliderIcon');
   const dotsEl = document.getElementById('sSliderDots');
   const wrap   = document.getElementById('sSliderWrap');
+  if(!imgEl || !wrap) return;
 
-  if(!imgEl) return;
+  // Сбрасываем старые слушатели
+  if(wrap._cleanup){ wrap._cleanup(); wrap._cleanup=null; }
 
   const n = photos.length;
-
   if(n === 0){
     imgEl.style.display = 'none';
-    iconEl.style.display = 'block';
+    iconEl.style.display = 'flex';
     iconEl.textContent = icon;
     dotsEl.innerHTML = '';
     return;
@@ -3242,37 +3285,50 @@ function buildSlider(photos, icon){
 
   iconEl.style.display = 'none';
   imgEl.style.display = 'block';
+  imgEl.style.opacity = '1';
   imgEl.src = photos[0];
 
-  dotsEl.innerHTML = n > 1
-    ? Array.from({length:n},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
-    : '';
+  // Точки
+  const renderDots = (cur) => {
+    dotsEl.innerHTML = n > 1
+      ? Array.from({length:n},(_,i)=>`<div class="sheet-slide-dot${i===cur?' active':''}"></div>`).join('')
+      : '';
+  };
+  renderDots(0);
 
   let cur = 0;
-  function go(i){
-    cur = Math.max(0, Math.min(i, n-1));
+  const go = (i) => {
+    if(n < 2) return;
+    cur = (i + n) % n;
     imgEl.style.opacity = '0';
-    setTimeout(()=>{ imgEl.src = photos[cur]; imgEl.style.opacity = '1'; }, 120);
-    dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
-  }
+    setTimeout(()=>{ imgEl.src = photos[cur]; imgEl.style.opacity = '1'; }, 100);
+    renderDots(cur);
+  };
 
-  // Убираем старый свайп
-  if(wrap._cleanup) wrap._cleanup();
+  // Свайп
+  let sx = 0, sy = 0;
+  const onStart = e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; };
+  const onEnd   = e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 35) dx < 0 ? go(cur+1) : go(cur-1);
+  };
+  // Клик по краям (левая/правая 25% зона)
+  const onClick = e => {
+    if(n < 2) return;
+    const r = wrap.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    if(x < r.width * 0.25) go(cur-1);
+    else if(x > r.width * 0.75) go(cur+1);
+  };
 
-  let sx=0, sy=0;
-  function onStart(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }
-  function onEnd(e){
-    const dx=e.changedTouches[0].clientX-sx;
-    const dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>40){
-      dx<0 ? go(cur+1) : go(cur-1);
-    }
-  }
   wrap.addEventListener('touchstart', onStart, {passive:true});
   wrap.addEventListener('touchend',   onEnd,   {passive:true});
-  wrap._cleanup = ()=>{
+  wrap.addEventListener('click',      onClick);
+  wrap._cleanup = () => {
     wrap.removeEventListener('touchstart', onStart);
-    wrap.removeEventListener('touchend', onEnd);
+    wrap.removeEventListener('touchend',   onEnd);
+    wrap.removeEventListener('click',      onClick);
   };
 }
 
@@ -3341,6 +3397,8 @@ function openSheet(idx){
   }).join('');
   document.getElementById('sOld').textContent = p.oldPrice ? fmt(p.oldPrice) : '';
   document.getElementById('sPrice').textContent = fmt(p.price);
+  document.getElementById('stickyPrice').textContent = fmt(p.price);
+  document.getElementById('stickyOld').textContent = p.oldPrice ? fmt(p.oldPrice) : '';
   const on = cart.some(c=>c.id===p.id);
   const qty = cart.find(c=>c.id===p.id)?.qty || 0;
   updateSheetCartBtn(on, qty);
@@ -3381,23 +3439,23 @@ function closeSheet(){
 
 function updateSheetCartBtn(inCart, qty){
   const btn = document.getElementById('sAdd');
+  const btnS = document.getElementById('stickyAdd');
   const qtyWrap = document.getElementById('sQtyWrap');
   const qtyN = document.getElementById('sQtyN');
   if(!btn) return;
 
   if(inCart && qty > 0){
-    // Левая часть — «В корзине», клик → идём в корзину
     btn.className = 's-add incart';
     btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg> В корзине`;
     btn.onclick = () => { closeSheet(); showPage('cart'); };
-    // Правая часть — счётчик
+    if(btnS){ btnS.className='s-add incart'; btnS.innerHTML=btn.innerHTML; btnS.onclick=btn.onclick; }
     if(qtyWrap) qtyWrap.classList.add('show');
     if(qtyN) qtyN.textContent = qty;
   } else {
-    // Единая кнопка «В корзину»
     btn.className = 's-add';
     btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> В корзину`;
     btn.onclick = addFromSheet;
+    if(btnS){ btnS.className='s-add'; btnS.innerHTML=btn.innerHTML; btnS.onclick=addFromSheet; }
     if(qtyWrap) qtyWrap.classList.remove('show');
     if(qtyN) qtyN.textContent = '1';
   }
