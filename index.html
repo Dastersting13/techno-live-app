@@ -404,13 +404,12 @@ body::before{
 .p-card.on{border-color:rgba(52,199,89,0.50);box-shadow:0 4px 24px rgba(52,199,89,0.15),inset 0 1px 0 rgba(255,255,255,0.9)}
 .p-card:active{transform:scale(.95)}
 .p-img{width:100%;aspect-ratio:1;
-  background:linear-gradient(135deg,rgba(255,255,255,0.60),rgba(255,255,255,0.30));
+  background:#f5f5f7;
   display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.p-img img{width:100%;height:100%;object-fit:cover}
+.p-img img{width:100%;height:100%;object-fit:contain;padding:8px}
 .p-img .ph{font-size:54px}
-.p-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:35%;
-  background:linear-gradient(transparent,rgba(200,205,215,0.45))}
-.p-flag{position:absolute;top:8px;left:8px;font-size:12px}
+.p-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:0}
+.p-flag{display:none}
 .p-bdg{position:absolute;top:8px;right:8px;font-family:'Unbounded',sans-serif;font-size:7px;font-weight:700;padding:2px 7px;border-radius:50px;text-transform:uppercase;backdrop-filter:blur(10px)}
 .p-bdg.fire{background:rgba(255,159,10,.18);color:#a05800;border:1px solid rgba(255,159,10,.38)}
 .p-bdg.new{background:rgba(52,199,89,.18);color:#1a7d38;border:1px solid rgba(52,199,89,.38)}
@@ -3072,7 +3071,7 @@ function goBanner(i){
 function renderTrend(){
   document.getElementById('trendScroll').innerHTML = P.filter(p=>p.trend).map(p=>`
     <div class="t-card" onclick="openSheet(${P.indexOf(p)})">
-      <div class="t-img">${img(p)}${p.badge?`<div class="t-lbl ${p.badge}">${BADGES[p.badge]}</div>`:''}${p.flag!=='🇷🇺'?`<div class="t-flag">${p.flag}</div>`:''}</div>
+      <div class="t-img">${img(p)}${p.badge?`<div class="t-lbl ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
       <div class="t-body">${p.oldPrice?`<div class="t-old">${fmt(p.oldPrice)}</div>`:''}<div class="t-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div><div class="t-price">${fmt(p.price)}</div></div>
     </div>`).join('');
 }
@@ -3090,7 +3089,7 @@ function renderCard(p, i=0){
   const ci=cart.find(c=>c.id===p.id); const on=!!ci; const qty=ci?.qty||0;
   const delay = i < 12 ? `animation-delay:${i*0.04}s` : '';
   return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${P.indexOf(p)})" style="${delay}">
-    <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
+    <div class="p-img">${img(p)}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}</div>
     <div class="p-body">
       <div class="p-name">${p.family}</div>
       <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
@@ -3235,31 +3234,16 @@ function openSheet(idx){
   const dotsEl = document.getElementById('sSliderDots');
   const wrap = document.getElementById('sSliderWrap');
 
-  // Сначала показываем одно фото / эмодзи пока грузим список
+  // Сначала показываем одно фото пока грузим список
   const firstPhoto = p.photo || getSupabasePhoto(p);
   renderSlider(track, dotsEl, wrap, firstPhoto ? [firstPhoto] : [], p.icon);
 
   // Асинхронно грузим все фото из Supabase и обновляем галерею
   getProductPhotos(p).then(photos => {
-    if(photos.length > 1){
-      renderSlider(track, dotsEl, wrap, photos, p.icon);
-    } else if(photos.length === 1 && !firstPhoto){
+    if(photos.length > 0){
       renderSlider(track, dotsEl, wrap, photos, p.icon);
     }
   });
-
-  // Свайп (уже настроен в renderSlider, но нужен fallback для случая без фото)
-  let slideIdx = 0;
-  const slideCount = 1;
-  let tsx = 0;
-  wrap.ontouchstart = e => { tsx = e.touches[0].clientX; };
-  wrap.ontouchend = e => {
-    const dx = e.changedTouches[0].clientX - tsx;
-    if(Math.abs(dx) > 35){
-      if(dx < 0 && slideIdx < slideCount-1) slideIdx++;
-      else if(dx > 0 && slideIdx > 0) slideIdx--;
-    }
-  };
 
   document.getElementById('sCat').textContent = p.brand;
   document.getElementById('sName').textContent = p.family;
@@ -5032,7 +5016,7 @@ function renderWishlist(){
     const dropped = savedPrice && p.price < savedPrice;
     const dropDiff = dropped ? savedPrice - p.price : 0;
     return `<div class="p-card${on?' on':''}" data-pid="${p.id}" onclick="openSheet(${P.indexOf(p)})">
-      <div class="p-img">${img(p)}${p.flag!=='🇷🇺'?`<div class="p-flag">${p.flag}</div>`:''}
+      <div class="p-img">${img(p)}
         <div style="position:absolute;top:8px;right:8px;cursor:pointer;font-size:18px;z-index:3" onclick="event.stopPropagation();toggleWish(${p.id})">❤️</div>
         ${p.badge?`<div class="p-bdg ${p.badge}" style="top:8px;left:8px;right:auto">${BADGES[p.badge]}</div>`:''}
         ${dropped?`<div class="wish-drop-badge">📉 −${fmt(dropDiff)}</div>`:''}
