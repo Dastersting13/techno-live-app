@@ -3276,26 +3276,13 @@ function buildSlider(photos, icon){
 
 
 
-// Кэш папок: { "iphone-16": [{name:"white.webp"}, ...] }
-const _folderCache = {};
-
-async function getFolderFiles(folder){
-  if(_folderCache[folder] !== undefined) return _folderCache[folder];
-  try{
-    const res = await fetch('https://clbtbkxgfgeuupilhgiw.supabase.co/storage/v1/object/list/Photos', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsYnRia3hnZmdldXVwaWxoZ2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMzU5NDIsImV4cCI6MjA4ODcxMTk0Mn0.LwdVggHTVyaOlgJ-jEyY2yh5niGzr95b0Vh2_xVu8mA',
-        'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsYnRia3hnZmdldXVwaWxoZ2l3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMzU5NDIsImV4cCI6MjA4ODcxMTk0Mn0.LwdVggHTVyaOlgJ-jEyY2yh5niGzr95b0Vh2_xVu8mA'
-      },
-      body: JSON.stringify({prefix: folder+'/', limit:200, offset:0})
-    });
-    const data = await res.json();
-    const files = Array.isArray(data) ? data : (data.error ? [] : []);
-    _folderCache[folder] = files;
-    return files;
-  } catch(e){ _folderCache[folder]=[]; return []; }
+function probeImg(url){
+  return new Promise(res=>{
+    const i=new Image();
+    i.onload=()=>res(url);
+    i.onerror=()=>res(null);
+    i.src=url;
+  });
 }
 
 async function getProductPhotos(p){
@@ -3305,22 +3292,24 @@ async function getProductPhotos(p){
   const cacheKey = folder+'/'+colorSlug;
   if(_photoCache[cacheKey] !== undefined) return _photoCache[cacheKey];
 
-  const files = await getFolderFiles(folder);
-  if(!files.length){ _photoCache[cacheKey]=[]; return []; }
+  const base = SUPA_BASE+'/'+folder+'/'+colorSlug;
 
-  // Фильтруем: white.webp, white-2.webp, white-3.png и т.д.
-  const re = new RegExp('^'+colorSlug+'(-\d+)?\.(webp|jpg|png)$');
-  const matched = files
-    .filter(f => f.name && re.test(f.name))
-    .sort((a,b)=>{
-      const na = parseInt(a.name.match(/-(\d+)\./)?.[1]||'0');
-      const nb = parseInt(b.name.match(/-(\d+)\./)?.[1]||'0');
-      return na-nb;
-    })
-    .map(f => SUPA_BASE+'/'+folder+'/'+f.name);
+  // Проверяем .webp / .jpg / .png параллельно
+  const [r1,r2,r3] = await Promise.all([probeImg(base+'.webp'), probeImg(base+'.jpg'), probeImg(base+'.png')]);
+  const baseUrl = r1||r2||r3;
 
-  _photoCache[cacheKey] = matched;
-  return matched;
+  if(!baseUrl){ _photoCache[cacheKey]=[]; return []; }
+  const ext = baseUrl.split('.').pop();
+  const urls = [baseUrl];
+
+  // Проверяем -2 .. -8 параллельно
+  const extras = await Promise.all(
+    [2,3,4,5,6,7,8].map(n => probeImg(base+'-'+n+'.'+ext))
+  );
+  for(const u of extras){ if(u) urls.push(u); else break; }
+
+  _photoCache[cacheKey] = urls;
+  return urls;
 }
 
 
