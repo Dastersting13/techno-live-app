@@ -410,6 +410,7 @@ body::before{
 .p-img .ph{font-size:54px}
 .p-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:0}
 .p-flag{display:none}
+.p-country{font-size:10px;color:var(--t3);margin-top:2px;font-weight:500}
 .p-bdg{position:absolute;top:8px;right:8px;font-family:'Unbounded',sans-serif;font-size:7px;font-weight:700;padding:2px 7px;border-radius:50px;text-transform:uppercase;backdrop-filter:blur(10px)}
 .p-bdg.fire{background:rgba(255,159,10,.18);color:#a05800;border:1px solid rgba(255,159,10,.38)}
 .p-bdg.new{background:rgba(52,199,89,.18);color:#1a7d38;border:1px solid rgba(52,199,89,.38)}
@@ -3102,7 +3103,8 @@ function renderCard(p, i=0){
     <div class="p-img" id="cimg_${p.id}" data-pidx="${pidx}">${img(p)}${p.badge?`<div class="p-bdg ${p.badge}">${BADGES[p.badge]}</div>`:''}<div class="card-photo-dots" id="cdots_${p.id}"></div></div>
     <div class="p-body">
       <div class="p-name">${p.family}</div>
-      <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color].filter(Boolean).join(' · ')}</div>
+      <div class="p-meta">${[p.memory!=='—'?p.memory:'',p.color,p.sim!=='—'?p.sim:''].filter(Boolean).join(' · ')}</div>
+      <div class="p-country">${p.flag} ${({'🇺🇸':'США','🇮🇳':'Индия','🇨🇳':'Китай','🇭🇰':'Гонконг','🇦🇪':'ОАЭ','🇬🇧':'Англия','🇪🇺':'Европа','🇷🇺':'Россия','🇰🇿':'Казахстан','🇯🇵':'Япония','🇲🇾':'Малайзия','🇿🇦':'ЮАР','🇦🇲':'Армения'})[p.flag]||''}</div>
       <div class="p-stock ${p.inStock?'in':'out'}">${p.inStock?`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#34c759'/></svg> В наличии`:`<svg width='7' height='7' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='#ff3b30'/></svg> Нет`}</div>
       <div class="p-foot">
         <div><div class="p-old">${p.oldPrice?fmt(p.oldPrice):''}</div><div class="p-price">${fmt(p.price)}</div></div>
