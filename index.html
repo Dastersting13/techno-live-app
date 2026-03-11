@@ -2218,7 +2218,8 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
     <div style="width:40px;height:4px;border-radius:2px;background:var(--border2);margin:12px auto 0"></div>
     <div class="overlay-close-btn" onclick="closeSheet()" title="Закрыть">✕</div>
     <div class="sheet-slider-wrap" id="sSliderWrap">
-      <div class="sheet-slider-track" id="sSliderTrack"></div>
+      <img id="sSliderImg" src="" style="width:100%;height:100%;object-fit:contain;padding:12px;transition:opacity 0.15s" alt="">
+      <span id="sSliderIcon" style="display:none;font-size:90px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)"></span>
       <div class="sheet-slider-dots" id="sSliderDots"></div>
     </div>
     <div class="sheet-body" id="sheetBody">
@@ -3219,28 +3220,27 @@ let pulseTimer = null;
 // Кэш фото: { "iphone-16/white": ["url1","url2",...] }
 const _photoCache = {};
 
-function buildSlider(wrap, track, dotsEl, photos, icon){
+function buildSlider(photos, icon){
+  const imgEl  = document.getElementById('sSliderImg');
+  const iconEl = document.getElementById('sSliderIcon');
+  const dotsEl = document.getElementById('sSliderDots');
+  const wrap   = document.getElementById('sSliderWrap');
+
+  if(!imgEl) return;
+
   const n = photos.length;
 
-  // Убираем старые слушатели через data-атрибут
-  if(wrap._sliderCleanup) wrap._sliderCleanup();
-
   if(n === 0){
-    track.style.width = '100%';
-    track.style.transform = 'translateX(0)';
-    track.innerHTML = `<div style="flex:0 0 100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:90px">${icon}</div>`;
+    imgEl.style.display = 'none';
+    iconEl.style.display = 'block';
+    iconEl.textContent = icon;
     dotsEl.innerHTML = '';
     return;
   }
 
-  track.style.width = (n * 100) + '%';
-  track.style.transform = 'translateX(0)';
-  track.style.transition = 'none';
-  track.innerHTML = photos.map(src =>
-    `<div style="flex:0 0 ${100/n}%;height:100%;background:#f5f5f7;display:flex;align-items:center;justify-content:center;overflow:hidden;">
-      <img src="${src}" style="width:100%;height:100%;object-fit:contain;padding:12px" loading="lazy">
-    </div>`
-  ).join('');
+  iconEl.style.display = 'none';
+  imgEl.style.display = 'block';
+  imgEl.src = photos[0];
 
   dotsEl.innerHTML = n > 1
     ? Array.from({length:n},(_,i)=>`<div class="sheet-slide-dot${i===0?' active':''}"></div>`).join('')
@@ -3249,36 +3249,31 @@ function buildSlider(wrap, track, dotsEl, photos, icon){
   let cur = 0;
   function go(i){
     cur = Math.max(0, Math.min(i, n-1));
-    track.style.transition = 'transform 0.45s cubic-bezier(.32,.72,0,1)';
-    track.style.transform = `translateX(-${cur*(100/n)}%)`;
+    imgEl.style.opacity = '0';
+    setTimeout(()=>{ imgEl.src = photos[cur]; imgEl.style.opacity = '1'; }, 120);
     dotsEl.querySelectorAll('.sheet-slide-dot').forEach((d,j)=>d.classList.toggle('active',j===cur));
   }
 
-  // touch-action:pan-y — браузер не перехватывает горизонтальный свайп
-  wrap.style.touchAction = 'pan-y';
+  // Убираем старый свайп
+  if(wrap._cleanup) wrap._cleanup();
 
-  let sx=0, sy=0, locked=false;
-  function onStart(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; locked=false; }
-  function onMove(e){
-    if(locked) return;
-    const dx=Math.abs(e.touches[0].clientX-sx), dy=Math.abs(e.touches[0].clientY-sy);
-    if(dx>dy && dx>5){ locked=true; e.preventDefault(); }
-  }
+  let sx=0, sy=0;
+  function onStart(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }
   function onEnd(e){
     const dx=e.changedTouches[0].clientX-sx;
-    if(Math.abs(dx)>40){ dx<0?go(cur+1):go(cur-1); }
+    const dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>Math.abs(dy) && Math.abs(dx)>40){
+      dx<0 ? go(cur+1) : go(cur-1);
+    }
   }
-
   wrap.addEventListener('touchstart', onStart, {passive:true});
-  wrap.addEventListener('touchmove',  onMove,  {passive:false});
   wrap.addEventListener('touchend',   onEnd,   {passive:true});
-
-  wrap._sliderCleanup = ()=>{
+  wrap._cleanup = ()=>{
     wrap.removeEventListener('touchstart', onStart);
-    wrap.removeEventListener('touchmove',  onMove);
-    wrap.removeEventListener('touchend',   onEnd);
+    wrap.removeEventListener('touchend', onEnd);
   };
 }
+
 
 
 // Кэш папок: { "iphone-16": [{name:"white.webp"}, ...] }
@@ -3332,11 +3327,6 @@ async function getProductPhotos(p){
 function openSheet(idx){
   const p = P[idx]; if(!p) return; sheetId = p.id;
 
-  const track = document.getElementById('sSliderTrack');
-  const dotsEl = document.getElementById('sSliderDots');
-  const wrap   = document.getElementById('sSliderWrap');
-
-  // Слайдер инициализируем ПОСЛЕ открытия overlay (чтобы offsetWidth был корректным)
   const _first = p.photo || getSupabasePhoto(p);
   const _icon = p.icon;
 
@@ -3367,12 +3357,9 @@ function openSheet(idx){
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  // Теперь wrap виден — offsetWidth работает корректно
-  requestAnimationFrame(() => {
-    buildSlider(wrap, track, dotsEl, _first ? [_first] : [], _icon);
-    getProductPhotos(p).then(photos => {
-      if(photos.length > 0) buildSlider(wrap, track, dotsEl, photos, _icon);
-    });
+  buildSlider(_first ? [_first] : [], _icon);
+  getProductPhotos(p).then(photos => {
+    if(photos.length > 0) buildSlider(photos, _icon);
   });
   logActivity('👁', `Просмотрел: ${p.family}${p.memory!=='—'?' '+p.memory:''} — ${fmt(p.price)}`);
 
