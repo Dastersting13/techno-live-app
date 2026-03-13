@@ -403,13 +403,18 @@ body::before{
 
 /* STICKY BUY BAR */
 .sheet-sticky-bar{
-  position:sticky;bottom:0;left:0;right:0;
+  position:fixed;bottom:0;left:0;right:0;
   background:rgba(238,240,243,0.96);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid var(--border);
   padding:10px 16px calc(10px + var(--sb));
   display:flex;align-items:center;gap:12px;
-  z-index:10;margin-top:12px;
+  z-index:200;margin-top:0;
+  transform:translateY(100%);
+  transition:transform 0.25s cubic-bezier(.4,0,.2,1);
+}
+.sheet-sticky-bar.visible{
+  transform:translateY(0);
 }
 .sheet-sticky-price{
   font-family:'Unbounded',sans-serif;font-size:20px;font-weight:900;
@@ -2651,7 +2656,24 @@ const INFO_TIPS = {
   },
   sim: {
     title: '📱 Типы SIM-карт',
-    body: '<b>Nano SIM</b> — обычная физическая карта.<br><br><b>eSIM</b> — встроенная электронная SIM, активируется через QR-код оператора. Не нужна физическая карта.<br><br><b>Dual SIM (nano+eSIM)</b> — одна физическая + одна виртуальная, можно использовать два номера одновременно.'
+    body: `<div style="display:flex;flex-direction:column;gap:12px">
+      <div style="background:rgba(0,122,255,0.08);border-radius:12px;padding:12px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">📲 eSIM</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.5">Встроенная электронная SIM. Физическая карта не нужна — активируется через QR-код. Работает с МТС, Билайн, МегаФон, Tele2.</div>
+        <div style="margin-top:6px;font-size:11px;color:var(--t3)">🌍 США 🇺🇸 · ОАЭ 🇦🇪 · Япония 🇯🇵</div>
+      </div>
+      <div style="background:rgba(52,199,89,0.08);border-radius:12px;padding:12px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">📱 1 SIM + eSIM</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.5">Одна физическая SIM + одна eSIM. Два номера одновременно — удобно для работы и личного номера.</div>
+        <div style="margin-top:6px;font-size:11px;color:var(--t3)">🌍 Индия 🇮🇳 · Гонконг 🇭🇰 · ОАЭ 🇦🇪 · Корея 🇰🇷 · Европа 🇪🇺</div>
+      </div>
+      <div style="background:rgba(255,149,0,0.08);border-radius:12px;padding:12px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">🃏 2 SIM (Dual SIM)</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.5">Два слота для физических SIM-карт. eSIM отсутствует. Удобно при частой смене операторов.</div>
+        <div style="margin-top:6px;font-size:11px;color:var(--t3)">🌍 Китай 🇨🇳</div>
+      </div>
+      <div style="font-size:11px;color:var(--t3);text-align:center">Все варианты работают с российскими операторами ✅</div>
+    </div>`
   },
 };
 
@@ -2660,15 +2682,9 @@ function showInfoTip(type, simLabel){
   if(!tip) return;
   let title = tip.title;
   let body = tip.body;
-  if(type === 'sim' && simLabel){
-    title = `📱 ${simLabel}`;
-    if(simLabel.toLowerCase().includes('esim') && simLabel.toLowerCase().includes('nano')){
-      body = INFO_TIPS.sim.body;
-    } else if(simLabel.toLowerCase().includes('esim')){
-      body = '<b>eSIM</b> — встроенная электронная SIM-карта. Активируется через QR-код оператора. Физическая карта не нужна. Поддерживается большинством российских операторов (МТС, Билайн, МегаФон, Tele2).';
-    } else {
-      body = `<b>${simLabel}</b> — ${INFO_TIPS.sim.body}`;
-    }
+  if(type === 'sim'){
+    title = INFO_TIPS.sim.title;
+    body = INFO_TIPS.sim.body;
   }
   document.getElementById('infoTipTitle').textContent = title;
   document.getElementById('infoTipBody').innerHTML = body;
@@ -2764,7 +2780,7 @@ function renderTrend(){
         <span id="tc_icon_${p.id}" style="font-size:54px">${p.icon||'📱'}</span>
         ${p.badge?`<div class="t-lbl ${p.badge}">${BADGES[p.badge]}</div>`:''}
       </div>
-      <div class="t-body">${p.oldPrice?`<div class="t-old">${fmt(p.oldPrice)}</div>`:''}<div class="t-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div><div class="t-price">${fmt(p.price)}</div></div>
+      <div class="t-body">${p.oldPrice?`<div class="t-old">${fmt(p.oldPrice)}</div>`:''}<div class="t-name">${p.family}${p.memory!=='—'?' '+p.memory:''}</div><div style="font-size:9px;color:var(--t3);margin:1px 0 3px;line-height:1.3">${[p.color&&p.color!=='—'?p.color:'',p.sim&&p.sim!=='—'?p.sim:''].filter(Boolean).join(' · ')}</div><div class="t-price">${fmt(p.price)}</div></div>
     </div>`).join('');
   // Async загрузка фото
   trends.forEach(p=>{
@@ -3084,6 +3100,22 @@ function openSheet(idx){
     if(photos.length > 0) buildSlider(photos, _icon);
   });
   logActivity('👁', `Просмотрел: ${p.family}${p.memory!=='—'?' '+p.memory:''} — ${fmt(p.price)}`);
+  // Sticky: скрыть при открытии, показывать при скролле ниже кнопки
+  const stickyBar = document.getElementById('stickyBar');
+  const sBtnsEl = document.getElementById('sBtns');
+  if(stickyBar) stickyBar.classList.remove('visible');
+  setTimeout(()=>{
+    const sheetEl = document.querySelector('.sheet');
+    if(!sheetEl || !stickyBar) return;
+    const onScroll = ()=>{
+      if(!sBtnsEl) return;
+      const r = sBtnsEl.getBoundingClientRect();
+      r.bottom < 0 ? stickyBar.classList.add('visible') : stickyBar.classList.remove('visible');
+    };
+    if(sheetEl._stickyScroll) sheetEl.removeEventListener('scroll', sheetEl._stickyScroll);
+    sheetEl._stickyScroll = onScroll;
+    sheetEl.addEventListener('scroll', onScroll, {passive:true});
+  }, 150);
 
   // Обновляем кнопку вишлиста
   const wishBtn = document.getElementById('sheetWishBtn');
