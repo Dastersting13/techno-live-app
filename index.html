@@ -8,6 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* iOS Safari Fix */
+@supports (-webkit-touch-callout: none){
+  html,body{min-height:-webkit-fill-available;}
+  .sheet{max-height:calc(100vh - env(safe-area-inset-top,0px));}
+}
+
 :root{
   /* LIQUID GLASS — iOS 26 style — LIGHT */
   --bg:#e8eaed;--bg2:#dfe1e5;
@@ -21,7 +27,7 @@
   --accent:#1c1c1e;--accent2:#3a3a3c;
   --green:#34c759;--red:#ff3b30;--gold:#ff9f0a;--purple:#bf5af2;--blue:#0a84ff;--orange:#ff9f0a;
   --text:#1c1c1e;--t2:rgba(28,28,30,0.60);--t3:rgba(28,28,30,0.35);
-  --sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px);
+  --sb:env(safe-area-inset-bottom,0px);--bg-ios:var(--bg);--st:env(safe-area-inset-top,0px);
 }
 body.dark{
   --bg:#080810;--bg2:#0f0f1a;
@@ -70,7 +76,7 @@ body.dark .dtab.active .dtab-title{color:#f5f5ff;}
 body.dark .dtab.active .dtab-sub{color:rgba(245,245,255,0.55);}
 body.dark .profile-list{background:rgba(255,255,255,0.05);}
 body.dark .stat-card{background:rgba(255,255,255,0.05);}
-body.dark .cat-bubble{background:rgba(20,15,40,0.96);}
+body.dark .cat-bubble{display:none!important;}
 body.dark .search-box{background:rgba(255,255,255,0.06);}
 body.dark .nav-badge{border-color:rgba(12,12,22,0.9);}
 
@@ -376,7 +382,7 @@ body::before{
 .t-img{position:relative;overflow:hidden;width:100%;height:120px;background:linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.30));
   display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden}
 .t-img img{width:100%;height:100%;object-fit:contain;padding:8px;box-sizing:border-box}
-.t-lbl{position:absolute;top:8px;left:8px;font-family:'Unbounded',sans-serif;font-size:8px;font-weight:700;letter-spacing:.3px;padding:3px 8px;border-radius:50px;text-transform:uppercase;backdrop-filter:blur(10px)}
+.t-lbl{position:absolute;top:8px;left:8px;z-index:5;font-family:'Unbounded',sans-serif;font-size:7px;font-weight:700;letter-spacing:.3px;padding:2px 7px;border-radius:50px;text-transform:uppercase;white-space:nowrap}
 .t-lbl.fire{background:rgba(255,159,10,.18);color:#a05800;border:1px solid rgba(255,159,10,.38)}
 .t-lbl.new{background:rgba(52,199,89,.18);color:#1a7d38;border:1px solid rgba(52,199,89,.38)}
 .t-lbl.hit{background:rgba(255,255,255,.7);color:var(--t2);border:1px solid rgba(255,255,255,.9)}
@@ -2075,11 +2081,7 @@ body.dark .confirm-card{background:rgba(24,24,28,0.98);border-color:rgba(255,255
 <canvas id="confettiCanvas"></canvas>
 
 <!-- CAT MASCOT — Dynamic Island -->
-<div class="cat-bubble" id="catBubble">
-  <div class="cat-inner">
-    <div class="cat-face" id="catFace">😺</div>
-    <div class="cat-speech" id="catSpeech">Привет! Чем помочь?</div>
-  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -2468,44 +2470,11 @@ function launchConfetti(duration=3500){
 // ══════════════════════════════════════
 // 😺 CAT MASCOT
 // ══════════════════════════════════════
-let catTimer, catDeleteCount=0, catAddCount=0, catHintTimer;
-
-function showCat(face, msg, dur=3000){
-  const b = document.getElementById('catBubble');
-  document.getElementById('catFace').textContent = face;
-  document.getElementById('catSpeech').textContent = msg;
-  b.classList.add('show');
-  clearTimeout(catTimer);
-  catTimer = setTimeout(()=>b.classList.remove('show'), dur);
-}
-
-function catOnAdd(){
-  catAddCount++; catDeleteCount=0;
-  if(catAddCount === 1) showCat('😺📦','Кот положил товар в корзину!');
-  else if(catAddCount >= 3) showCat('😺','Отличный выбор! Берём! 🎉',3500);
-  else showCat('😺','Хороший выбор 👌');
-}
-
-function catOnRemove(){
-  catDeleteCount++; catAddCount=0;
-  if(catDeleteCount >= 3) showCat('😾','Решайся уже! Я жду 😤',3500);
-  else showCat('😿','Этот телефон почти был твоим...');
-}
-
-function catOnReturn(){
-  catDeleteCount=0;
-  showCat('😸','Отличный выбор! Вернул 👍');
-}
-
-// Случайные подсказки кота
-const CAT_HINTS = [
-  ['😺','Самый широкий выбор техники в Москве!'],
-  ['😸','У нас всё новое с гарантией 12 мес.'],
-  ['🐱','Доставка курьером за 3 часа 🚀'],
-  ['😺','Скидка по промокоду TEXNO10 💝'],
-  ['😸','Хороший выбор — лучшие цены!'],
-];
-let hintIdx = 0;
+// cat notifications removed
+function showCat(){}
+function catOnAdd(){}
+function catOnRemove(){}
+function catHint(){}
 
 // ══════════════════════════════════════
 // 📂 CATEGORY PAGES
@@ -4982,7 +4951,15 @@ setTimeout(()=>{
 }, 150);
 
 // Инициализация
+// iOS Safari: ждём пока Telegram WebApp инициализируется
 try{
+  // iOS fix: убеждаемся что DOM готов
+  if(typeof window === 'undefined') throw new Error('no window');
+  // Telegram WebApp init — важно для iOS
+  try{
+    const _tg = window.Telegram?.WebApp;
+    if(_tg){ _tg.ready(); _tg.expand(); }
+  }catch(e){}
   initDarkMode();
   logActivity('🚀', 'Открыл магазин ТЕХНО·LIVE');
   initBanner();
